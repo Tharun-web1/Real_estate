@@ -614,7 +614,8 @@ class FranchiseForm(UserCreationForm):
         return user
     
 class ReelsForm(forms.ModelForm):
-  class Meta:
+    reel = forms.FileField(required=True)
+    class Meta:
         model=Reels
         fields=['reel','description','link']
 

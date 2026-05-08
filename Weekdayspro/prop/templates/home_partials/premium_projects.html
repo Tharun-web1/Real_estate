@@ -1,0 +1,65 @@
+{% load static %}
+<!-- HEADER -->
+<div class="section-header">
+    <div class="section-titles">
+        <span>Premium Projects</span>
+    </div>
+    <a href="#" class="see-all-btn">See All</a>
+</div>
+
+<!-- SCROLL CONTAINER -->
+<div class="feed-scroll-container">
+    <button class="feed-nav-btn prev" onclick="scrollTrack('{{ section_id|default:'premium-track' }}', -1)">&#10094;</button>
+    <div class="feed-scroll" id="{{ section_id|default:'premium-track' }}">
+        {% for p in section_data %}
+        <div class="premium-card">
+            <!-- IMAGE -->
+            <div class="card-image">
+                {% if p.image %}
+                    <img src="{{ p.image.url }}">
+                {% else %}
+                    <img src="{% static 'default.jpg' %}">
+                {% endif %}
+
+                <!-- TOP OVERLAY -->
+                <div class="top-overlay">
+                    <a href="{% url 'prop:user_detail' p.user.id %}" style="text-decoration:none; display:flex; align-items:center; gap:6px;">
+                        <div class="profile-circle">
+                            {% if p.user.company_logo_path %}
+                                <img src="{{ p.user.company_logo_path.url }}">
+                            {% else %}
+                                <img src="{% static 'default.jpg' %}">
+                            {% endif %}
+                        </div>
+                        <div class="user-name">
+                            {{ p.user.username|default:"Company" }}
+                        </div>
+                    </a>
+                </div>
+
+                <!-- BOTTOM OVERLAY -->
+                <div class="img-overlay">
+                    <div class="overlay-left">
+                        <h4>{{ p.type_of_project }}</h4>
+                        <p>{{ p.project_address|truncatechars:20 }}</p>
+                    </div>
+                    <div class="overlay-right">
+                        ₹ 
+                        {% if p.pricing >= 10000000 %}
+                            {{ p.pricing|floatformat:0|slice:":-7" }} Cr
+                        {% elif p.pricing >= 100000 %}
+                            {{ p.pricing|floatformat:0|slice:":-5" }} Lac
+                        {% else %}
+                            {{ p.pricing }}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <a href="{% url 'prop:project_detail' p.id %}" class="view-btn">
+                View Details
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    <button class="feed-nav-btn next" onclick="scrollTrack('{{ section_id|default:'premium-track' }}', 1)">&#10095;</button>
+</div>

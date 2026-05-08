@@ -94,6 +94,7 @@ urlpatterns = [
 
     path("otp/send/", views.send_otp, name="send-otp"),
     path("otp/verify/", views.verify_otp, name="verify-otp"),
+    path("story/mark-seen/<int:post_id>/", views.mark_story_seen, name="mark_story_seen"),
 
 
     path("project/delete/<int:id>/", views.delete_project, name="delete_project"),

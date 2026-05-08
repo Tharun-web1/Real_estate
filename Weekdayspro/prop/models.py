@@ -636,6 +636,14 @@ class ImagePost(models.Model):
     def __str__(self):
         return self.heading if self.heading else str(self.id)
 
+class StorySeen(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='seen_stories')
+    post = models.ForeignKey(ImagePost, on_delete=models.CASCADE, related_name='seen_by')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'post')
+
 # =========================
 # Signals for Cleanup
 # =========================
@@ -774,3 +782,27 @@ def notify_new_message(sender, instance, created, **kwargs):
             message=instance.message[:50],
             link=f"/{instance.chat.id}/"
         )
+
+class PropertyInteraction(models.Model):
+    INTERACTION_CHOICES = [('view', 'View'), ('enquiry', 'Enquiry')]
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='interactions')
+    property = models.ForeignKey(AddPropertyModel, on_delete=models.CASCADE, null=True, blank=True)
+    project = models.ForeignKey(AddProject, on_delete=models.CASCADE, null=True, blank=True)
+    interaction_type = models.CharField(max_length=20, choices=INTERACTION_CHOICES, default='view')
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+class ScheduledNotification(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='scheduled_notifications')
+    notification_type = models.CharField(max_length=50)
+    scheduled_for = models.DateTimeField()
+    sent = models.BooleanField(default=False)
+    data = models.JSONField(default=dict, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+class NotificationLog(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notification_logs')
+    channel = models.CharField(max_length=20) # Email, SMS, WA
+    notification_type = models.CharField(max_length=50)
+    sent_at = models.DateTimeField(auto_now_add=True)
+    success = models.BooleanField(default=True)
+    message = models.TextField(null=True, blank=True)

@@ -1,4 +1,4 @@
-﻿{% load static time_filters %}
+{% load static time_filters %}
 <!-- !-->
  
 
@@ -58,8 +58,8 @@
             </div>
             
             {% if user.is_authenticated and item.user != user and item.user.role != "OWNER" %}
-              <a href="{% url 'prop:start_chat_with_user' item.user.id %}?pre_message=Hi%20{{ item.user.username|urlencode }},%20I'm%20interested%20in%20your%20property%20{{ item.projectName|urlencode }}.%0AProperty%20Link:%20{{ request.scheme }}://{{ request.get_host }}{% url 'prop:property_detail' item.id %}" class="sketch-message-btn">
-                Message
+              <a href="{% url 'prop:start_chat_with_user' item.user.id %}?pre_message=Hi%20{{ item.user.username|urlencode }},%20I'm%20interested%20in%20your%20property%20{{ item.projectName|urlencode }}.%0AProperty%20Link:%20{{ request.scheme }}://{{ request.get_host }}{% url 'prop:property_detail' item.id %}" class="sketch-message-btn" title="Message">
+                <i class="bi bi-chat-dots"></i>
               </a>
             {% endif %}
           </div>

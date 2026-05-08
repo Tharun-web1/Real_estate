@@ -1,0 +1,30 @@
+{% load static %}
+<div class="section-header">
+    <div class="section-titles">
+        <span>Prop bytes</span>
+    </div>
+    <a href="{% url 'prop:all_reels' %}" class="see-all-btn">See All</a>
+</div>
+
+<div class="reels-scroll-container">
+    <button class="feed-nav-btn prev" onclick="scrollTrack('{{ section_id|default:'reels-track' }}', -1)" style="left: -10px;">&#10094;</button>
+    <div class="reels-scroll" id="{{ section_id|default:'reels-track' }}">
+        {% for r in section_data %}
+            <div class="home-reel-card" onclick="window.location.href='{% url 'prop:getReel' %}?reel={{ r.id }}'">
+                {% if r.reel %}
+                    <video src="{{ r.reel.url }}" muted loop class="autoplay-reel"></video>
+                {% endif %}
+                <div class="reel-overlay">
+                    <div class="views"><i class="bi bi-eye"></i> {{ r.view_count|default:0 }}</div>
+                    <div class="title">{{ r.description|default:"Untitled"|truncatechars:15 }}</div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="empty-reels-msg">
+                <i class="bi bi-camera-video-off" style="font-size: 24px; display: block; margin-bottom: 10px;"></i>
+                No bytes uploaded yet
+            </div>
+        {% endfor %}
+    </div>
+    <button class="feed-nav-btn next" onclick="scrollTrack('{{ section_id|default:'reels-track' }}', 1)" style="right: -10px;">&#10095;</button>
+</div>

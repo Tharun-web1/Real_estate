@@ -55,8 +55,7 @@
   margin: 24px 0 12px;
 }
 
-/* ── Scroll containers ─────────────────────────────────────── */
-.premium-scroll,
+/* ── Scroll containers (Wrappers) ────────────────────────── */
 .feed-scroll-container,
 .premium-companies-scroll-container,
 .marketing-experts-scroll-container,
@@ -64,19 +63,28 @@
 .reels-scroll-container,
 .professionals-scroll-container,
 .pro-projects-scroll-container {
-  max-width: 100%;
-  overflow-x: auto;
+  position: relative;
+  width: 100%;
+}
+
+/* ── Scroll Tracks (Horizontal Flex) ─────────────────────── */
+.premium-scroll,
+.feed-scroll,
+.reels-scroll,
+.property-feed-scroll {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  overflow-x: auto !important;
   scrollbar-width: none;
+  gap: 16px;
+  padding: 10px 4px;
 }
 
 .premium-scroll::-webkit-scrollbar,
-.feed-scroll-container::-webkit-scrollbar,
-.premium-companies-scroll-container::-webkit-scrollbar,
-.marketing-experts-scroll-container::-webkit-scrollbar,
-.property-feed-scroll-container::-webkit-scrollbar,
-.reels-scroll-container::-webkit-scrollbar,
-.professionals-scroll-container::-webkit-scrollbar,
-.pro-projects-scroll-container::-webkit-scrollbar {
+.feed-scroll::-webkit-scrollbar,
+.reels-scroll::-webkit-scrollbar,
+.property-feed-scroll::-webkit-scrollbar {
   display: none;
 }
 

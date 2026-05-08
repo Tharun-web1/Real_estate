@@ -1,0 +1,97 @@
+{% load static %}
+<!-- Normal Builders Section (Sketch Design) -->
+<link rel="stylesheet" href="{% static 'css/premium_companies.css' %}">
+
+<div class="section-header">
+    <div class="section-titles">
+        <span>Recommended Builders</span>
+    </div>
+    <a href="{% url 'prop:all_users' %}?category=company" class="see-all-btn">See All</a>
+</div>
+
+<div class="premium-companies-scroll-container">
+    <button class="feed-nav-btn prev" onclick="scrollTrack('{{ section_id|default:'builders-track-normal' }}', -1)" style="left: -10px;">&#10094;</button>
+    <div class="premium-companies-scroll" id="{{ section_id|default:'builders-track-normal' }}">
+        {% for c in section_data %}
+            <div class="company-premium-card">
+                <a href="{% url 'prop:user_detail' c.id %}" style="text-decoration: none; color: inherit;">
+                    <div class="company-cover">
+                        {% if c.company_wallpaper_path %}
+                            <img src="{{ c.company_wallpaper_path.url }}" onerror="this.src='{% static 'default.jpg' %}'">
+                        {% else %}
+                            <img src="{% static 'default.jpg' %}">
+                        {% endif %}
+                    </div>
+                </a>
+
+                <a href="{% url 'prop:user_detail' c.id %}" style="text-decoration: none; color: inherit;">
+                    <div class="company-header-row">
+                        <div class="logo-circle">
+                            {% if c.company_logo_path %}
+                                <img src="{{ c.company_logo_path.url }}" onerror="this.src='{% static 'default.jpg' %}'">
+                            {% else %}
+                                <img src="{% static 'default.jpg' %}">
+                            {% endif %}
+                        </div>
+                        <div class="header-info">
+                            <div class="name">{{ c.company_name|default:c.username }}</div>
+                            <div class="meta">
+                                <span class="verified"><i class="bi bi-patch-check-fill"></i> Verified</span>
+                                <span class="stars">
+                                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i> (275)
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- 3. Body Content -->
+                <div class="company-body">
+                    <div class="stats-block">
+                        <div class="stat-item">
+                            <i class="bi bi-building"></i>
+                            <div class="details">
+                                <span class="lbl">Established:</span>
+                                <span class="val">{{ c.created_at|date:"Y" }}</span>
+                            </div>
+                        </div>
+                        <div class="divider"></div>
+                        <div class="stat-item">
+                            <i class="bi bi-graph-up"></i>
+                            <div class="details">
+                                <span class="lbl">Ongoing Projects:</span>
+                                <span class="val">{{ c.ongoing_projects|default:"0" }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="specialty-block">
+                        <i class="bi bi-check-circle-fill"></i>
+                        <div class="info">
+                            <span class="label">Specialized In:</span>
+                            <span class="text">{{ c.company_category|default:"Categories" }}</span>
+                        </div>
+                    </div>
+
+                    <div class="description-text">
+                        {{ c.description|default:"We start our real estate project with a commitment to quality and transparency."|truncatechars:100 }}
+                    </div>
+                </div>
+
+                <!-- 4. Footer Actions (3 Pill Buttons) -->
+                <div class="company-footer">
+                    <a href="tel:{{ c.phone }}" class="pill-btn call">
+                        <i class="bi bi-telephone-fill"></i> Call
+                    </a>
+                    <div class="pill-btn share" onclick="shareProfile({{ c.id }})">
+                        <i class="bi bi-share-fill"></i> Share
+                    </div>
+                    <a href="{% if user.is_authenticated %}{% url 'prop:start_chat_with_user' c.id %}{% else %}{% url 'prop:login' %}{% endif %}" class="pill-btn msg">
+                        <i class="bi bi-chat-dots-fill"></i> Message
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <button class="feed-nav-btn next" onclick="scrollTrack('{{ section_id|default:'builders-track-normal' }}', 1)" style="right: -10px;">&#10095;</button>
+</div>

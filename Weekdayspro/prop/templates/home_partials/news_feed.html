@@ -1,0 +1,68 @@
+{% load static %}
+<!-- News Feed Section -->
+<link rel="stylesheet" href="{% static 'css/feed.css' %}">
+{% load time_filters %}
+
+<div class="section-header">
+    <div class="section-titles">
+        <span>News Feed</span>
+    </div>
+    <a href="{% url 'prop:feed_list' %}" class="see-all-btn">See All</a>
+</div>
+
+<div class="feed-scroll-container">
+    <button class="feed-nav-btn prev" onclick="scrollTrack('{{ section_id|default:'feed-track' }}', -1)">&#10094;</button>
+    <div class="feed-scroll" id="{{ section_id|default:'feed-track' }}">
+        {% for post in section_data %}
+            <div class="feed-card {% if post.media_type == 'text' %}text-only{% endif %}">
+                <!-- Top: Time & Description -->
+                <div class="card-header">
+                    <span class="time-badge">{{ post.created_at|custom_time }}</span>
+                    <div class="description">
+                        {% if post.heading %}<strong>{{ post.heading }}</strong><br>{% endif %}
+                        {{ post.news_content|truncatewords:30 }}
+                    </div>
+                </div>
+
+                <!-- Middle: Media -->
+                {% if post.media_type != 'text' %}
+                <div class="card-media">
+                    {% if post.media_type == 'image' and post.image %}
+                        <img src="{{ post.image.url }}">
+                    {% elif post.media_type == 'video' and post.video %}
+                        <video src="{{ post.video.url }}" autoplay muted loop playsinline></video>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <!-- Bottom: User & Actions -->
+                <div class="card-footer">
+                    <div class="user-info">
+                        <a href="{% url 'prop:user_detail' post.user.id %}">
+                            {% if post.user.role == "COMPANY" and post.user.company_logo_path %}
+                                <img src="{{ post.user.company_logo_path.url }}" class="profile-img" onerror="this.src='{% static 'default.jpg' %}'">
+                            {% elif post.user.profile_image_path %}
+                                <img src="{{ post.user.profile_image_path.url }}" class="profile-img" onerror="this.src='{% static 'default.jpg' %}'">
+                            {% else %}
+                                <img src="{% static 'default.jpg' %}" class="profile-img">
+                            {% endif %}
+                        </a>
+                        
+                        <div class="user-details">
+                            <div class="user-name">{{ post.user.company_name|default:post.user.username }}</div>
+                            <div class="stars">
+                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="action-btns">
+                        <a href="tel:{{ post.user.phone_number }}" class="action-btn call" title="Call"><i class="bi bi-telephone-fill"></i></a>
+                        <a href="{% url 'prop:start_chat_with_user' post.user.id %}" class="action-btn chat" title="Chat"><i class="bi bi-chat-fill"></i></a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <button class="feed-nav-btn next" onclick="scrollTrack('{{ section_id|default:'feed-track' }}', 1)">&#10095;</button>
+</div>

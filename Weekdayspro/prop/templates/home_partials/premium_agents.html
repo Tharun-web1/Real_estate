@@ -1,0 +1,96 @@
+{% load static %}
+<!-- Marketing Experts Premium Section (Sketch Design) -->
+<link rel="stylesheet" href="{% static 'css/marketing_experts.css' %}">
+
+<div class="section-header">
+    <div class="section-titles">
+        <span>Premium Agents</span>
+    </div>
+    <a href="{% url 'prop:all_users' %}?category=marketer_premium" class="see-all-btn">See All</a>
+</div>
+
+<div class="marketing-experts-scroll-container">
+    <button class="feed-nav-btn prev" onclick="scrollTrack('{{ section_id|default:'experts-track-premium' }}', -1)" style="left: -10px;">&#10094;</button>
+    <div class="marketing-experts-scroll" id="{{ section_id|default:'experts-track-premium' }}">
+        {% for u in section_data %}
+            <div class="expert-card">
+                <!-- 1. Header Row (Clickable) -->
+                <a href="{% url 'prop:user_detail' u.id %}" style="text-decoration: none; color: inherit;">
+                    <div class="expert-header">
+                        {% if u.profile_image_path %}
+                            <img src="{{ u.profile_image_path.url }}" class="profile-pic" onerror="this.src='{% static 'default.jpg' %}'">
+                        {% else %}
+                            <img src="{% static 'default.jpg' %}" class="profile-pic">
+                        {% endif %}
+                        <div class="expert-info">
+                            <div class="name">
+                                {{ u.company_name|default:u.username|truncatechars:20 }}
+                                <i class="bi bi-patch-check-fill"></i>
+                            </div>
+                            <div class="title">Marketing Expert</div>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- 2. Area Serves -->
+                <div class="area-serves">
+                    <span class="label">Area Serves:</span>
+                    <div class="pills">
+                        <span class="pill">{{ u.area_serves|default:"Hyderabad" }}</span>
+                    </div>
+                </div>
+
+                <!-- 3. Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="icon"><i class="bi bi-briefcase"></i></div>
+                        <div class="details">
+                            <span class="val">{{ u.experience|default:"5" }}+ Years</span>
+                            <span class="lbl">Experience</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="icon"><i class="bi bi-graph-up-arrow"></i></div>
+                        <div class="details">
+                            <span class="val">{{ u.marketer_category|default:"Plots" }}</span>
+                            <span class="lbl">Expert In</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="icon"><i class="bi bi-people"></i></div>
+                        <div class="details">
+                            <span class="val">{{ u.deals|default:"0" }}</span>
+                            <span class="lbl">Customers</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="icon"><i class="bi bi-building"></i></div>
+                        <div class="details">
+                            <span class="val">{{ u.total_projects|default:"0" }}</span>
+                            <span class="lbl">Properties</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Description -->
+                <div class="expert-desc">
+                    {{ u.description|default:"Experienced real estate professional helping you find the perfect property." }}
+                </div>
+
+                <!-- 5. Actions Footer -->
+                <div class="expert-actions">
+                    <a href="tel:{{ u.phone }}" class="call-btn" {% if user.is_authenticated %}onclick="profileLead(event, {{ u.id }})"{% endif %}>
+                        <i class="bi bi-telephone-fill"></i> Call
+                    </a>
+                    <div class="icon-action" onclick="shareProfile({{ u.id }})" title="Share">
+                        <i class="bi bi-share-fill"></i>
+                    </div>
+                    <a href="{% if user.is_authenticated %}{% url 'prop:start_chat_with_user' u.id %}{% else %}{% url 'prop:login' %}{% endif %}" class="icon-action" title="Message">
+                        <i class="bi bi-chat-dots-fill"></i>
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <button class="feed-nav-btn next" onclick="scrollTrack('{{ section_id|default:'experts-track-premium' }}', 1)" style="right: -10px;">&#10095;</button>
+</div>

@@ -1,0 +1,185 @@
+{% load static %}
+{% load time_filters %}
+<!-- Recent Properties Feed (Instagram Style Design) -->
+<link rel="stylesheet" href="{% static 'css/property_feed.css' %}">
+
+<div class="section-header">
+    <div class="section-titles">
+        <span>Featured Properties</span>
+    </div>
+    <a href="{% url 'prop:property_list' prop='All' %}" class="see-all-btn">See All</a>
+</div>
+
+<div class="property-feed-scroll-container">
+    <button class="feed-nav-btn prev" onclick="scrollTrack('{{ section_id|default:'recent-track' }}', -1)" style="left: -10px;">&#10094;</button>
+    <div class="property-feed-scroll" id="{{ section_id|default:'recent-track' }}">
+        {% for wrapper in section_data %}
+            {% if wrapper.wrap_type == 'property' %}
+                {% with p=wrapper.item %}
+                <div class="property-feed-card">
+                    <!-- 1. User Header (Vertical Stack) -->
+                    <div class="card-user-header">
+                        {% if p.user.role == 'OWNER' %}
+                            {% if p.user.profile_image_path %}
+                                <img src="{{ p.user.profile_image_path.url }}" class="profile-pic" onerror="this.src='{% static 'default.jpg' %}'">
+                            {% else %}
+                                <img src="{% static 'default.jpg' %}" class="profile-pic">
+                            {% endif %}
+                        {% else %}
+                            <a href="{% url 'prop:user_detail' p.user.id %}">
+                                {% if p.user.profile_image_path %}
+                                    <img src="{{ p.user.profile_image_path.url }}" class="profile-pic" onerror="this.src='{% static 'default.jpg' %}'">
+                                {% else %}
+                                    <img src="{% static 'default.jpg' %}" class="profile-pic">
+                                {% endif %}
+                            </a>
+                        {% endif %}
+                        <div class="user-info">
+                            <div class="top-row">
+                                {% if p.user.role == 'OWNER' %}
+                                    <span class="name">Owner</span>
+                                {% else %}
+                                    <a href="{% url 'prop:user_detail' p.user.id %}" style="text-decoration: none; color: inherit;" class="name">
+                                        {{ p.user.company_name|default:p.user.username|truncatechars:20 }}
+                                    </a>
+                                {% endif %}
+                                <i class="bi bi-patch-check-fill verified"></i>
+                            </div>
+                            <div class="stars">
+                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                            </div>
+                        </div>
+                        {% if p.user.role != 'OWNER' %}
+                        <a href="{% if user.is_authenticated %}{% url 'prop:start_chat_with_user' p.user.id %}{% else %}{% url 'prop:login' %}{% endif %}" class="message-btn">Message</a>
+                        {% endif %}
+                    </div>
+
+                    <!-- 2. Media -->
+                    <div class="card-media">
+                        <a href="{% url 'prop:property_detail' p.id %}">
+                            {% if p.image %}
+                                <img src="{{ p.image.url }}" onerror="this.src='{% static 'default.jpg' %}'">
+                            {% else %}
+                                <img src="{% static 'default.jpg' %}">
+                            {% endif %}
+                        </a>
+                    </div>
+
+                    <!-- 3. Details -->
+                    <div class="card-details-body">
+                        <div class="title-row">
+                            <h3 class="p-name">{{ p.projectName|default:"Unnamed Property" }}</h3>
+                            <span class="approval">{{ p.approvalType|default:"HMDA" }}</span>
+                        </div>
+                        <div class="description">
+                            {{ p.extent|default:"" }} Sqyd {{ p.facing|default:"" }} {{ p.selectProperty|default:"" }} for {{ p.look|default:"Sale" }}
+                        </div>
+                        <div class="location">
+                            <i class="bi bi-geo-alt-fill"></i> @ {{ p.address|default:"Location"|truncatechars:35 }}
+                        </div>
+                        <div class="price-row">
+                            <span class="price-tag">
+                                ₹ 
+                                {% if p.price >= 10000000 %}
+                                    {{ p.price|div:10000000|floatformat:1 }} Cr
+                                {% elif p.price >= 100000 %}
+                                    {{ p.price|div:100000|floatformat:1 }} Lakh
+                                {% else %}
+                                    {{ p.price }}
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="nearby-places-feed">
+                            {% if p.nearby_places %}
+                                <span class="nearby-title">Nearby</span>
+                                <div class="nearby-pills-container">
+                                    {% for place in p.nearby_places %}
+                                        <span class="nearby-pill-feed">{{ place }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <span class="nearby-pill-feed">No Nearby Places</span> 
+                            {% endif %}
+                        </div> 
+                    </div>
+
+                    <!-- 4. Footer Actions -->
+                    <div class="card-actions-footer">
+                        <a href="tel:{% if p.user.role == 'OWNER' %}9000774529{% else %}{{ p.user.phone }}{% endif %}" class="contact-btn-pill">
+                            <i class="bi bi-telephone-fill"></i> Contact
+                        </a>
+                        <div class="footer-icons-group">
+                            <div class="action-icon share" onclick="shareProject('{{ p.projectName|escapejs }}', '{{ p.address|escapejs }}', '{{ p.price }}', '{% url 'prop:property_detail' p.id %}')" title="Share">
+                                <i class="bi bi-share"></i>
+                            </div>
+                            <div class="action-icon save" {% if user.is_authenticated %}onclick="toggleProjectSave(event, {{ p.id }}, this)"{% else %}onclick="redirectToLogin()"{% endif %} title="Save">
+                                <i class="bi bi-bookmark"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endwith %}
+            {% else %}
+                {% with post=wrapper.item %}
+                <!-- Render Feed Post in Property Section -->
+                <div class="property-feed-card news-post-card">
+                    <div class="card-user-header">
+                        <a href="{% url 'prop:user_detail' post.user.id %}">
+                            {% if post.user.company_logo_path %}
+                                <img src="{{ post.user.company_logo_path.url }}" class="profile-pic" onerror="this.src='{% static 'default.jpg' %}'">
+                            {% elif post.user.profile_image_path %}
+                                <img src="{{ post.user.profile_image_path.url }}" class="profile-pic" onerror="this.src='{% static 'default.jpg' %}'">
+                            {% else %}
+                                <img src="{% static 'default.jpg' %}" class="profile-pic">
+                            {% endif %}
+                        </a>
+                        <div class="user-info">
+                            <div class="top-row">
+                                <span class="name">{{ post.user.company_name|default:post.user.username }}</span>
+                                <i class="bi bi-patch-check-fill verified"></i>
+                            </div>
+                            <div class="stars">
+                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                            </div>
+                        </div>
+                        <span class="time-badge-lite">{{ post.created_at|custom_time }}</span>
+                    </div>
+                    
+                    <div class="card-media">
+                        {% if post.media_type == 'image' and post.image %}
+                            <img src="{{ post.image.url }}">
+                        {% elif post.media_type == 'video' and post.video %}
+                            <video src="{{ post.video.url }}" autoplay muted loop playsinline style="width: 100%; height: 100%; object-fit: cover;"></video>
+                        {% else %}
+                            <div class="text-post-placeholder">
+                                <i class="bi bi-newspaper"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="card-details-body">
+                        <div class="title-row">
+                            <h3 class="p-name">{{ post.heading|default:"News Update"|truncatechars:30 }}</h3>
+                        </div>
+                        <div class="description">
+                            {{ post.news_content|truncatewords:25 }}
+                        </div>
+                    </div>
+
+                    <div class="card-actions-footer">
+                        <a href="tel:{{ post.user.phone }}" class="contact-btn-pill">
+                            <i class="bi bi-telephone-fill"></i> Call
+                        </a>
+                        <div class="footer-icons-group">
+                             <a href="{% url 'prop:start_chat_with_user' post.user.id %}" class="action-icon" title="Chat">
+                                <i class="bi bi-chat-fill"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endwith %}
+            {% endif %}
+        {% endfor %}
+    </div>
+    <button class="feed-nav-btn next" onclick="scrollTrack('{{ section_id|default:'recent-track' }}', 1)" style="right: -10px;">&#10095;</button>
+</div>

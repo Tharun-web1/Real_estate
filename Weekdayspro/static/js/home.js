@@ -80,6 +80,11 @@ function showStory() {
         storyTimer = setTimeout(nextStory, IMAGE_DURATION);
     }
 
+    // Mark as seen
+    if (window.currentUserId && story.id) {
+        fetch(`/story/mark-seen/${story.id}/`, { method: 'POST' });
+    }
+
     // Owner Menu
     const ownerMenu = document.getElementById('story-owner-menu');
     const editLink = document.getElementById('story-edit-link');

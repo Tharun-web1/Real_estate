@@ -1,0 +1,84 @@
+{% load static %}
+<!-- Construction Professionals Section -->
+<div class="section-header">
+    <div class="section-titles">
+        <span>Construction professionals</span>
+    </div>
+    <a href="{% url 'prop:all_users' %}?category=professional" class="see-all-btn">See All</a>
+</div>
+
+<div class="professionals-scroll-container">
+    <button class="feed-nav-btn prev" onclick="scrollTrack('{{ section_id|default:'professionals-track' }}', -1)">&#10094;</button>
+    <div class="professionals-scroll" id="{{ section_id|default:'professionals-track' }}">
+        {% for u in section_data %}
+            <div class="professional-card">
+                <!-- Top Section -->
+                <div class="card-top">
+                    <div class="profile-img-wrap">
+                        {% if u.profile_image_path %}
+                            <img src="{{ u.profile_image_path.url }}" onerror="this.src='{% static 'default.jpg' %}'">
+                        {% else %}
+                            <img src="{% static 'default.jpg' %}">
+                        {% endif %}
+                    </div>
+                    <div class="info-main">
+                        <a href="{% url 'prop:user_detail' u.id %}" style="text-decoration: none; color: inherit;">
+                            <div class="name">
+                                {{ u.company_name|default:u.username|truncatechars:18 }}
+                                <i class="bi bi-patch-check-fill"></i>
+                            </div>
+                        </a>
+                        <span class="category">{{ u.category|default:"Professional" }}</span>
+                    </div>
+                </div>
+
+                <!-- Service Area -->
+                <div class="service-area">
+                    <span class="service-label">Areas of Service:</span>
+                    <div class="area-pills">
+                        <span class="area-pill">{{ u.area_serves|default:"Hyderabad" }}</span>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="stats-row">
+                    <div class="stat-box">
+                        <i class="bi bi-briefcase"></i>
+                        <div class="stat-details">
+                            <span class="val">{{ u.experience|default:"0" }}+ Yrs</span>
+                            <span class="lbl">Experience</span>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <i class="bi bi-people"></i>
+                        <div class="stat-details">
+                            <span class="val">{{ u.deals|default:"0" }}</span>
+                            <span class="lbl">Customers</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="desc-box">
+                    <p>{{ u.description|default:"Professional construction services and consulting." }}</p>
+                </div>
+
+                <!-- Footer -->
+                <div class="card-footer">
+                    <a href="tel:{{ u.phone }}" class="call-btn">
+                        <i class="bi bi-telephone-fill"></i> Call
+                    </a>
+                    <div class="icon-btn" onclick="shareProfile({{ u.id }})" title="Share">
+                        <i class="bi bi-share-fill"></i>
+                    </div>
+                    <a href="{% if user.is_authenticated %}{% url 'prop:start_chat_with_user' u.id %}{% else %}{% url 'prop:login' %}{% endif %}" class="icon-btn" title="Message">
+                        <i class="bi bi-chat-dots-fill"></i>
+                    </a>
+                </div>
+            </div>
+        {% empty %}
+            <p style="padding: 20px; color: #888;">No professionals found.</p>
+        {% endfor %}
+    </div>
+    <button class="feed-nav-btn next" onclick="scrollTrack('{{ section_id|default:'professionals-track' }}', 1)">&#10095;</button>
+</div>

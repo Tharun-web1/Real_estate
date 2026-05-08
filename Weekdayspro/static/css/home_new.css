@@ -117,7 +117,8 @@
   }
 }
 
-.premium-scroll {
+.premium-scroll,
+.feed-scroll {
   display: flex;
   gap: 15px;
   overflow-x: auto;
@@ -125,7 +126,8 @@
   scroll-behavior: smooth;
   scrollbar-width: none;
 }
-.premium-scroll::-webkit-scrollbar {
+.premium-scroll::-webkit-scrollbar,
+.feed-scroll::-webkit-scrollbar {
   display: none;
 }
 

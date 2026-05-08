@@ -436,7 +436,10 @@
           headers: { "Content-Type": "application/json", "X-CSRFToken": "{{ csrf_token }}" },
           body: JSON.stringify(data)
         })
-          .then(res => res.json())
+          .then(res => {
+            if (!res.ok) return res.json().then(d => { throw d; });
+            return res.json();
+          })
           .then(res => {
             if (res.success) {
               const toast = document.getElementById("signup-success-msg");
@@ -449,7 +452,10 @@
               alert(res.message);
             }
           })
-          .catch(err => alert("Something went wrong. Please try again."));
+          .catch(err => {
+            console.error(err);
+            alert(err.message || err.error || "Something went wrong. Please try again.");
+          });
       });
 
       // --- STEP 2: PROFILE ---
@@ -485,7 +491,10 @@
           headers: { "X-CSRFToken": "{{ csrf_token }}" }, // FormData handles Content-Type automatically
           body: formData
         })
-          .then(res => res.json())
+          .then(res => {
+            if (!res.ok) return res.json().then(d => { throw d; });
+            return res.json();
+          })
           .then(res => {
             if (res.success) {
               showStep(3);
@@ -495,7 +504,7 @@
           })
           .catch(err => {
             console.error(err);
-            alert("Failed to save profile. Please try again.");
+            alert(err.message || err.error || "Failed to save profile. Please try again.");
           });
       });
 
@@ -506,7 +515,10 @@
         if (!phone) { alert("Enter phone number"); return; }
 
         fetch(`/otp/send/?phone=${phone}`)
-          .then(res => res.json())
+          .then(res => {
+            if (!res.ok) return res.json().then(d => { throw d; });
+            return res.json();
+          })
           .then(data => {
             if (data.error) {
               msgBox.style.color = "var(--error)";
@@ -525,7 +537,10 @@
         const msgBox = document.getElementById("otp-message");
 
         fetch(`/otp/verify/?phone=${phone}&otp=${otp}`)
-          .then(res => res.json())
+          .then(res => {
+            if (!res.ok) return res.json().then(d => { throw d; });
+            return res.json();
+          })
           .then(data => {
             if (data.error) {
               msgBox.style.color = "var(--error)";
@@ -543,13 +558,17 @@
 
       document.getElementById("btn-step-3").addEventListener("click", () => {
         const role = document.getElementById("id_role").value;
-        if (role === "PROFESSIONAL") {
-          // Skip Step 4 (Plans) for Professionals
+        if (role === "PROFESSIONAL" || role === "OWNER") {
+          // Clear registration state before redirecting
+          localStorage.removeItem("reg_step");
+          window.location.hash = "";
+          // Skip Step 4 (Plans) for Professionals and Owners
           window.location.href = "/";
         } else {
           showStep(4);
         }
       });
+
 
       // --- STEP 4: PLANS ---
       document.getElementById("btn-step-4").addEventListener("click", function () {
@@ -560,11 +579,15 @@
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}",
             "X-Requested-With": "XMLHttpRequest"
           },
           body: JSON.stringify({ plan_type: plan })
         })
-          .then(res => res.json())
+          .then(res => {
+            if (!res.ok) return res.json().then(d => { throw d; });
+            return res.json();
+          })
           .then(res => {
             if (res.success) {
               localStorage.removeItem("reg_step");
@@ -576,6 +599,7 @@
           })
           .catch(err => {
             console.error("Plan update failed:", err);
+            alert(err.message || err.error || "Failed to update plan.");
             // Fallback: try regular form submit
             document.getElementById("register-form").submit();
           });
@@ -615,10 +639,21 @@
       });
 
       // Initial Step Detection
+      const isAuthenticated = {{ user.is_authenticated|yesno:"true,false" }};
       const hashStep = parseInt(window.location.hash.replace("#step", ""));
       const savedStep = parseInt(localStorage.getItem("reg_step"));
-      const startStep = hashStep || savedStep || 1;
-      if (startStep > 1) showStep(startStep);
+      
+      let startStep = hashStep || savedStep || 1;
+      
+      if (isAuthenticated) {
+        // If logged in, they must have finished Step 1, so skip to 2 if they were at 1
+        if (startStep === 1) startStep = 2;
+      } else {
+        // If NOT logged in, they MUST start at 1
+        startStep = 1;
+      }
+      
+      showStep(startStep);
     });
   </script>
 </body>

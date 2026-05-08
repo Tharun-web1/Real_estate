@@ -23,6 +23,10 @@ from .models import User
 
 
 def register_user(request):
+    # Only redirect if they have completed registration (indicated by having a phone number)
+    if request.user.is_authenticated and request.user.phone:
+        return redirect("prop:home")
+    
     if request.method == "POST":
         form = UserRegisterForm(request.POST, request.FILES)
 
@@ -108,10 +112,13 @@ def register_step1_ajax(request):
             return JsonResponse({"success": False, "message": "Required fields missing"}, status=400)
 
         if User.objects.filter(username=username).exists():
-            return JsonResponse({"success": False, "message": "Username already exists"}, status=400)
+            # If user exists but is not logged in, we should check if they can just log in
+            # but for security we just tell them it exists. 
+            # However, if it's the CURRENT session's user, it might be a retry.
+            return JsonResponse({"success": False, "message": "Username already exists. Please login."}, status=400)
         
         if User.objects.filter(email=email).exists():
-            return JsonResponse({"success": False, "message": "Email already exists"}, status=400)
+            return JsonResponse({"success": False, "message": "Email already exists. Please login."}, status=400)
 
         user = User.objects.create(
             username=username,
@@ -456,7 +463,7 @@ def home(request):
     # ============================
     # REELS
     # ============================
-    reels = Reels.objects.all().order_by('-id')[:10]
+    reels = Reels.objects.exclude(reel='').exclude(reel__isnull=True).order_by('-id')[:10]
 
     # Exclude current user from all user lists if logged in
     if request.user.is_authenticated:
@@ -470,33 +477,91 @@ def home(request):
         owners = owners.exclude(id=request.user.id)
 
     # Limit results after exclusion
-    marketing_experts = marketing_experts[:4]
-    marketing_experts_pro = marketing_experts_pro[:4]
-    marketing_experts_premium = marketing_experts_premium[:4]
-    featured_companies = featured_companies[:4]
-    featured_companies_pro = featured_companies_pro[:4]
-    featured_companies_premium = featured_companies_premium[:4]
-    professionals = professionals[:8]
-    owners = owners[:8]
+    marketing_experts = marketing_experts[:40]
+    marketing_experts_pro = marketing_experts_pro[:40]
+    marketing_experts_premium = marketing_experts_premium[:40]
+    featured_companies = featured_companies[:40]
+    featured_companies_pro = featured_companies_pro[:40]
+    featured_companies_premium = featured_companies_premium[:40]
+    professionals = professionals[:40]
+    owners = owners[:40]
 
     # ============================
     # ============================
     # PROJECTS (ORDERED BY PLAN)
     # ============================
-    premium_projects = AddProject.objects.filter(plan_type=PlanType.COMPANY_PREMIUM).order_by('-id')[:4]
-    pro_projects = AddProject.objects.filter(plan_type=PlanType.COMPANY_PRO).order_by('-id')[:4]
-    normal_projects = AddProject.objects.filter(plan_type=PlanType.COMPANY_NORMAL).order_by('-id')[:4]
+    premium_projects = AddProject.objects.filter(plan_type=PlanType.COMPANY_PREMIUM).order_by('-id')[:40]
+    pro_projects = AddProject.objects.filter(plan_type=PlanType.COMPANY_PRO).order_by('-id')[:40]
+    normal_projects = AddProject.objects.filter(plan_type=PlanType.COMPANY_NORMAL).order_by('-id')[:40]
 
     # Fallback for Featured Projects section
     if not pro_projects.exists():
-        pro_projects = AddProject.objects.exclude(plan_type=PlanType.COMPANY_PREMIUM).order_by('-id')[:4]
+        pro_projects = AddProject.objects.exclude(plan_type=PlanType.COMPANY_PREMIUM).order_by('-id')[:40]
     
     # Fallback for Premium Projects section
     if not premium_projects.exists():
-        premium_projects = AddProject.objects.all().order_by('-id')[:4]
+        premium_projects = AddProject.objects.all().order_by('-id')[:40]
 
-    all_properties = AddPropertyModel.objects.exclude(user__role='OWNER', is_verified=False).order_by('-id')[:10]
+    all_properties = AddPropertyModel.objects.exclude(user__role='OWNER', is_verified=False).order_by('-id')[:40]
+    feed_posts = NewsPost.objects.all().order_by('-created_at')[:40]
+    reels = Reels.objects.exclude(reel='').exclude(reel__isnull=True).order_by('-id')[:40]
+
+    # ============================
+    # MIXED FEATURED DATA (PROPERTIES + FEED)
+    # ============================
+    mixed_featured_data = []
+    prop_list = list(all_properties)
+    feed_list = list(feed_posts)
     
+    # Interleave 1 property and 1 feed item at a time (strictly alternating)
+    for p, f in zip(prop_list, feed_list):
+        mixed_featured_data.append({'wrap_type': 'property', 'item': p})
+        mixed_featured_data.append({'wrap_type': 'feed', 'item': f})
+    
+    # If one list is longer, add the remaining items (optional, but keeps consistency)
+    remaining_props = prop_list[len(feed_list):]
+    remaining_feeds = feed_list[len(prop_list):]
+    mixed_featured_data.extend([{'wrap_type': 'property', 'item': p} for p in remaining_props])
+    mixed_featured_data.extend([{'wrap_type': 'feed', 'item': f} for f in remaining_feeds])
+    
+    fp_batches = [mixed_featured_data[k:k+10] for k in range(0, 80, 10)]
+
+    other_sections = [
+        ('premium_projects', list(premium_projects)),
+        ('premium_builders', list(featured_companies_premium)),
+        ('premium_agents', list(marketing_experts_premium)),
+        ('professionals', list(professionals)),
+        ('prop_bytes', list(reels)),
+        ('featured_projects', list(pro_projects)),
+        ('featured_builders', list(featured_companies_pro)),
+        ('featured_agents', list(marketing_experts_pro)),
+        ('recommended_agents', list(marketing_experts)),
+        ('recommended_builders', list(featured_companies)),
+        ('recommended_projects', list(normal_projects)),
+    ]
+
+    # ============================
+    # LOOPING LOGIC
+    # ============================
+    homepage_loops = []
+    fp_index = 0
+    
+    # Create up to 4 loops
+    for i in range(0, 40, 10):
+        current_loop = []
+        for k, (s_type, s_data) in enumerate(other_sections):
+            batch = s_data[i:i+10]
+            if batch:
+                current_loop.append({'type': s_type, 'data': batch})
+            
+            # After every 2 sections, insert a mixed featured section
+            if (k + 1) % 2 == 0 and fp_index < len(fp_batches):
+                current_loop.append({'type': 'featured_properties', 'data': fp_batches[fp_index]})
+                fp_index += 1
+        
+        if current_loop:
+            homepage_loops.append(current_loop)
+
     # ============================
     # STORIES (ImagePost last 24h)
     # ============================
@@ -547,35 +612,44 @@ def home(request):
     for user_id in stories_data:
         stories_data[user_id]['posts'].reverse()
     
+    # 3. Seen/Unseen Logic (Sort stories_data)
+    if request.user.is_authenticated:
+        seen_post_ids = set(StorySeen.objects.filter(user=request.user).values_list('post_id', flat=True))
+        
+        # Determine if each user's story group is "all seen"
+        for user_id, group in stories_data.items():
+            all_seen = True
+            for post in group['posts']:
+                if post['id'] not in seen_post_ids:
+                    all_seen = False
+                    break
+            group['all_seen'] = all_seen
+            
+        # Sort: Unseen first, then Seen. Within each group, it's already sorted by recency of the latest post.
+        sorted_stories = sorted(
+            stories_data.values(),
+            key=lambda x: (x.get('all_seen', False))
+        )
+        stories_list = sorted_stories
+    else:
+        stories_list = list(stories_data.values())
+
     # Separate current user's stories for special "Your Story" handling
     user_stories = stories_data.pop(request.user.id, None) if request.user.is_authenticated else None
     
     import json
-    stories_json = json.dumps(list(stories_data.values()))
+    stories_json = json.dumps(stories_list)
     user_stories_json = json.dumps(user_stories) if user_stories else "null"
 
     return render(request, "home.html", {
         "desktop_slides": desktop_slides,
         "mobile_slides": mobile_slides, 
-        "marketing_experts_normal": marketing_experts,
-        "featured_companies_normal": featured_companies,
-        "professionals": professionals,
-        "marketing_experts_pro": marketing_experts_pro,
-        "featured_companies_pro": featured_companies_pro,
-        "marketing_experts_premium": marketing_experts_premium,
-        "featured_companies_premium": featured_companies_premium, 
-        "normal_projects": normal_projects,
-        "pro_projects": pro_projects,
-        "premium_projects": premium_projects,
         "stories_list": list(stories_data.values()),
         "stories_json": stories_json,
         "user_stories": user_stories,
         "user_stories_json": user_stories_json,
         "current_user_id": request.user.id if request.user.is_authenticated else None,
-        "feed_posts": NewsPost.objects.all().order_by('-created_at')[:10],
-        "all_properties": all_properties,
-        "reels": reels,
-        "owners": owners,
+        "homepage_loops": homepage_loops,
     })
 
 
@@ -653,7 +727,7 @@ def user_detail(request, user_id):
         user.click = (user.click or 0) + 1
         user.save()
 
-    reels = Reels.objects.filter(user=user)
+    reels = Reels.objects.filter(user=user).exclude(reel='').exclude(reel__isnull=True)
     qs = AddPropertyModel.objects.filter(user=user)
     projects = []
     if user.role == 'COMPANY':
@@ -878,6 +952,11 @@ def requirement_form(request):
         form = FutureRequirementForm(request.POST)
         if form.is_valid():
             form.save()
+            if request.user.is_authenticated:
+                PropertyInteraction.objects.create(
+                    user=request.user,
+                    interaction_type='enquiry'
+                )
             messages.success(request, 'Your requirement has been submitted successfully!')
             return redirect('prop:require')  # URL name defined in urls.py
         else:
@@ -1606,6 +1685,13 @@ def property_detail(request, id):
             from django.http import Http404
             raise Http404("Property is pending verification.")
 
+    if request.user.is_authenticated:
+        PropertyInteraction.objects.get_or_create(
+            user=request.user,
+            property=data,
+            interaction_type='view'
+        )
+
     return render(request, "property_detail.html", {"item": data})
 
 def filterbox(request):
@@ -1783,6 +1869,10 @@ from .models import User, PlanType
 
 
 def company_register(request):
+    # Companies are considered registered if they have a company name
+    if request.user.is_authenticated and (request.user.role == "COMPANY" or request.user.company_name):
+        return redirect("prop:home")
+    
     if request.method == "POST":
         form = CompanyRegisterForm(request.POST, request.FILES)
 
@@ -1828,7 +1918,7 @@ def company_register(request):
             if authenticated_user:
                 login(request, authenticated_user)
                 messages.success(request, "Company registered successfully!")
-                return redirect("prop:login")
+                return redirect("prop:home")
 
         else:
             print("FORM ERRORS:", form.errors)
@@ -2101,6 +2191,11 @@ def contact_submit(request):
             message=request.POST.get("message"),
             cid=request.POST.get("contact_id"),
         )
+        if request.user.is_authenticated:
+            PropertyInteraction.objects.create(
+                user=request.user,
+                interaction_type='enquiry'
+            )
         messages.success(request, "Message Sent Successfully!")
         return redirect(request.META.get("HTTP_REFERER", "company_profile"))
 
@@ -2390,6 +2485,13 @@ def add_project(request):
 def project_detail(request, id):
     project = AddProject.objects.get(id=id)
 
+    if request.user.is_authenticated:
+        PropertyInteraction.objects.get_or_create(
+            user=request.user,
+            project=project,
+            interaction_type='view'
+        )
+
     images = []
 
     # main image
@@ -2539,8 +2641,16 @@ def verify_otp(request):
     # Save phone to user profile if logged in
     if request.user.is_authenticated:
         user = request.user
-        user.phone = phone
-        user.save()
+        
+        # Check if phone is already taken by another user
+        if User.objects.filter(phone=phone).exclude(pk=user.pk).exists():
+            return JsonResponse({"error": "This phone number is already registered with another account."}, status=400)
+            
+        try:
+            user.phone = phone
+            user.save()
+        except Exception as e:
+            return JsonResponse({"error": f"Failed to save phone number: {str(e)}"}, status=500)
 
     return JsonResponse({"message": "OTP Verified"})
 
@@ -2735,17 +2845,6 @@ def reels_upload(request):
         "f": form,
         "properties": properties
     })
-import random 
-def get_reel(req):
-    clicked_id = req.GET.get("reel")
-    reels = list(Reels.objects.all())
-    random.shuffle(reels) 
-    # If user clicked a specific reel, move that reel to the first position
-    if clicked_id:
-        clicked_id = int(clicked_id)
-        reels.sort(key=lambda r: 0 if r.id == clicked_id else 1)
- 
-    return render(req,'reelViewer.html',{'data':reels})
 
 import random 
 def get_reel(req):
@@ -2848,8 +2947,8 @@ import json
 @login_required
 def reel_viewer(request):
     user = request.user
-    # Get reels for this user
-    reels_qs = Reels.objects.filter(user=user).order_by('-id').prefetch_related('comment_set')
+    # Get reels for this user, excluding empty ones
+    reels_qs = Reels.objects.filter(user=user).exclude(reel='').exclude(reel__isnull=True).order_by('-id').prefetch_related('comment_set')
 
     # Prepare reels with comments as JSON
     reels = []
@@ -4246,3 +4345,16 @@ def mark_all_notifications_read(request):
         return JsonResponse({"status": "success"})
     return JsonResponse({"status": "error"}, status=400)
 
+@csrf_exempt
+@login_required
+def mark_story_seen(request, post_id):
+    if request.method == "POST":
+        try:
+            post = ImagePost.objects.get(id=post_id)
+            StorySeen.objects.get_or_create(user=request.user, post=post)
+            return JsonResponse({"success": True})
+        except ImagePost.DoesNotExist:
+            return JsonResponse({"error": "Post not found"}, status=404)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+    return JsonResponse({"error": "Invalid method"}, status=405)

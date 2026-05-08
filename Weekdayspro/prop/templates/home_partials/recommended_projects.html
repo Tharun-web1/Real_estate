@@ -1,0 +1,93 @@
+{% load static %}
+<div class="section-header">
+    <div class="section-titles">
+        <span>Recomanded Projects</span>
+    </div>
+    <a href="{% url 'prop:all_projects' %}?category=normal" class="see-all-btn">See All</a>
+</div>
+
+<div class="pro-projects-scroll-container">
+    <button class="feed-nav-btn prev" onclick="scrollTrack('{{ section_id|default:'pro-track-normal' }}', -1)" style="left: -10px;">&#10094;</button>
+    <div class="pro-projects-scroll" id="{{ section_id|default:'pro-track-normal' }}">
+        {% for p in section_data %}
+            <div class="pro-project-card">
+                <!-- 1. Header (Company Info) -->
+                <div class="card-header">
+                    <div class="company-info">
+                        <a href="{% url 'prop:user_detail' p.user.id %}">
+                            {% if p.user.company_logo_path %}
+                                <img src="{{ p.user.company_logo_path.url }}" class="logo" onerror="this.src='{% static 'default.jpg' %}'">
+                            {% else %}
+                                <img src="{% static 'default.jpg' %}" class="logo">
+                            {% endif %}
+                        </a>
+                        <div class="details">
+                            <div class="name">{{ p.user.company_name|default:p.user.username }}</div>
+                            <div class="badges">
+                                <i class="bi bi-patch-check-fill"></i> Verified
+                                <div class="stars">
+                                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="{% url 'prop:start_chat_with_user' p.user.id %}" class="chat-btn"><i class="bi bi-chat-text-fill"></i></a>
+                </div>
+
+                <!-- 2. Media Area -->
+                <div class="card-media">
+                    <a href="{% url 'prop:project_detail' p.id %}">
+                        {% if p.image %}
+                            <img src="{{ p.image.url }}">
+                        {% else %}
+                            <img src="{% static 'default.jpg' %}">
+                        {% endif %}
+                    </a>
+                    <div class="price-overlay">₹ {{ p.pricing }}</div>
+                </div>
+
+                <!-- 3. Project Details Body -->
+                <div class="card-body">
+                    <div class="title-row">
+                        <h3>{{ p.project_name }}</h3>
+                        <span class="category">DTCP</span>
+                    </div>
+
+                    <div class="address">
+                        <i class="bi bi-geo-alt-fill"></i> {{ p.project_address|truncatechars:35 }}
+                    </div>
+
+                    <div class="pills-row">
+                        <span class="pill">{{ p.type_of_project }}</span>
+                        <span class="pill">{{ p.get_position_display }}</span>
+                    </div>
+
+                    <div class="nearby-section">
+                        <span class="nearby-title">Nearby Places:</span>
+                        <div class="nearby-pills">
+                            {% for place in p.nearby_locations %}
+                                <span class="nearby-pill">{{ place }}</span>
+                            {% empty %}
+                                <span class="nearby-pill">No Nearby Places</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <a href="{% url 'prop:project_detail' p.id %}" class="view-btn">View Details</a>
+                </div>
+
+                <!-- 4. Footer Actions -->
+                <div class="card-footer">
+                    <a href="tel:{{ p.user.phone_number }}" class="action"><i class="bi bi-telephone-fill"></i> Call</a>
+                    <div class="action" onclick="shareProject('{{ p.project_name|escapejs }}', '{{ p.project_address|escapejs }}', '{{ p.pricing }}', '{% url 'prop:project_detail' p.id %}')">
+                        <i class="bi bi-share-fill"></i> Share
+                    </div>
+                    <div class="action" {% if user.is_authenticated %}onclick="toggleProjectSave(event, {{ p.id }}, this)"{% else %}onclick="redirectToLogin()"{% endif %}>
+                        <i class="bi bi-bookmark-fill"></i> Save
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <button class="feed-nav-btn next" onclick="scrollTrack('{{ section_id|default:'pro-track-normal' }}', 1)" style="right: -10px;">&#10095;</button>
+</div>
