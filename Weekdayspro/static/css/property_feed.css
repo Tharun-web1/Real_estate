@@ -1,0 +1,307 @@
+.property-feed-scroll-container {
+  position: relative;
+  padding: 0 40px;
+  margin: 40px 0;
+}
+@media (max-width: 768px) {
+  .property-feed-scroll-container {
+    padding: 0 10px;
+  }
+}
+
+.property-feed-scroll {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding: 10px 5px;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  align-items: flex-start;
+}
+.property-feed-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.property-feed-card {
+  min-width: 320px;
+  max-width: 320px;
+  height: 450px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  font-family: "Inter", sans-serif;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+@media (max-width: 768px) {
+  .property-feed-card {
+    min-width: 260px;
+    max-width: 80vw;
+    width: 80vw;
+    height: auto;
+    min-height: 350px;
+  }
+  .property-feed-card .card-media {
+    height: 160px !important;
+  }
+  .property-feed-card .card-details-body {
+    height: auto !important;
+    min-height: 140px;
+  }
+}
+
+.property-feed-card .card-user-header {
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid #F3F4F6;
+}
+.property-feed-card .card-user-header .profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.property-feed-card .card-user-header .user-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+}
+.property-feed-card .card-user-header .user-info .top-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.property-feed-card .card-user-header .user-info .top-row .name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #111827; /* Darker for better visibility */
+}
+.property-feed-card .card-user-header .user-info .top-row .verified {
+  color: #10B981;
+  font-size: 12px;
+}
+.property-feed-card .card-user-header .user-info .stars {
+  color: #F59E08;
+  font-size: 10px;
+  margin-top: 1px;
+}
+.property-feed-card .card-user-header .message-btn {
+  padding: 6px 14px;
+  background: #F3F4F6;
+  border-radius: 15px;
+  color: #1C1C1C;
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.property-feed-card .card-media {
+  width: 100% !important;
+  height: 220px !important; /* Larger height to show more of the image */
+  background: #f0f0f0;
+  overflow: hidden;
+}
+.property-feed-card .card-media a {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.property-feed-card .card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.property-feed-card .card-details-body {
+  padding: 10px 12px;
+  height: 180px; /* Increased to fit pills */
+  overflow: hidden;
+}
+.property-feed-card .card-details-body .title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 6px;
+}
+.property-feed-card .card-details-body .title-row .p-name {
+  font-size: 15px;
+  font-weight: 800;
+  color: #1C1C1C;
+  margin: 0;
+}
+.property-feed-card .card-details-body .title-row .approval {
+  font-size: 10px;
+  font-weight: 700;
+  color: #6B7280;
+  background: #F3F4F6;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.property-feed-card .card-details-body .description {
+  font-size: 12px;
+  color: #4B5563;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.property-feed-card .card-details-body .location {
+  font-size: 12px;
+  color: #6B7280;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+.property-feed-card .card-details-body .location i {
+  color: #EF4444;
+}
+.property-feed-card .card-details-body .price-tag {
+  position: relative !important;
+  font-size: 15px;
+  font-weight: 800;
+  color: #FFFFFF;
+  background: #374151; /* Dark gray as in screenshot */
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-top: 5px;
+  display: inline-block;
+  width: 100%;
+}
+.property-feed-card .card-details-body .tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.property-feed-card .card-details-body .tags-row .tag {
+  padding: 3px 10px;
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.property-feed-card .card-actions-footer {
+  padding: 8px 12px;
+  border-top: 1px solid #F3F4F6;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.property-feed-card .card-actions-footer .contact-btn {
+  flex: 1;
+  padding: 10px;
+  background: #1C1C1C;
+  color: #FFFFFF;
+  border-radius: 20px;
+  text-align: center;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.property-feed-card .card-actions-footer .action-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1.5px solid #E5E7EB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1C1C1C;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.property-feed-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+@media (max-width: 1024px) {
+    .property-feed-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .property-feed-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Sketch Matching Styles */
+.nearby-places-feed {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+.nearby-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #111827;
+    white-space: nowrap;
+}
+.nearby-pills-container {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 2px 0;
+}
+.nearby-pills-container::-webkit-scrollbar { display: none; }
+
+.nearby-pill-feed {
+    padding: 4px 12px;
+    background: #F3F4F6;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    color: #4B5563;
+    white-space: nowrap;
+}
+
+.contact-btn-pill {
+    padding: 10px 24px;
+    background: #1C1C1C;
+    color: #FFFFFF;
+    border-radius: 25px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s;
+}
+.contact-btn-pill:hover {
+    background: #000000;
+}
+
+.footer-icons-group {
+    display: flex;
+    gap: 12px;
+    margin-left: auto;
+}
+
+.property-feed-card .card-details-body .price-row {
+    margin-bottom: 5px;
+}
+

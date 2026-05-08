@@ -1,0 +1,233 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>All Contacts</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: #f4f6fb;
+        padding: 40px;
+        color: #1f2937;
+        margin: 0;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 40px;
+        font-size: 32px;
+        font-weight: 700;
+    }
+
+    /* ===== CARDS GRID ===== */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr); /* 6 cards in one row */
+        gap: 25px;
+        margin-bottom: 50px;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 25px;
+        border-radius: 18px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        text-align: center;
+        transition: 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(90deg, #10b981, #3b82f6);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    }
+
+    .stat-card h3 {
+        font-size: 15px;
+        color: #6b7280;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .stat-card h2 {
+        font-size: 28px;
+        margin: 0;
+        font-weight: 700;
+    }
+
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    /* Highlight selected card */
+    .active-card {
+        border: 2px solid #3b82f6;
+        transform: scale(1.03);
+    }
+
+    /* ===== TABLE DESIGN ===== */
+    .table-container {
+        background: white;
+        padding: 25px;
+        border-radius: 18px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th {
+        background: #3b82f6;
+        color: white;
+        padding: 14px;
+        text-align: left;
+        font-weight: 600;
+    }
+
+    td {
+        padding: 12px;
+        border-bottom: 1px solid #eee;
+    }
+
+    tr:hover {
+        background: #f9fafb;
+    }
+
+    /* ===== BADGES ===== */
+    .badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        color: white;
+        font-weight: 500;
+    }
+
+    .normal { background: #10b981; }
+    .pro { background: #f59e0b; }
+    .single { background: #8b5cf6; }
+
+</style>
+</head>
+<body>
+{% include 'header.html' %}
+<h1>  Contact Management</h1>
+
+<!-- ===== PLAN CARDS ===== -->
+<div class="stats-grid">
+
+    <a href="{% url 'prop:all_contacts' %}?plan_type=COMPANY_NORMAL">
+        <div class="stat-card {% if selected_plan == 'COMPANY_NORMAL' %}active-card{% endif %}">
+            <h3>Company </h3>
+            <h2>{{ total_company_normal }}</h2>
+        </div>
+    </a>
+
+    <a href="{% url 'prop:all_contacts' %}?plan_type=COMPANY_PRO">
+        <div class="stat-card {% if selected_plan == 'COMPANY_PRO' %}active-card{% endif %}">
+            <h3>Company Pro</h3>
+            <h2>{{ total_company_pro }}</h2>
+        </div>
+    </a>
+
+    <a href="{% url 'prop:all_contacts' %}?plan_type=MARKETER_EXPORT">
+        <div class="stat-card {% if selected_plan == 'MARKETER_EXPORT' %}active-card{% endif %}">
+            <h3>Marketer Export</h3>
+            <h2>{{ total_marketer_export }}</h2>
+        </div>
+    </a>
+
+    <a href="{% url 'prop:all_contacts' %}?plan_type=MARKETER_EXPORT_PRO">
+        <div class="stat-card {% if selected_plan == 'MARKETER_EXPORT_PRO' %}active-card{% endif %}">
+            <h3>Marketer Export Pro</h3>
+            <h2>{{ total_marketer_export_pro }}</h2>
+        </div>
+    </a>
+
+    <a href="{% url 'prop:all_contacts' %}?plan_type=PROFESSIONAL_SINGLE">
+        <div class="stat-card {% if selected_plan == 'PROFESSIONAL_SINGLE' %}active-card{% endif %}">
+            <h3>Professional</h3>
+            <h2>{{ total_professional_single }}</h2>
+        </div>
+    </a>
+
+    <a href="{% url 'prop:all_contacts' %}?plan_type=FRANCHISE">
+        <div class="stat-card {% if selected_plan == 'FRANCHISE' %}active-card{% endif %}">
+            <h3>Franchise</h3>
+            <h2>{{ total_franchises }}</h2>
+        </div>
+    </a>
+
+</div>
+
+<!-- ===== TABLE SECTION ===== -->
+<div class="table-container">
+
+<h2>
+    {% if selected_plan %}
+        Showing: {{ selected_plan }} Users
+    {% else %}
+        All Contacts
+    {% endif %}
+</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Plan Type</th>
+            <th>Date Joined</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in contacts %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.phone }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.role }}</td>
+            <td>
+                {% if user.plan_type == "COMPANY_NORMAL" %}<span class="badge normal">Company</span>
+                {% elif user.plan_type == "COMPANY_PRO" %}<span class="badge pro">Company Pro</span>
+                {% elif user.plan_type == "PROFESSIONAL_SINGLE" %}<span class="badge single">Professional</span>
+                {% elif user.plan_type == "FRANCHISE" %}<span class="badge normal">Franchise</span>
+                {% else %}-{% endif %}
+            </td>
+            <td>{{ user.date_joined|date:"Y-m-d" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="7" style="text-align:center;">No users found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</div>
+
+</body>
+</html>

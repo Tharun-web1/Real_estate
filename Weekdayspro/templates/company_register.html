@@ -1,0 +1,647 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+    <title>Company Registration | GoNestro</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+    <style>
+        :root {
+            --primary: #0f172a;
+            --accent: #3b82f6;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --silver: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+            --gold: linear-gradient(135deg, #fefce8, #fef08a);
+            --platinum: linear-gradient(135deg, #f8fafc, #cbd5e1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            background-image: radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.05) 0px, transparent 50%),
+                              radial-gradient(at 100% 0%, rgba(59, 130, 246, 0.05) 0px, transparent 50%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            color: var(--text-main);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 640px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 64px 48px;
+            border-radius: 28px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 56px;
+        }
+
+        .header img {
+            width: 80px;
+            margin-bottom: 16px;
+        }
+
+        .header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+
+        .section-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 8px;
+            margin-top: 24px;
+        }
+
+        /* Image Uploads */
+        .upload-section {
+            margin-bottom: 48px;
+        }
+
+        .wallpaper-container {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            border-radius: 16px;
+            overflow: hidden;
+            background-color: #f1f5f9;
+            background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1000');
+            background-size: cover;
+            background-position: center;
+            box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
+        }
+
+        .wallpaper-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: flex-end;
+            align-items: flex-start;
+            padding: 16px;
+        }
+
+        .logo-wrapper {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: -60px auto 32px;
+            z-index: 30;
+        }
+
+        .logo-preview {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-color: #f1f5f9;
+            background-image: url('https://cdn-icons-png.flaticon.com/512/847/847969.png');
+            background-size: cover;
+            background-position: center;
+            border: 4px solid #fff;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+        }
+
+        .upload-trigger {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: #fff;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            color: var(--primary);
+        }
+
+        .upload-trigger:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent);
+            color: var(--accent);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.15);
+        }
+
+        .wall-trigger {
+            padding: 8px 14px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(4px);
+        }
+
+        .logo-trigger {
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            padding: 0;
+            background: var(--accent);
+            color: white;
+            border: 3.5px solid #fff;
+        }
+
+        .logo-trigger:hover {
+            background: #2563eb;
+            color: #fff;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        /* Form Controls */
+        input:not([type="checkbox"]):not([type="radio"]),
+        textarea,
+        select {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1.5px solid var(--border);
+            background: #fff;
+            font-size: 15px;
+            transition: all 0.2s ease;
+            color: var(--text-main);
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+            background: #fff;
+        }
+
+        input:hover,
+        textarea:hover,
+        select:hover {
+            border-color: #cbd5e1;
+        }
+
+        .error-text {
+            color: #ef4444;
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        /* Plan Cards */
+        .plan-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin: 16px 0 32px 0;
+        }
+
+        .plan-card {
+            padding: 24px 16px;
+            border-radius: 20px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+            position: relative;
+        }
+
+        .plan-card h4 {
+            font-family: 'Outfit', sans-serif;
+            margin: 0 0 8px 0;
+            font-size: 18px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .plan-card .price {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .plan-features {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 12px;
+            text-align: left;
+        }
+
+        .plan-features li {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .silver-plan { background: var(--silver); color: #475569; }
+        .gold-plan { background: var(--gold); color: #854d0e; }
+        .platinum-plan { background: var(--platinum); color: #1e293b; }
+
+        .plan-card.selected {
+            border-color: var(--accent);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(59, 130, 246, 0.15);
+        }
+
+        /* Dropdown */
+        .dropdown-container {
+            position: relative;
+        }
+
+        .dropdown-btn {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1.5px solid var(--border);
+            background: #fff;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 15px;
+            transition: all 0.2s ease;
+        }
+
+        .dropdown-btn:hover {
+            border-color: #cbd5e1;
+        }
+
+        .dropdown-btn:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 105%;
+            left: 0;
+            width: 100%;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 1px solid var(--border);
+            z-index: 100;
+            padding: 12px;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .category-list {
+            list-style: none;
+        }
+
+        .category-list label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .category-list label:hover { background: var(--bg); }
+
+        /* Footer & Submit */
+        .amount-display {
+            background: var(--primary);
+            color: #fff;
+            padding: 24px;
+            border-radius: 16px;
+            margin: 32px 0 24px 0;
+            text-align: center;
+        }
+
+        .amount-display span {
+            font-family: 'Outfit', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: var(--accent);
+            color: white;
+            border-radius: 16px;
+            border: none;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .submit-btn:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2);
+        }
+
+        @media (max-width: 640px) {
+            .container { padding: 40px 20px; }
+            .header h1 { font-size: 24px; }
+            
+            .plan-grid { 
+                grid-template-columns: repeat(3, 1fr); 
+                gap: 8px;
+            }
+            
+            .plan-card {
+                padding: 16px 8px;
+            }
+            
+            .plan-card h4 {
+                font-size: 14px;
+            }
+            
+            .plan-card .price {
+                font-size: 12px;
+            }
+            
+            .plan-features {
+                display: none; /* Hide features on mobile grid to keep it clean */
+            }
+            
+            .plan-card.selected::after {
+                content: 'Selected';
+                display: block;
+                font-size: 10px;
+                margin-top: 4px;
+                font-weight: 700;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="{% static 'images/fav-icon.png' %}" alt="Logo">
+            <h1>Company Registration</h1>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+            <div style="background: #fef2f2; color: #dc2626; padding: 12px; border-radius: 12px; margin-bottom: 24px; font-size: 14px;">
+                {{ form.non_field_errors }}
+            </div>
+            {% endif %}
+
+            <!-- Images -->
+            <div class="upload-section">
+                <div class="wallpaper-container" id="wallPrev">
+                    <div class="wallpaper-overlay">
+                        <label class="upload-trigger wall-trigger" for="id_company_wallpaper_path">
+                            <i class="bi bi-camera-fill"></i>
+                            <span>Edit Wallpaper</span>
+                        </label>
+                        {{ form.company_wallpaper_path }}
+                    </div>
+                </div>
+
+                <div class="logo-wrapper">
+                    <div class="logo-preview" id="logoPrev"></div>
+                    <label class="upload-trigger logo-trigger" for="id_company_logo_path">
+                        <i class="bi bi-camera-fill"></i>
+                    </label>
+                    {{ form.company_logo_path }}
+                </div>
+                <div style="text-align: center; margin-top: 8px;">
+                    <span style="font-size: 12px; font-weight: 600; color: var(--text-muted);">Company Logo</span>
+                </div>
+            </div>
+
+            <!-- Basic Info -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div>
+                    <label class="section-label">Username</label>
+                    {{ form.username }}
+                    <div class="error-text">{{ form.username.errors }}</div>
+                </div>
+                <div>
+                    <label class="section-label">Email</label>
+                    {{ form.email }}
+                    <div class="error-text">{{ form.email.errors }}</div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div>
+                    <label class="section-label">Password</label>
+                    {{ form.password1 }}
+                    <div class="error-text">{{ form.password1.errors }}</div>
+                </div>
+                <div>
+                    <label class="section-label">Confirm Password</label>
+                    {{ form.password2 }}
+                    <div class="error-text">{{ form.password2.errors }}</div>
+                </div>
+            </div>
+
+            <label class="section-label">Company Name</label>
+            {{ form.company_name }}
+            <div class="error-text">{{ form.company_name.errors }}</div>
+
+            <label class="section-label">Description</label>
+            {{ form.description }}
+            <div class="error-text">{{ form.description.errors }}</div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div>
+                    <label class="section-label">Established Year</label>
+                    {{ form.experience }}
+                    <div class="error-text">{{ form.experience.errors }}</div>
+                </div>
+                <div>
+                    <label class="section-label">Contact Number</label>
+                    {{ form.phone }}
+                    <div class="error-text">{{ form.phone.errors }}</div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                <div>
+                    <label class="section-label">Total Projects</label>
+                    {{ form.total_projects }}
+                </div>
+                <div>
+                    <label class="section-label">Ongoing</label>
+                    {{ form.ongoing_projects }}
+                </div>
+                <div>
+                    <label class="section-label">Completed</label>
+                    {{ form.completed_projects }}
+                </div>
+            </div>
+
+            <label class="section-label">Address</label>
+            {{ form.address }}
+
+            <label class="section-label">Location</label>
+            {{ form.location }}
+
+            <label class="section-label">Business Categories</label>
+            <div class="dropdown-container">
+                <button type="button" class="dropdown-btn" onclick="toggleDropdown()">
+                    <span>Select Categories</span>
+                    <i class="bi bi-chevron-down"></i>
+                </button>
+                <div id="checkboxDropdown" class="dropdown-content">
+                    <ul class="category-list">
+                        {% for value, label in form.category.field.choices %}
+                        <li>
+                            <label>
+                                <input type="checkbox" name="category" value="{{ value }}" {% if value in form.category.value %}checked{% endif %}>
+                                {{ label }}
+                            </label>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Plan Selection -->
+            <label class="section-label">Choose Plan</label>
+            <div class="plan-grid">
+                <div class="plan-card silver-plan" onclick="selectPlan('NORMAL', 14999, this)">
+                    <h4>Silver</h4>
+                    <div class="price">₹14,999</div>
+                    <ul class="plan-features">
+                        <li>3 Project listings</li>
+                        <li>5 Reels posting</li>
+                        <li>Direct leads</li>
+                    </ul>
+                </div>
+
+                <div class="plan-card gold-plan" onclick="selectPlan('PRO', 19999, this)">
+                    <h4>Gold</h4>
+                    <div class="price">₹19,999</div>
+                    <ul class="plan-features">
+                        <li>5 Project listings</li>
+                        <li>10 Reels postings</li>
+                        <li>Profile promotion</li>
+                    </ul>
+                </div>
+
+                <div class="plan-card platinum-plan" onclick="selectPlan('PREMIUM', 24999, this)">
+                    <h4>Platinum</h4>
+                    <div class="price">₹24,999</div>
+                    <ul class="plan-features">
+                        <li>Unlimited listings</li>
+                        <li>Unlimited reels</li>
+                        <li>Top branding</li>
+                    </ul>
+                </div>
+            </div>
+            {{ form.plan }}
+
+            <label class="section-label">Duration</label>
+            <select id="durationSelect" name="duration" onchange="updateAmount()" required>
+                <option value="1">1 Month</option>
+                <option value="3">3 Months</option>
+                <option value="6">6 Months</option>
+                <option value="12">12 Months (Best Value)</option>
+            </select>
+
+            <div class="amount-display">
+                Total Amount: ₹ <span id="finalAmount">0</span>
+            </div>
+
+            <div style="margin-bottom: 24px;">
+                <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-size: 13px; color: var(--text-muted);">
+                    <input type="checkbox" required style="width: 18px; height: 18px; margin-top: 2px;">
+                    <span>I agree to the <a href="{% url 'prop:terms' %}" style="color: var(--accent); text-decoration: none; font-weight: 600;">Terms & Conditions</a>.</span>
+                </label>
+            </div>
+
+            <button type="submit" class="submit-btn">Complete Registration</button>
+        </form>
+    </div>
+
+    <script>
+        let selectedPlanAmount = 0;
+
+        document.getElementById("id_company_wallpaper_path").addEventListener("change", (e) => {
+            if (e.target.files && e.target.files[0]) {
+                document.getElementById("wallPrev").style.backgroundImage = `url(${URL.createObjectURL(e.target.files[0])})`;
+            }
+        });
+
+        document.getElementById("id_company_logo_path").addEventListener("change", (e) => {
+            if (e.target.files && e.target.files[0]) {
+                document.getElementById("logoPrev").style.backgroundImage = `url(${URL.createObjectURL(e.target.files[0])})`;
+            }
+        });
+
+        function selectPlan(planType, amount, elem) {
+            document.getElementById("id_plan").value = planType;
+            selectedPlanAmount = amount;
+            document.querySelectorAll(".plan-card").forEach((card) => card.classList.remove("selected"));
+            elem.classList.add("selected");
+            updateAmount();
+        }
+
+        function updateAmount() {
+            const months = parseInt(document.getElementById("durationSelect").value);
+            document.getElementById("finalAmount").innerText = (selectedPlanAmount * months).toLocaleString('en-IN');
+        }
+
+        function toggleDropdown() {
+            const dropdown = document.getElementById('checkboxDropdown');
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('checkboxDropdown');
+            const btn = document.querySelector('.dropdown-btn');
+            if (!btn.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

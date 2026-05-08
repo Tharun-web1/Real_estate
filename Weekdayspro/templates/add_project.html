@@ -1,0 +1,438 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+
+  <link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add Project</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="{% static 'css/add_project.css' %}" />
+  <script>
+    // Critical functions defined in head for immediate availability
+    function goToStep(stepNumber, requiredFields) {
+      function findField(identifier) {
+        if (!identifier) return null;
+        let el = document.getElementById(identifier);
+        if (el) return el;
+        el = document.querySelector('[name="' + identifier + '"]');
+        return el;
+      }
+      const currentStepEl = document.querySelector(".step.active") || document.querySelector(".step:not([style*='none'])");
+      if (!currentStepEl) return;
+      let toValidate = [];
+      if (Array.isArray(requiredFields) && requiredFields.length > 0) {
+        requiredFields.forEach(idOrName => {
+          const fld = findField(idOrName);
+          if (fld) toValidate.push(fld);
+        });
+      } else {
+        const requiredEls = currentStepEl.querySelectorAll("input[required], textarea[required], select[required]");
+        requiredEls.forEach(e => toValidate.push(e));
+      }
+      let valid = true;
+      let firstInvalid = null;
+      toValidate.forEach(field => {
+        if (field.disabled || field.type === "hidden" || field.offsetParent === null) return;
+        let empty = false;
+        if (field.type === "checkbox" || field.type === "radio") {
+          const group = document.querySelectorAll('[name="' + field.name + '"]');
+          let anyChecked = Array.from(group).some(g => g.checked);
+          if (!anyChecked) empty = true;
+        } else if (field.value.trim() === "") {
+          empty = true;
+        }
+        if (empty) {
+          valid = false;
+          field.style.border = "2px solid #e74c3c";
+          if (!firstInvalid) firstInvalid = field;
+        } else {
+          field.style.border = "";
+        }
+      });
+      if (!valid) {
+        if (firstInvalid) firstInvalid.focus();
+        return;
+      }
+      document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
+      const target = document.getElementById("step" + stepNumber);
+      if (target) {
+        target.classList.add("active");
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+
+    function addNearbyField() {
+      const container = document.getElementById("nearby-container");
+      const div = document.createElement("div");
+      div.className = "nearby-item";
+      div.innerHTML = `
+        <input type="text" name="nearby_locations[]" placeholder="e.g. Hospital (2 km)" required>
+        <button type="button" class="remove-nearby-btn" onclick="this.parentElement.remove()">✕</button>
+      `;
+      container.appendChild(div);
+    }
+
+    function addLegalDoc() {
+      const container = document.getElementById("legal-docs-container");
+      const div = document.createElement("div");
+      div.className = "legal-doc-item";
+      div.innerHTML = `
+        <div class="legal-doc-row" style="align-items: center; flex-wrap: wrap;">
+          <input type="text" name="legal_doc_name[]" placeholder="Document Name" class="doc-name-input" required style="max-width: 220px;">
+          <label class="upload-plus-btn">
+            <i class="bi bi-plus-lg"></i>
+            <input type="file" name="legal_doc_file[]" class="doc-file-input" accept="image/*,application/pdf" onchange="previewLegalDoc(this)" required>
+          </label>
+          <div class="doc-preview" style="flex: 1; margin-top: 0; display: flex; gap: 10px;"></div>
+          <button type="button" class="remove-doc-btn" onclick="this.closest('.legal-doc-item').remove()"><i class="bi bi-trash"></i></button>
+        </div>
+      `;
+      container.appendChild(div);
+    }
+
+    function previewLegalDoc(input) {
+      const previewContainer = input.closest('.legal-doc-item').querySelector('.doc-preview');
+      previewContainer.innerHTML = "";
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = e => {
+            const img = document.createElement("img");
+            img.src = e.target.result;
+            img.style.width = "40px";
+            img.style.height = "40px";
+            img.style.objectFit = "cover";
+            previewContainer.appendChild(img);
+          };
+          reader.readAsDataURL(file);
+        } else {
+          previewContainer.innerHTML = `<i class="bi bi-file-earmark-pdf" style="font-size: 24px;"></i>`;
+        }
+      }
+    }
+
+    function previewGenericMedia(input, previewId) {
+      const previewContainer = document.getElementById(previewId);
+      previewContainer.innerHTML = "";
+      Array.from(input.files).forEach(file => {
+        if (file.type.startsWith('video/')) {
+          previewContainer.innerHTML += `<i class="bi bi-play-btn" style="font-size: 24px;"></i> <span>${file.name}</span>`;
+        } else {
+          previewContainer.innerHTML += `<i class="bi bi-file-earmark" style="font-size: 24px;"></i> <span>${file.name}</span>`;
+        }
+      });
+    }
+
+    window.goToStep = goToStep;
+    window.addNearbyField = addNearbyField;
+    window.addLegalDoc = addLegalDoc;
+    window.previewLegalDoc = previewLegalDoc;
+    window.previewGenericMedia = previewGenericMedia;
+  </script>
+</head>
+
+<body>
+
+  {% include 'NavBar.html' %}
+
+  <div class="container">
+    <div class="form-card">
+
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- STEP 1 -->
+        <div id="step1" class="step active">
+          <h2>Project Info</h2>
+
+          <label>Project Name</label>
+          <input type="text" name="project_name" placeholder="e.g. Green Valley Residency" required>
+
+          <label>Project Established Year</label>
+          <input type="number" name="estbalis_year" placeholder="e.g. 2022" required>
+
+          <label>Type of Project</label>
+          <input type="text" name="type_of_project" placeholder="e.g. Apartment / Villa" required>
+
+          <label>Project Address</label>
+          <input type="text" name="project_address" placeholder="e.g. Kukatpally, Hyderabad" required>
+
+          <!-- MAP SAME -->
+          <label>Select Location on Map</label>
+          <input type="text" id="search_location" placeholder="Search area or landmark..." required />
+          <div id="map" style="height:400px; margin-top:10px;"></div>
+
+          <input type="hidden" name="latitude" id="id_latitude">
+          <input type="hidden" name="longitude" id="id_longitude">
+          <input type="hidden" name="location_url" id="id_location_url">
+          <br>
+          <label class="section-label">Nearby Places</label>
+          <small class="hint">Add at least one nearby place</small>
+
+          <div class="nearby-box">
+            <div id="nearby-container">
+
+              <div class="nearby-item">
+                <input type="text" name="nearby_locations[]" placeholder="e.g. School (1 km)" required>
+                <button type="button" class="remove-nearby-btn" onclick="this.parentElement.remove()"><i class="bi bi-trash"></i></button>
+              </div>
+
+            </div>
+
+            <button type="button" class="add-nearby-btn" onclick="addNearbyField()">+ Add Nearby</button>
+          </div>
+
+          <label>Number of Units</label>
+          <input type="number" name="number_of_units" placeholder="e.g. 120" required>
+
+          <div class="btn-row">
+            <div></div>
+            <button type="button" class="next-btn" onclick="goToStep(2)">Next →</button>
+          </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div id="step2" class="step">
+          <h2>Specifications</h2>
+
+          <label>Available Units</label>
+          <input type="text" name="available_units" placeholder="e.g. 2BHK, 3BHK" required>
+
+          <label>Available Facings</label>
+          <input type="text" name="available_facing" placeholder="e.g. East, West" required>
+
+          <label>Available Sizes</label>
+          <input type="text" name="available_sizes" placeholder="e.g. 1200 - 1800 sqft" required>
+
+          <label>Project Position</label>
+          <select name="position" id="positionSelect" required>
+            <option value="">Select Position</option>
+            <option value="READY">Ready to Move</option>
+            <option value="UNDER">Under Construction</option>
+          </select>
+
+          <div id="constructionTimeBox" style="display:none">
+            <label>Construction Time</label>
+            <input type="text" name="construction_time" id="constructionTimeInput" placeholder="e.g. 1 Year">
+          </div>
+
+          <label>RERA Approved</label>
+          <select name="rera_approved" required>
+            <option value="">Select</option>
+            <option value="True">Yes</option>
+            <option value="False">No</option>
+          </select>
+
+          <label>Amenities</label>
+
+          <div class="amenities-grid">
+            <label class="amenity-card">
+              <input type="checkbox" name="select_amenities" value="Swimming Pool">
+              <span> Swimming Pool</span>
+            </label>
+
+            <label class="amenity-card">
+              <input type="checkbox" name="select_amenities" value="Gym">
+              <span> Gym</span>
+            </label>
+
+            <label class="amenity-card">
+              <input type="checkbox" name="select_amenities" value="Playground">
+              <span> Playground</span>
+            </label>
+
+            <label class="amenity-card">
+              <input type="checkbox" name="select_amenities" value="Park">
+              <span> Park</span>
+            </label>
+
+            <label class="amenity-card">
+              <input type="checkbox" name="select_amenities" value="Club House">
+              <span> Club House</span>
+            </label>
+          </div>
+
+          <label>Highlights</label>
+          <input type="text" name="highlights" placeholder="e.g. Near Metro Station" required>
+
+          <label>Type of Approval</label>
+          <input type="text" name="type_of_approval" placeholder="e.g. HMDA Approved" required>
+
+          <label>Total Project Extent</label>
+          <input type="text" name="total_project_area" placeholder="e.g. 3 Acres" required>
+
+          <label>Contact Info</label>
+          <input type="number" name="contact_info" placeholder="e.g. 9876543210" required>
+
+          <label>Pricing</label>
+          <input type="number" name="pricing" placeholder="e.g. 4500000" required>
+
+          <div class="btn-row">
+            <button type="button" class="back-btn" onclick="goToStep(1)">← Back</button>
+            <button type="button" class="next-btn" onclick="goToStep(3)">Next →</button>
+          </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div id="step3" class="step">
+          <h2>Upload Files</h2>
+
+          <!-- UPLOAD IMAGES -->
+          <div class="legal-doc-item">
+            <div style="font-weight: 600; margin-bottom: 10px;">Upload Images (Max 10)</div>
+            <div class="legal-doc-row" style="align-items: flex-start; flex-wrap: wrap;">
+              <label class="upload-plus-btn" title="Upload Images" style="flex-shrink: 0;">
+                <i class="bi bi-plus-lg"></i>
+                <input type="file" name="image" id="imageInput" multiple accept="image/*" required>
+              </label>
+              <div id="imagePreview" class="preview-box" style="flex: 1; margin-top: 0; justify-content: flex-start;"></div>
+            </div>
+          </div>
+
+          <!-- UPLOAD VIDEOS -->
+          <div class="legal-doc-item">
+            <div style="font-weight: 600; margin-bottom: 10px;">Upload Videos</div>
+            <div class="legal-doc-row" style="align-items: flex-start; flex-wrap: wrap;">
+              <label class="upload-plus-btn" title="Upload Videos" style="flex-shrink: 0;">
+                <i class="bi bi-plus-lg"></i>
+                <input type="file" name="video" id="videoInput"  accept="video/*" onchange="previewGenericMedia(this, 'videoPreview')">
+              </label>
+              <div id="videoPreview" class="preview-box" style="flex: 1; margin-top: 0; justify-content: flex-start;"></div>
+            </div>
+          </div>
+
+          <!-- UPLOAD BROCHURE -->
+          <div class="legal-doc-item">
+            <div style="font-weight: 600; margin-bottom: 10px;">Upload Brochure</div>
+            <div class="legal-doc-row" style="align-items: flex-start; flex-wrap: wrap;">
+              <label class="upload-plus-btn" title="Upload Brochure" style="flex-shrink: 0;">
+                <i class="bi bi-plus-lg"></i>
+                <input type="file" name="document" id="docInput" multiple onchange="previewGenericMedia(this, 'docPreview')">
+              </label>
+              <div id="docPreview" class="preview-box" style="flex: 1; margin-top: 0; justify-content: flex-start;"></div>
+            </div>
+          </div>
+
+          <!-- LEGAL DOCUMENTS SECTION -->
+          <div class="legal-doc-section">
+            <h3>Add Legal Document of Project</h3>
+            <div id="legal-docs-container">
+              <div class="legal-doc-item">
+                <div class="legal-doc-row" style="align-items: center; flex-wrap: wrap;">
+                  <input type="text" name="legal_doc_name[]" placeholder="Document Name" class="doc-name-input" required style="max-width: 220px;">
+                  <label class="upload-plus-btn" title="Upload Document" style="flex-shrink: 0;">
+                    <i class="bi bi-plus-lg"></i>
+                    <input type="file" name="legal_doc_file[]" class="doc-file-input" accept="image/*,application/pdf" onchange="previewLegalDoc(this)" required>
+                  </label>
+                  <div class="doc-preview" style="flex: 1; margin-top: 0; display: flex; gap: 10px;"></div>
+                  <button type="button" class="remove-doc-btn" onclick="removeLegalDoc(this)" style="flex-shrink: 0;"><i class="bi bi-trash"></i></button>
+                </div>
+              </div>
+            </div>
+            <button type="button" class="add-doc-btn" onclick="addLegalDoc()">+ Add Another Document</button>
+          </div>
+
+          <div class="btn-row" style="margin-top: 25px; justify-content: space-between;">
+            <button type="button" class="back-btn" onclick="goToStep(2)" style="width: auto; padding: 10px 24px;">← Back</button>
+            <button type="submit" class="submit-btn" style="width: auto; margin-top: 0; padding: 10px 24px;">Submit Project</button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+
+  <script>
+    // DOM-dependent logic
+    document.addEventListener("DOMContentLoaded", function () {
+      const imageInput = document.getElementById("imageInput");
+      if (imageInput) {
+        imageInput.addEventListener("change", function () {
+          const preview = document.getElementById("imagePreview");
+          preview.innerHTML = "";
+          if (this.files.length > 10) {
+            alert("You can upload maximum 10 images");
+            this.value = "";
+            return;
+          }
+          Array.from(this.files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = e => {
+              let img = document.createElement("img");
+              img.src = e.target.result;
+              preview.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+          });
+        });
+      }
+      const positionSelect = document.getElementById("positionSelect");
+      if (positionSelect) {
+        positionSelect.addEventListener("change", function () {
+          const box = document.getElementById("constructionTimeBox");
+          const input = document.getElementById("constructionTimeInput");
+          if (this.value === "UNDER") {
+            box.style.display = "block";
+            input.required = true;
+          } else {
+            box.style.display = "none";
+            input.required = false;
+            input.value = "";
+          }
+        });
+      }
+    });
+
+    // Map logic
+    function initMap() {
+      const defaultLoc = { lat: 17.3850, lng: 78.4867 };
+      const mapEl = document.getElementById("map");
+      if (!mapEl) return;
+      const map = new google.maps.Map(mapEl, { center: defaultLoc, zoom: 13 });
+      const marker = new google.maps.Marker({ position: defaultLoc, map: map, draggable: true });
+      const searchInput = document.getElementById("search_location");
+      if (searchInput) {
+        const autocomplete = new google.maps.places.Autocomplete(searchInput);
+        autocomplete.addListener("place_changed", () => {
+          const place = autocomplete.getPlace();
+          if (!place.geometry) return;
+          map.setCenter(place.geometry.location);
+          marker.setPosition(place.geometry.location);
+          updateMapFields(place.geometry.location.lat(), place.geometry.location.lng(), place.formatted_address);
+        });
+      }
+      marker.addListener("dragend", () => {
+        const pos = marker.getPosition();
+        updateMapFields(pos.lat(), pos.lng());
+      });
+    }
+
+    function updateMapFields(lat, lng, addr = "") {
+      const latF = document.getElementById("id_latitude");
+      const lngF = document.getElementById("id_longitude");
+      const urlF = document.getElementById("id_location_url");
+      if(latF) latF.value = lat;
+      if(lngF) lngF.value = lng;
+      if(urlF) urlF.value = `https://www.google.com/maps?q=${lat},${lng}`;
+      if (addr) {
+        const pAddr = document.querySelector("input[name='project_address']");
+        if(pAddr) pAddr.value = addr;
+      }
+    }
+
+    window.initMap = initMap;
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB92MLJIMGxSEXfAgLGObcO0OpVV6w2VbY&libraries=places&callback=initMap" async defer></script>
+
+  {% include 'footer.html' %}
+
+</body>
+
+</html>

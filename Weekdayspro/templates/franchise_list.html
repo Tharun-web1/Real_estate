@@ -1,0 +1,114 @@
+<style>
+  body {
+    margin: 0;
+    padding: 20px;
+    background: #f4f4f4;
+    font-family: Arial, sans-serif;
+  }
+
+  /* Center content */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .container h2 {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 25px;
+  }
+
+  /* CARD STYLE — Image 1 look */
+  .owner-row-card {
+    width: 260px;
+    background: white;
+    padding: 25px 20px;
+    margin: 20px auto;
+    text-align: center;
+    border-radius: 18px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  }
+
+  /* Circular Profile Photo */
+  .owner-img {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 12px;
+    background: #ddd;
+  }
+
+  /* Name */
+  .owner-details h4 {
+    margin: 5px 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #222;
+  }
+
+  /* Details text */
+  .owner-details p {
+    margin: 8px 0;
+    font-size: 15px;
+    color: #444;
+  }
+
+  /* Mobile Responsive */
+  @media (max-width: 600px) {
+    .owner-row-card {
+      min-width: 70%;
+      padding: 20px;
+    }
+  }
+
+  .owner-card {
+    overflow-y: hidden;
+
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Edge / IE */
+  }
+
+  .owner-card :: -webkit-scrollbar {
+    display: none;
+  }
+   .navbar-mobile {
+    left: 0px;
+  }
+</style>
+<div class="container">
+  <h2><center>Franchise Profiles</center></h2>
+  <div
+    class="owner-card"
+    style="display: flex; gap: 20px; max-width: 80vw; overflow-x: scroll"
+  >
+    {% if data %} {% for f in data %}
+    <div class="owner-row-card">
+      <!-- Profile Image -->
+      {% if f.profile_image_path %}
+      <img
+        src="/media/{{ f.profile_image_path }}"
+        class="owner-img"
+        alt="Profile"
+      />
+
+      {% endif %}
+
+      <!-- Details -->
+      <div class="owner-details">
+        <h4>{{ f.company_name|default:f.username }}</h4>
+
+        {% if f.location %}
+        <p><b>Location:</b> {{ f.location }}</p>
+        {% endif %} {% if f.experience %}
+        <p><b>Experience:</b> {{ f.experience }} years</p>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %} {% else %}
+  </div>
+  <h3 style="text-align: center; color: #777; margin-top: 40px">
+    No Franchise Profiles Found
+  </h3>
+  {% endif %}
+</div>

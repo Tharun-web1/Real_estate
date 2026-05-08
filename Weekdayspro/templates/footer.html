@@ -1,0 +1,240 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <style>
+         /* ---------- FOOTER ---------- */
+.footer {
+    font-family: 'Poppins', sans-serif;
+    background: #fff;
+    color: #333;
+}
+
+.footer-main {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: auto;
+    padding: 50px 20px;
+    gap: 40px;
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 230px;
+}
+
+.footer-section h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.footer-section p {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 10px;
+    line-height: 1.6;
+}
+
+.footer-section a {
+    color: #333;
+    text-decoration: none;
+}
+
+.footer-section a:hover {
+    text-decoration: underline;
+}
+
+.footer-section button {
+    background: #888;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 18px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.footer-section button:hover {
+    background: #555;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.search-box input {
+    width: 200px;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    outline: none;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.search-box input:focus {
+    border-color: #0056d2;
+    box-shadow: 0 0 4px rgba(0, 86, 210, 0.3);
+}
+
+.search-box button {
+    background-color: #666;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.search-box button:hover {
+    background-color: #0056d2;
+}
+
+.social-icons a {
+    font-size: 18px;
+    color: #444;
+    margin-right: 12px;
+    transition: color 0.3s;
+}
+
+.social-icons a:hover {
+    color: #0a66c2;
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-section ul li {
+    margin-bottom: 6px;
+}
+
+.footer-section ul li a {
+    font-size: 14px;
+}
+
+.footer-bottom {
+    background: #0056d2;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 15px 40px;
+    font-size: 14px;
+}
+
+.footer-bottom span {
+    font-weight: 600;
+}
+.footer-bottom a{
+    color:#fff;
+    text-decoration:none;
+}
+.footer-bottom a:hover{
+    opacity:0.95;
+}
+ .footer {
+    display: none;
+}
+
+ @media (max-width: 768px){
+    .footer{
+        display: block !important;
+    }
+    .footer-main {
+        padding: 30px 15px;
+        gap: 20px;
+    }
+    .footer-section {
+        min-width: 100%;
+    }
+    .footer-bottom {
+        padding: 15px 20px;
+        text-align: center;
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+</style>
+<br><br><br>
+</div> 
+</div>  
+
+<footer class="footer">
+  <div class="footer-main">
+      <div class="footer-section">
+          <h3>SEARCH</h3>
+          <div class="search-box">
+              <input type="text" placeholder="Search For State">
+              <button type="button">Search</button>
+          </div>
+      </div>
+
+      <div class="footer-section">
+          <h3>FIND PROPERTY</h3>
+          <p>Select From Thousands Of Options, Without Brokerage.</p>
+          <a href="{% url 'prop:require' %}">
+    <button>Enquiry Now</button>
+           </a>
+
+
+          <h3 style="margin-top:25px;">LIST YOUR PROPERTY</h3>
+          <p>For Free. Without Any Brokerage.</p>
+         <a href="{% url 'prop:add_property' %}"><button>Post Now</button></a> 
+      </div>
+
+      <div class="footer-section">
+          <h3>CONTACT US</h3>
+          <p>Phone No- 9000774529</p>
+          <p>9:30 AM To 6:30 PM (Mon-Sun)</p>
+          <p>Email - <a href="mailto:weekdaysproperties@gmail.com">weekdaysproperties@gmail.com</a></p>
+
+          <h3 style="margin-top:20px;">FOLLOW US</h3>
+          <div class="social-icons">
+              <a href="https://www.facebook.com/share/175n16vXSH/"><i class="bi bi-facebook"></i></a>
+              <a href="https://www.instagram.com/weekdays_properties_official/"><i class="bi bi-instagram"></i></a>
+              <a href="https://youtube.com/shorts/kZtyhUBwXU4?feature=share"><i class="bi bi-youtube"></i></a>
+
+  
+          </div>
+      </div>
+
+      <div class="footer-section">
+          <h3>COMPANY</h3>
+          <ul>
+              <li><a href="careers">Careers</a></li>
+              <li><a href="about-us">About Us</a></li>
+              <li><a href="#">For Partners</a></li>
+              <li><a href="terms">Terms</a></li>
+              <li><a href="#">Annual Return</a></li>
+              <li><a href="privacy-policy">Privacy Policy</a></li>
+              <li><a href="contact-us">Contact Us</a></li>
+              <li><a href="unsubscribe">Unsubscribe</a></li>
+              <li><a href="#">Merger Hearing Advertisement</a></li>
+          </ul>
+      </div>
+  </div>
+
+  <div class="footer-bottom">
+       <p>©<span><a href="https://weekdaysproperties.com/">WEEKDAYS PROPERTIES</a></span>, All Rights Reserved.</p>
+      <p>Designed By <span> <a href="https://ygrgobalitservices.com">YGR Gobal IT Services Pvt. Ltd, 2023.</a></span></p>
+  </div>
+</footer>
+</body>
+</html>  

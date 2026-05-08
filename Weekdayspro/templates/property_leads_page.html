@@ -1,0 +1,145 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Leads</title>
+
+  <link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <style>
+    body {
+      background: #f2f4f8;
+      font-family: "Poppins", sans-serif;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      margin-top: 80px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .lead-item {
+      padding: 14px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      border: 1px solid black;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .lead-item div {
+      display: flex;
+      align-items: center;
+    }
+
+    .lead-info {
+      display: flex;
+      flex-direction: row;
+      gap: 17px;
+    }
+
+    /* PHONE STYLE */
+    .phone {
+      font-weight: bold;
+      color: green;
+      font-size: 14px;
+    }
+
+    .icons {
+      display: flex;
+      gap: 15px;
+    }
+
+    .icons a {
+      font-size: 20px;
+      color: #555;
+      text-decoration: none;
+    }
+
+    .icons a.call {
+      color: #0d6efd;
+    }
+
+    .icons a.chat {
+      color: #1d4384;
+    }
+
+    .lead-item:last-child {
+      border-bottom: none;
+    }
+
+    /* MOBILE FIX */
+    @media (max-width: 768px) {
+      .phone {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  {% include 'NavBar.html' %}
+
+  <div class="container">
+    <h2>My Leads</h2>
+
+    {% for lead in luser_list %}
+    <div class="lead-item">
+
+      <!-- Lead info -->
+      <div class="lead-info">
+        <div>{{ lead.username }}</div>
+
+        {% if user.role != 'OWNER' %}
+        <div class="phone">{{ lead.phone }}</div>
+        {% endif %}
+      </div>
+
+      <!-- Icons -->
+      <div class="icons">
+
+        {% if user.role != 'OWNER' %}
+        
+        <!-- Call -->
+        <a href="tel:{{ lead.phone }}" class="call">
+          <i class="fa-solid fa-phone"></i>
+        </a>
+
+        <!-- Chat -->
+        <a href="{% url 'prop:start_chat_with_user' lead.id %}" class="chat">
+          <i class="fa-solid fa-comment-dots"></i>
+        </a>
+
+        {% endif %}
+
+      </div>
+
+    </div>
+    {% empty %}
+    <p style="text-align:center; color:#777;">No leads found.</p>
+    {% endfor %}
+  </div>
+
+  <!-- Footer -->
+  {% include 'footer.html' %}
+
+</body>
+</html>

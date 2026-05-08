@@ -1,0 +1,93 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+<link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+    <title>Future Requirement List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+            font-size: 14px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #e0f7ff;
+        }
+
+        td {
+            font-size: 14px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+{% include 'header.html' %}
+<br>
+<h1>  Future Requirement List</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Property Type</th>
+            <th>Extent</th>
+            <th>BHK Type</th>
+            <th>Facing</th>
+            <th>Location</th>
+            <th>City</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for i in future %}
+        <tr>
+            <td>{{ i.property_type }}</td>
+            <td>{{ i.extent }}</td>
+            <td>{{ i.bhk_type }}</td>
+            <td>{{ i.facing }}</td>
+            <td>{{ i.location }}</td>
+            <td>{{ i.city }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6" style="text-align:center; color:#999;">No future requirements found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+</body>
+</html>

@@ -1,0 +1,129 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Franchise Page</title>
+
+  <link rel="stylesheet" href="{% static 'css/franchise.css' %}">
+</head>
+
+<body>
+
+  {% include 'NavBar.html' %}
+
+  <section class="fran">
+    <div class="fran-wrapper">
+
+      <!-- LEFT -->
+      <div class="fran-left">
+
+        <div class="box">
+          <h3>Where we are running franchises</h3>
+          <div class="city-list">
+            <div class="city">
+              <img src="{% static 'images/franchise/hyd.webp' %}">
+              <span>Hyderabad</span>
+            </div>
+            <div class="city">
+              <img src="{% static 'images/franchise/bangalore.jpeg' %}">
+              <span>Bangalore</span>
+            </div>
+            <div class="city">
+              <img src="{% static 'images/franchise/mumbai.jpeg' %}">
+              <span>Mumbai</span>
+            </div>
+            <div class="city">
+              <img src="{% static 'images/franchise/chennai.jpg' %}">
+              <span>Chennai</span>
+            </div>
+            <div class="city">
+              <img src="{% static 'images/franchise/delhi.jpeg' %}">
+              <span>Delhi</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="box how-box">
+          <h3>How it works?</h3>
+          <p>
+            Apply for a franchise using the form. Our team will review your request,
+            contact you, and guide you through setup and launching your franchise.
+          </p>
+        </div>
+
+        <div class="box contact-box">
+
+
+
+          <a href="/contact/" class="contact-btn">
+            <i class="fa fa-phone"></i> Contact
+          </a>
+          <span class="contact-text">
+            For more information
+          </span>
+
+        </div>
+
+        <div class="box bottom-image">
+          <img src="{% static 'images/img/banner.jpg' %}">
+        </div>
+
+      </div>
+
+      <!-- FORM -->
+      <div class="fran-form">
+        <h2>Franchise Application Form</h2>
+
+        <form method="POST" action="{% url 'prop:franchise' %}">
+          {% csrf_token %}
+
+          <div class="form-group">
+            {{ form.full_name.label_tag }}
+            {{ form.full_name }}
+          </div>
+
+          <div class="form-group">
+            {{ form.email.label_tag }}
+            {{ form.email }}
+          </div>
+
+          <div class="form-group">
+            {{ form.contact.label_tag }}
+            {{ form.contact }}
+          </div>
+
+          <div class="form-group">
+            {{ form.location.label_tag }}
+            {{ form.location }}
+          </div>
+
+          <div class="form-group">
+            {{ form.experience.label_tag }}
+            {{ form.experience }}
+          </div>
+
+          <div class="form-group">
+            {{ form.reason.label_tag }}
+            {{ form.reason }}
+          </div>
+
+          <button type="submit">Submit</button>
+        </form>
+
+        {% if success %}
+        <p class="success-msg">Form submitted successfully!</p>
+        {% endif %}
+      </div>
+
+    </div>
+  </section>
+
+  {% include 'footer.html' %}
+
+</body>
+
+</html>

@@ -1,0 +1,120 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Leads</title>
+<link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+
+    <!-- FontAwesome for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <style>
+      body {
+        background: #f2f4f8;
+        font-family: "Poppins", sans-serif;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: auto;
+        background: #fff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .lead-item {
+        padding: 14px;
+        border-bottom: 1px solid #ddd;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        border: 1px solid black;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      .lead-item div {
+        display: flex;
+        align-items: center;
+      }
+
+      .lead-info {
+        display: flex;
+        flex-direction: row;
+        gap: 17px;
+      }
+
+      .phone {
+        font-weight: bold;
+        color: green;
+      }
+
+      .icons {
+        display: flex;
+        gap: 15px;
+      }
+
+      .icons a {
+        font-size: 20px;
+        color: #555;
+        text-decoration: none;
+      }
+
+      .icons a.call {
+        color: #0d6efd;
+      }
+      .icons a.chat {
+        color: #25d366;
+      }
+
+      .lead-item:last-child {
+        border-bottom: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h2>My Leads</h2>
+
+      {% for lead in luser_list %}
+      <div class="lead-item">
+        <!-- Lead info (name + phone clickable) -->
+        <div class="lead-info">
+          <div>{{ lead.username }}</div>
+
+          <!-- Phone number as clickable link -->
+         
+        </div>
+
+        <!-- Call & Chat icons -->
+        <div class="icons">
+          <!-- Call icon -->
+          <a href="tel:{{ lead.phone }}" class="call">
+            <i class="fa-solid fa-phone"></i>
+          </a>
+
+          <!-- WhatsApp chat icon -->
+          <a href="https://wa.me/{{ lead.phone }}" target="_blank" class="chat">
+            <i class="fa-brands fa-whatsapp"></i>
+          </a>
+        </div>
+      </div>
+      {% empty %}
+      <p>No leads found.</p>
+      {% endfor %}
+    </div>
+  </body>
+</html>

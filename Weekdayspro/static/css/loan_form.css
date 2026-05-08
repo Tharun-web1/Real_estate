@@ -1,0 +1,365 @@
+/* ================= COLORS ================= */
+:root {
+    --bg: #F5F7FA;
+    --card: #FFFFFF;
+    --border: #E5E7EB;
+    --text: #1C1C1C;
+    --subtext: #6B7280;
+
+    /* STATUS */
+    --success: #10B981;
+    --warning: #F59E08;
+    --error: #EF4444;
+}
+
+/* ================= DARK MODE ================= */
+body.dark-mode {
+    --bg: #0F172A;
+    --card: #1E293B;
+    --border: #334155;
+    --text: #E5E7EB;
+    --subtext: #94A3B8;
+}
+
+/* ================= BASE ================= */
+body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+/* ================= HEADINGS ================= */
+h1, h2, h3, h4, h5 {
+    font-family: 'Poppins', 'Inter', sans-serif;
+    font-weight: 600;
+}
+
+/* ================= MAIN ================= */
+.loan-page {
+    width: 90%;
+    margin: auto;
+    padding: 20px;
+    display: flex;
+    gap: 20px;
+}
+
+/* ================= TOP ================= */
+.top-section {
+    width: 100%;
+}
+
+/* LOAN INFO BOX */
+.loan-info { 
+    margin-top:0px;
+    background: var(--card);
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+}
+
+/* TITLE */
+.loan-info h3 {
+    margin-bottom: 15px;
+}
+
+/* LOAN TYPE BUTTONS */
+.loans {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.loans button {
+    padding: 8px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--border);
+    color: var(--text);
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.loans button:hover {
+    background: black;
+    color: white;
+}
+.imag {
+    width: 150px;
+    height: 150px;
+    background: #f1f6ff;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.loan-icon {
+    font-size: 80px;
+    color: #0d6efd;
+}
+.contact {
+    display: flex;
+    align-items: center;   /* 🔥 vertical center */
+    gap: 10px;
+}
+
+/* Button fix */
+.contact button {
+    width: 60%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    height: 40px;          /* equal height */
+    padding: 0 15px;
+    border: none;
+    background: #007bff;
+    color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.contact button {
+    text-decoration: none;
+    color: #ffff;
+}
+
+/* Span fix */
+.contact span {
+    display: flex;
+    align-items: center;   /* 🔥 aligns text perfectly */
+    height: 40px;          /* match button height */
+    font-size: 14px;
+    color: #555;
+}
+
+/* ================= RIGHT SIDE ================= */
+/* MAIN BOX */
+.right-side {
+    display: flex;
+    gap: 20px;
+    align-items: stretch;
+    
+
+    background: var(--card);           /* 🔥 box background */
+    padding: 20px;                    /* inner spacing */
+    border-radius: 12px;              /* rounded corners */
+    border: 1px solid var(--border);  /* light border */
+   
+}
+
+/* IMAGE BOX */
+.imag {
+    flex: 1;
+    border-radius: 10px;
+    overflow: hidden;   /* 🔥 keeps image inside box */
+}
+
+.imag img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ELIGIBILITY BOX */
+.eligibility {
+    flex: 1;
+    background: var(--bg);   /* slight contrast */
+    padding: 20px;
+    border-radius: 10px;
+}
+
+/* TITLE */
+.eligibility h3 {
+    margin-bottom: 10px;
+}
+
+/* TEXT */
+.eligibility p {
+    margin: 6px 0;
+}
+/* ================= EMI ================= */
+.emi-box {
+    background: var(--card);
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+}
+
+.emi-box input {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+}
+
+.emi-result {
+    margin-top: 15px;
+    background: var(--bg);
+    padding: 10px;
+    border-radius: 8px;
+}
+
+/* ================= FORM ================= */
+.form-section { 
+    margin-top:0px;
+    background: var(--card);
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+}
+
+.form-section h3 {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* FORM NORMAL */
+.form-section form {
+    display: block;
+}
+
+.form-section input,
+.form-section select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* BUTTON */
+.form-section button {
+    width: 100%;
+}
+
+/* GLOBAL BUTTON */
+button {
+    padding: 10px;
+    border: none;
+    background: black;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* ================= STATUS EXAMPLES ================= */
+.success-text {
+    color: var(--success);
+}
+
+.warning-text {
+    color: var(--warning);
+}
+
+.error-text {
+    color: var(--error);
+}
+
+/* ================= MOBILE OPTIMIZATION ================= */
+@media (max-width: 768px) {
+
+    /* MAIN LAYOUT STACK */
+    .loan-page {
+        margin-top: 60px;
+        flex-direction: column;
+        width: 95%;
+        padding: 10px;
+    }
+
+    /* REMOVE EXTRA SPACE */
+    .loan-info,
+    .form-section {
+        margin-top: 20px;
+    }
+
+    /* LOAN BUTTONS → FULL WIDTH */
+
+    .loans {
+        display: flex;
+        gap: 8px;
+    }
+
+    .loans button {
+        flex: 1;              /* equal width */
+        font-size: 12px;      /* smaller text */
+        padding: 8px 5px;     /* compact */
+        border-radius: 15px;
+    }
+
+
+    /* CONTACT BUTTONS STACK */
+
+    .contact {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;        /* 🔥 prevents overflow */
+    }
+
+    /* Button */
+    .contact button {
+        width: 55%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        height: 25px;
+        padding: 0 12px;
+        font-size: 14px;
+        border-radius: 6px;
+    }
+
+    /* Text */
+    .contact span {
+        display: flex;
+        align-items: center;
+
+        height: 36px;
+        font-size: 13px;
+        color: #666;
+    }
+
+    /* RIGHT SIDE STACK */
+    /* .right-side {
+        flex-direction: column;
+    } */
+
+    /* IMAGE HEIGHT FIX */
+    .imag img {
+        height: 200px;
+    }
+
+    /* ELIGIBILITY TEXT SIZE */
+    .eligibility p {
+        font-size: 14px;
+    }
+
+    /* EMI BOX */
+    .emi-box {
+        padding: 15px;
+    }
+
+    .emi-box label {
+        font-size: 14px;
+    }
+
+    /* FORM INPUT SIZE */
+    .form-section input,
+    .form-section select {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    /* BUTTONS BIGGER (TOUCH FRIENDLY) */
+    button {
+        font-size: 16px;
+        padding: 12px;
+    }
+}

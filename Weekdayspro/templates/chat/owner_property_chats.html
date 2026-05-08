@@ -1,0 +1,120 @@
+﻿
+{% load static %}
+
+    <link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+
+<style>
+  .messages-wrapper {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 0 15px;
+  }
+
+  .messages-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .messages-header h2 {
+    margin: 0;
+    font-size: 24px;
+  }
+
+  .chat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .chat-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    border-radius: 10px;
+    background: #fff;
+    border: 1px solid #e3e3e3;
+    text-decoration: none;
+    color: inherit;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+
+  .chat-card:hover {
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+  }
+
+  .chat-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .chat-user {
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .chat-property {
+    font-size: 14px;
+    color: #666;
+  }
+
+  .chat-arrow {
+    font-size: 22px;
+    color: #999;
+  }
+
+  .no-messages {
+    text-align: center;
+    margin-top: 60px;
+    color: #777;
+  }
+
+  @media (max-width: 600px) {
+    .chat-card {
+      padding: 14px;
+    }
+    .messages-header h2 {
+      font-size: 20px;
+    }
+  }
+</style>
+{% include 'NavBar.html' %}
+<div class="messages-wrapper">
+
+  <div class="messages-header">
+    <h2>📩 Property Messages</h2>
+  </div>
+
+  {% if chats %}
+    <div class="chat-list">
+      {% for chat in chats %}
+        <a href="{% url 'prop:chat_room' chat.id %}" class="chat-card">
+          <div class="chat-info">
+            <div class="chat-user">
+              👤 {{ chat.user1.username }}
+            </div>
+
+            {% if chat.property %}
+              <div class="chat-property">
+                🏠 {{ chat.property.title }}
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="chat-arrow">➜</div>
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="no-messages">
+      <p>📭 No messages yet</p>
+    </div>
+  {% endif %}
+
+</div>
+{% include 'footer.html' %}
+

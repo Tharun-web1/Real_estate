@@ -1,0 +1,287 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Property Admin Dashboard</title>
+<link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+
+:root{
+  --primary:#6366f1;
+  --secondary:#22d3ee;
+  --success:#10b981;
+  --danger:#ef4444;
+  --bg:#0f172a;
+  --card:#1e293b;
+  --text:#f1f5f9;
+  --muted:#94a3b8;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
+/* ===== HEADER ===== */
+.header{
+  width:100%;
+  padding:20px 50px;
+  background:linear-gradient(90deg,var(--primary),var(--secondary));
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.header h1{
+  font-size:22px;
+  font-weight:700;
+}
+
+.header .admin{
+  font-size:14px;
+  opacity:0.9;
+}
+
+/* ===== MAIN WRAPPER ===== */
+.wrapper{
+  width:100%;
+  padding:40px 60px;
+}
+
+/* ===== GRID ===== */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:25px;
+}
+
+/* ===== CARD ===== */
+.card{
+  background:var(--card);
+  padding:25px;
+  border-radius:18px;
+  transition:all .3s ease;
+  border:1px solid rgba(255,255,255,0.05);
+  position:relative;
+}
+
+.card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 15px 40px rgba(0,0,0,0.6);
+  border-color:rgba(255,255,255,0.15);
+}
+
+.card-icon{
+  font-size:22px;
+  margin-bottom:15px;
+  color:var(--secondary);
+}
+
+.card h3{
+  font-size:12px;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:8px;
+  letter-spacing:1px;
+}
+
+.card h2{
+  font-size:26px;
+  font-weight:700;
+}
+
+.card-link{
+  text-decoration:none;
+  color:inherit;
+}
+
+/* ===== SECTION TITLE ===== */
+.section-title{
+  margin:60px 0 20px;
+  font-size:18px;
+  font-weight:600;
+}
+
+/* ===== PROGRESS ===== */
+.progress-box{
+  background:var(--card);
+  padding:30px;
+  border-radius:18px;
+}
+
+.progress-bar{
+  height:40px;
+  background:#334155;
+  border-radius:50px;
+  overflow:hidden;
+}
+
+.progress-fill{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,var(--success),var(--secondary));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:600;
+  transition:width 1.5s ease;
+}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:768px){
+  .wrapper{padding:30px;}
+  .header{padding:20px;}
+}
+
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <h1><i class="fa-solid fa-chart-line"></i> Property Dashboard</h1>
+  <div class="admin"><i class="fa-solid fa-user"></i> Admin Panel</div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="wrapper">
+
+  <!-- CARDS -->
+  <div class="grid">
+
+    <a href="{% url 'prop:admin_properties' %}" class="card-link">
+      <div class="card">
+        <div class="card-icon"><i class="fa-solid fa-building"></i></div>
+        <h3>Users Properties</h3>
+        <h2 class="counter" data-target="{{ total_properties }}">0</h2>
+      </div>
+    </a>
+
+    <div class="card">
+      <div class="card-icon"><i class="fa-solid fa-user-group"></i></div>
+      <h3>Total Property Leads</h3>
+      <h2 class="counter" data-target="{{ total_property_leads }}">0</h2>
+    </div>
+
+    <a href="{% url 'prop:all_project' %}" class="card-link">
+      <div class="card">
+        <div class="card-icon"><i class="fa-solid fa-diagram-project"></i></div>
+        <h3>Total Projects</h3>
+        <h2 class="counter" data-target="{{ total_projects }}">0</h2>
+      </div>
+    </a>
+
+    <a href="{% url 'prop:properties_verification' %}" class="card-link">
+      <div class="card">
+        <div class="card-icon"><i class="fa-solid fa-circle-check"></i></div>
+        
+        <h3>Verified/Not Verified Properties </h3>
+      </div>
+    </a>
+
+<a href="{% url 'prop:owner_properties' %}" class="card-link">
+  <div class="card">
+    <div class="card-icon">
+      <i class="fa-solid fa-user"></i>
+    </div>
+    <h3>Owner Properties</h3>
+    <!-- <h2 class="counter">{{ owner_count }}</h2> -->
+  </div>
+</a>
+
+    <a href="{% url 'prop:futureRequirement' %}" class="card-link">
+      <div class="card">
+        <div class="card-icon"><i class="fa-solid fa-clock"></i></div>
+
+        <h3>Future Requirement contact</h3>
+      </div>
+    </a>
+
+    <a href="{% url 'prop:franchise_list' %}" class="card-link">
+      <div class="card">
+        <div class="card-icon"><i class="fa-solid fa-handshake"></i></div>
+        <h3>Franchise Applications </h3>
+      </div>
+    </a>
+
+    <a href="{% url 'prop:all_requests' %}" class="card-link">
+      <div class="card">
+        <div class="card-icon"><i class="fa-solid fa-envelope-open-text"></i></div>
+        <h3>  all customers Requests contacts</h3>
+      </div>
+    </a>
+
+    <a href="{% url 'prop:all_contacts' %}" class="card-link">
+      <div class="card">
+        <div class="card-icon"><i class="fa-solid fa-address-book"></i></div>
+        <h3>Total users</h3>
+        <h2 class="counter" data-target="{{ total_contacts }}">0</h2>
+      </div>
+    </a> 
+<a href="{% url 'prop:manage_slides' %}" class="card-link">
+  <div class="card">
+    <div class="card-icon">
+      <i class="fa-solid fa-images"></i>
+    </div>
+    <h3>Change Home Slides</h3>
+  </div>
+</a>
+ 
+  </div>
+
+  <!-- PROGRESS SECTION -->
+  <div class="section-title">Overall Ticket Sales Progress</div>
+
+  <div class="progress-box">
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill">
+        {{ progress_percent }}%
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+
+/* Counter Animation */
+document.querySelectorAll('.counter').forEach(counter=>{
+  const target=parseInt(counter.getAttribute('data-target'))||0;
+  let count=0;
+  const increment=Math.ceil(target/100);
+
+  const update=()=>{
+    if(count<target){
+      count+=increment;
+      if(count>target) count=target;
+      counter.innerText=count;
+      setTimeout(update,15);
+    }else{
+      counter.innerText=target;
+    }
+  }
+  update();
+});
+
+/* Progress Animation */
+window.addEventListener("load",()=>{
+  document.getElementById("progressFill").style.width="{{ progress_percent }}%";
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,124 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings | Weekdays</title>
+    <link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'css/settings.css' %}">
+</head>
+<body>
+    {% include 'NavBar.html' %}
+
+    <div class="s-container">
+        <div class="s-header">
+            <h1>Settings</h1>
+        </div>
+
+        <!-- Account Section -->
+        <div class="s-section">
+            <a href="{% url 'prop:edit_profile' %}" class="s-item">
+                <div class="s-item-info">
+                    <div class="s-icon"><i class="bi bi-person-circle"></i></div>
+                    <div>
+                        <div class="s-label">Edit Profile</div>
+                        <div class="s-desc">Manage your personal information</div>
+                    </div>
+                </div>
+                <div class="s-chevron"><i class="bi bi-chevron-right"></i></div>
+            </a>
+            <a href="#" class="s-item">
+                <div class="s-item-info">
+                    <div class="s-icon"><i class="bi bi-shield-lock"></i></div>
+                    <div>
+                        <div class="s-label">Security</div>
+                        <div class="s-desc">Change password & active sessions</div>
+                    </div>
+                </div>
+                <div class="s-chevron"><i class="bi bi-chevron-right"></i></div>
+            </a>
+            <a href="#" class="s-item">
+                <div class="s-item-info">
+                    <div class="s-icon"><i class="bi bi-bell"></i></div>
+                    <div>
+                        <div class="s-label">Notifications</div>
+                        <div class="s-desc">Choose what you hear from us</div>
+                    </div>
+                </div>
+                <div class="s-chevron"><i class="bi bi-chevron-right"></i></div>
+            </a>
+        </div>
+
+        <!-- Preferences & Support -->
+        <div class="s-section">
+            <a href="{% url 'prop:privacy_policy' %}" class="s-item">
+                <div class="s-item-info">
+                    <div class="s-icon"><i class="bi bi-file-earmark-lock"></i></div>
+                    <div>
+                        <div class="s-label">Privacy Policy</div>
+                        <div class="s-desc">Our commitment to your data</div>
+                    </div>
+                </div>
+                <div class="s-chevron"><i class="bi bi-chevron-right"></i></div>
+            </a>
+            <a href="{% url 'prop:terms' %}" class="s-item">
+                <div class="s-item-info">
+                    <div class="s-icon"><i class="bi bi-journal-text"></i></div>
+                    <div>
+                        <div class="s-label">Terms & Conditions</div>
+                        <div class="s-desc">Usage guidelines for our platform</div>
+                    </div>
+                </div>
+                <div class="s-chevron"><i class="bi bi-chevron-right"></i></div>
+            </a>
+            <a href="{% url 'prop:refund_policy' %}" class="s-item">
+                <div class="s-item-info">
+                    <div class="s-icon"><i class="bi bi-cash-stack"></i></div>
+                    <div>
+                        <div class="s-label">Refund Policy</div>
+                        <div class="s-desc">Information about payments and refunds</div>
+                    </div>
+                </div>
+                <div class="s-chevron"><i class="bi bi-chevron-right"></i></div>
+            </a>
+            <a href="{% url 'prop:help' %}" class="s-item">
+                <div class="s-item-info">
+                    <div class="s-icon"><i class="bi bi-question-circle"></i></div>
+                    <div>
+                        <div class="s-label">Help & Support</div>
+                        <div class="s-desc">Get assistance or report issues</div>
+                    </div>
+                </div>
+                <div class="s-chevron"><i class="bi bi-chevron-right"></i></div>
+            </a>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="s-section">
+            <form id="logout-form" action="{% url 'prop:logout' %}" method="post" style="display: none;">
+                {% csrf_token %}
+            </form>
+            <a href="javascript:void(0)" onclick="document.getElementById('logout-form').submit();" class="s-item s-logout">
+                <div class="s-item-info">
+                    <div class="s-icon"><i class="bi bi-box-arrow-right"></i></div>
+                    <div>
+                        <div class="s-label">Logout</div>
+                        <div class="s-desc">Sign out of your account</div>
+                    </div>
+                </div>
+                <div class="s-chevron"><i class="bi bi-chevron-right"></i></div>
+            </a>
+        </div>
+
+        <div class="s-footer">
+            <div>Weekdays Platform</div>
+            <div class="s-version">Version 1.2.0</div>
+        </div>
+    </div>
+
+    {% include 'footer.html' %}
+</body>
+</html>

@@ -1,0 +1,308 @@
+﻿{% load static %}
+{% load socialaccount %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: #fff;
+            width: 400px;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {opacity: 0; transform: translateY(20px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+
+
+          /* ✅ Logo Styling */
+        .logo-wrapper {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .logo-wrapper img {
+            width: 120px;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .alert-error {
+            background: #ffe5e5;
+            color: #cc0000;
+            border: 1px solid #ffb3b3;
+        }
+
+        .alert-success {
+            background: #e6ffed;
+            color: #0a7d32;
+            border: 1px solid #a6f4c5;
+        }
+
+        .alert-info {
+            background: #e7f3ff;
+            color: #0056b3;
+            border: 1px solid #b3d7ff;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+            position: relative;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 6px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 5px rgba(102,126,234,0.4);
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 42px;
+            cursor: pointer;
+            color: #777;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: #667eea;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .login-btn:hover {
+            background: #5a67d8;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 13px;
+            color: #888;
+            position: relative;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            height: 1px;
+            width: 40%;
+            background: #ddd;
+            position: absolute;
+            top: 50%;
+        }
+
+        .divider::before { left: 0; }
+        .divider::after { right: 0; }
+
+        .social-btn {
+            width: 100%;
+            padding: 11px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: 0.3s;
+        }
+
+        .google-btn {
+            background: #db4437;
+        }
+
+        .google-btn:hover {
+            background: #c23321;
+        }
+
+        .facebook-btn {
+            background: #3b5998;
+        }
+
+        .facebook-btn:hover {
+            background: #2d4373;
+        }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 13px;
+        }
+
+        .footer-text a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer-text a:hover {
+            text-decoration: underline;
+        }
+
+         /* Mobile */
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 25px 20px;
+                
+            }
+
+            .logo-wrapper img {
+                width: 90px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+
+    <div class="logo-wrapper">
+        <img src="{% static 'images/fav-icon.png' %}" alt="Logo">
+    </div>
+
+    <h2>Login</h2>
+
+    <!-- Django Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert 
+                {% if message.tags == 'error' %}alert-error
+                {% elif message.tags == 'success' %}alert-success
+                {% else %}alert-info
+                {% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label>Email/Phone</label>
+            {{ login_form.username }}
+        </div>
+
+        <div class="form-group">
+            <label>Password</label>
+            {{ login_form.password }}
+            <i class="fa-solid fa-eye toggle-password" onclick="togglePassword()"></i>
+        </div>
+
+        <button type="submit" class="login-btn">Login</button>
+    </form>
+
+    <div class="divider">OR</div>
+
+    <!-- Google Login -->
+    <a href="{% provider_login_url 'google' %}">
+        <button class="login-btn" type="button" style="background: #c23321;">
+            <i class="fa-brands fa-google"></i>
+            Continue with Google
+        </button>
+    </a>
+
+    <div class="footer-text">
+        <p><a href="{% url 'prop:forgetPass' %}">Forgot Password?</a></p>
+        <p>Don't have an account?
+            <a href="{% url 'prop:register_choice' %}">Register</a>
+        </p>
+    </div>
+
+</div>
+
+<script>
+function togglePassword() {
+    const passwordField = document.querySelector("input[type='password'], input[type='text'][name$='password']");
+    const icon = document.querySelector(".toggle-password");
+
+    if (passwordField.type === "password") {
+        passwordField.type = "text";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+    } else {
+        passwordField.type = "password";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+    }
+}
+</script>
+
+</body>
+</html>

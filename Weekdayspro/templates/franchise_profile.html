@@ -1,0 +1,398 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ profile.username }} | Franchise Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{ profile.username }}'s Franchise Profile on Weekdays.">
+    <link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'css/franchise_profile.css' %}">
+</head>
+
+<body>
+    {% include 'NavBar.html' %}
+
+    <div class="fp-page">
+
+        <!-- ══════════════════════════════
+             PROFILE HEADER
+        ══════════════════════════════ -->
+        <div class="fp-header-card">
+
+            <!-- Top icons: edit + settings -->
+            <div class="fp-header-icons">
+                <button class="fp-icon-btn" title="Edit Profile" onclick="openModal('editModal')">
+                    <i class="bi bi-pencil-fill"></i>
+                </button>
+                <button class="fp-icon-btn" title="Settings" onclick="openSettingsSheet()">
+                    <i class="bi bi-gear-fill"></i>
+                </button>
+            </div>
+
+            <!-- Avatar + Info -->
+            <div class="fp-profile-row">
+                <div class="fp-avatar">
+                    {% if profile.profile_image_path %}
+                    <img src="{{ profile.profile_image_path.url }}" alt="{{ profile.username }}">
+                    {% else %}
+                    {{ profile.username|first|upper }}
+                    {% endif %}
+                </div>
+                <div class="fp-meta">
+                    <h1 class="fp-name">{{ profile.first_name|default:profile.username|title }}</h1>
+                    <span class="fp-role-tag"><i class="bi bi-patch-check-fill"></i> Franchise Partner</span>
+                    <p class="fp-location"><i class="bi bi-geo-alt-fill"></i> {{ profile.location|default:"Location not set" }}</p>
+                </div>
+            </div>
+
+            <!-- Referral code pill -->
+            <div class="fp-referral-row">
+                <span class="fp-referral-label"><i class="bi bi-qr-code"></i> Referral Code</span>
+                <span class="fp-referral-code">{{ profile.user_referral_code|default:"N/A" }}</span>
+                <button class="fp-copy-btn" onclick="copyCode()" title="Copy">
+                    <i class="bi bi-clipboard"></i>
+                </button>
+            </div>
+
+            <!-- Stats Grid (6 Items, 3 per row) -->
+            <div class="fp-stats-grid">
+                <div class="fp-stat-card active" id="btn-assigned" onclick="switchTab('assigned')">
+                    <span class="fp-stat-val">{{ assigned }}</span>
+                    <span class="fp-stat-lbl">Assigned</span>
+                </div>
+                <div class="fp-stat-card" id="btn-verified" onclick="switchTab('verified')">
+                    <span class="fp-stat-val">{{ verified }}</span>
+                    <span class="fp-stat-lbl">Verified</span>
+                </div>
+                <div class="fp-stat-card" id="btn-pending" onclick="switchTab('pending')">
+                    <span class="fp-stat-val">{{ pending }}</span>
+                    <span class="fp-stat-lbl">Pending</span>
+                </div>
+                <div class="fp-stat-card" id="btn-refer" onclick="switchTab('refer')">
+                    <span class="fp-stat-val">{{ referred_users|length }}</span>
+                    <span class="fp-stat-lbl">Referrals</span>
+                </div>
+                <div class="fp-stat-card" id="btn-earnings" onclick="switchTab('earnings')">
+                    <i class="bi bi-wallet2" style="font-size: 20px; color: var(--fp-accent); margin-bottom: 2px;"></i>
+                    <span class="fp-stat-lbl">Earnings</span>
+                </div>
+                <div class="fp-stat-card" id="btn-reffer-code" onclick="shareCode()">
+                    <i class="bi bi-share-fill" style="font-size: 18px; color: var(--fp-accent); margin-bottom: 4px;"></i>
+                    <span class="fp-stat-lbl">Refer</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════
+             TAB SECTIONS
+        ══════════════════════════════ -->
+
+        <!-- ASSIGNED -->
+        <div id="tab-assigned" class="fp-section">
+            {% for task in assigned_tasks %}
+            <div class="fp-prop-card">
+                <div class="fp-prop-img-wrap">
+                    <img src="{% if task.property.image %}{{ task.property.image.url }}{% else %}{% static 'images/fav-icon.png' %}{% endif %}"
+                        alt="Property">
+
+                    {% if task.property.display_status == "Verified" %}
+                    <span class="fp-prop-badge fp-badge-verified"><i class="bi bi-patch-check-fill"></i> Verified</span>
+                    {% elif task.property.display_status == "Pending" %}
+                    <span class="fp-prop-badge fp-badge-pending">Awaiting Confirmation</span>
+                    {% else %}
+                    <span class="fp-prop-badge fp-badge-notverified">Not Verified</span>
+                    {% endif %}
+                </div>
+                <div class="fp-prop-body">
+                    <h3>{{ task.property.projectName|default:"Property" }}</h3>
+                    <p><i class="bi bi-house-door"></i> {{ task.property.selectProperty }}</p>
+                    <p><i class="bi bi-geo-alt"></i> {{ task.property.address|default:"Location N/A" }}</p>
+                </div>
+                <div class="fp-prop-footer">
+                    {% if task.property.display_status == "Not Verified" %}
+                    <a href="{% url 'prop:verify_property_with_id' task.property.id %}" class="fp-btn fp-btn-primary">
+                        <i class="bi bi-check-circle"></i> Verify Now
+                    </a>
+                    {% else %}
+                    <a href="{% url 'prop:property_detail' task.property.id %}" class="fp-btn fp-btn-outline">
+                        <i class="bi bi-eye"></i> View Property
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <div class="fp-empty">
+                <i class="bi bi-inbox"></i>
+                <p>No assigned properties yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- VERIFIED -->
+        <div id="tab-verified" class="fp-section" style="display:none;">
+            {% for task in verified_tasks %}
+            <div class="fp-prop-card">
+                <div class="fp-prop-img-wrap">
+                    <img src="{% if task.property.image %}{{ task.property.image.url }}{% else %}{% static 'images/fav-icon.png' %}{% endif %}"
+                        alt="Property">
+                    <span class="fp-prop-badge fp-badge-verified"><i class="bi bi-patch-check-fill"></i> Verified</span>
+                </div>
+                <div class="fp-prop-body">
+                    <h3>{{ task.property.projectName|default:"Property" }}</h3>
+                    <p><i class="bi bi-house-door"></i> {{ task.property.selectProperty }}</p>
+                    <p><i class="bi bi-geo-alt"></i> {{ task.property.address|default:"Location N/A" }}</p>
+                </div>
+                <div class="fp-prop-footer">
+                    <a href="{% url 'prop:property_detail' task.property.id %}" class="fp-btn fp-btn-outline">
+                        <i class="bi bi-eye"></i> View
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="fp-empty">
+                <i class="bi bi-patch-check"></i>
+                <p>No verified properties yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- PENDING -->
+        <div id="tab-pending" class="fp-section" style="display:none;">
+            {% for task in pending_tasks %}
+            <div class="fp-prop-card">
+                <div class="fp-prop-img-wrap">
+                    <img src="{% if task.property.image %}{{ task.property.image.url }}{% else %}{% static 'images/fav-icon.png' %}{% endif %}"
+                        alt="Property">
+                    <span class="fp-prop-badge fp-badge-pending">Pending</span>
+                </div>
+                <div class="fp-prop-body">
+                    <h3>{{ task.property.projectName|default:"Property" }}</h3>
+                    <p><i class="bi bi-house-door"></i> {{ task.property.selectProperty }}</p>
+                    <p><i class="bi bi-geo-alt"></i> {{ task.property.address|default:"Location N/A" }}</p>
+                </div>
+                <div class="fp-prop-footer">
+                    <a href="{% url 'prop:verify_property_with_id' task.property.id %}" class="fp-btn fp-btn-primary">
+                        <i class="bi bi-check-circle"></i> Verify Now
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="fp-empty">
+                <i class="bi bi-clock-history"></i>
+                <p>No pending verifications.</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- EARNINGS -->
+        <div id="tab-earnings" class="fp-section" style="display:none;">
+            <h2 class="fp-section-title"><i class="bi bi-graph-up-arrow"></i> Earnings</h2>
+            {% for task in verified_tasks %}
+            <div class="fp-earnings-card">
+                <div class="fp-earnings-top">
+                    <h3>{{ task.property.projectName|default:task.property.selectProperty|truncatechars:22 }}</h3>
+                    <span class="fp-type-badge">DTCP</span>
+                </div>
+                <p class="fp-earnings-location">
+                    <i class="bi bi-geo-alt"></i> {{ task.property.address|default:"Location N/A"|truncatechars:40 }}
+                </p>
+                <div class="fp-earnings-boxes">
+                    <div class="fp-e-box">
+                        <label>Prop Value</label>
+                        <b>₹{{ task.amount|default:"0" }}</b>
+                    </div>
+                    <div class="fp-e-box">
+                        <label>Commission</label>
+                        <b>1%</b>
+                    </div>
+                    <div class="fp-e-box">
+                        <label>Earnings</label>
+                        <b class="fp-earn-green">₹{{ task.commission|floatformat:0|default:"0" }}</b>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="fp-empty">
+                <i class="bi bi-wallet2"></i>
+                <p>Verify properties to start earning.</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- REFERRALS -->
+        <div id="tab-refer" class="fp-section" style="display:none;">
+            <h2 class="fp-section-title"><i class="bi bi-people-fill"></i> My Referrals</h2>
+            {% for u in referred_users %}
+            <div class="fp-refer-card">
+                <div class="fp-refer-avatar">{{ u.username|first|upper }}</div>
+                <div class="fp-refer-info">
+                    <strong>{{ u.username }}</strong>
+                    <span>{{ u.role }} · Joined {{ u.date_joined|date:"d M Y" }}</span>
+                </div>
+            </div>
+            {% empty %}
+            <div class="fp-empty">
+                <i class="bi bi-people"></i>
+                <p>No referrals yet. Share your code!</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- REFER CODE -->
+        <div id="tab-reffer-code" class="fp-section" style="display:none;">
+            <h2 class="fp-section-title"><i class="bi bi-share-fill"></i> Refer & Earn</h2>
+            <div class="fp-code-card">
+                <p class="fp-code-label">Your Referral Code</p>
+                <div class="fp-code-display">{{ profile.user_referral_code|default:"----" }}</div>
+                <button class="fp-btn fp-btn-primary" style="width:100%;" onclick="copyCode()">
+                    <i class="bi bi-clipboard-check"></i> Copy Code
+                </button>
+                <button class="fp-btn fp-btn-outline" style="width:100%; margin-top:10px;" onclick="shareCode()">
+                    <i class="bi bi-whatsapp"></i> Share via WhatsApp
+                </button>
+            </div>
+        <!-- NEWS -->
+        <div id="tab-news" class="fp-section" style="display:none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 class="fp-section-title" style="margin:0;"><i class="bi bi-newspaper"></i> News Feed</h2>
+                {% if is_owner %}
+                <a href="{% url 'prop:news_create' %}" class="fp-btn fp-btn-primary" style="width:auto; padding: 8px 16px; font-size: 13px;">
+                    <i class="bi bi-plus-circle"></i> Create News
+                </a>
+                {% endif %}
+            </div>
+
+            {% for post in news_posts %}
+            <div class="fp-news-card">
+                <div class="fp-news-header">
+                    <div class="fp-news-avatar">
+                        {% if profile.profile_image_path %}
+                        <img src="{{ profile.profile_image_path.url }}" alt="Profile">
+                        {% else %}
+                        {{ profile.username|first|upper }}
+                        {% endif %}
+                    </div>
+                    <div class="fp-news-meta">
+                        <strong>{{ profile.username }}</strong>
+                        <span>{{ post.created_at|date:"d M Y" }}</span>
+                    </div>
+                </div>
+                <div class="fp-news-body">
+                    <h4>{{ post.heading }}</h4>
+                    <p>{{ post.news_content }}</p>
+                    {% if post.media_type == 'image' and post.image %}
+                    <img src="{{ post.image.url }}" class="fp-news-media">
+                    {% elif post.media_type == 'video' and post.video %}
+                    <video controls class="fp-news-media">
+                        <source src="{{ post.video.url }}" type="video/mp4">
+                    </video>
+                    {% endif %}
+                </div>
+                {% if is_owner %}
+                <div class="fp-news-actions">
+                    <a href="{% url 'prop:news_edit' post.pk %}" class="fp-link-edit">Edit</a>
+                    <a href="{% url 'prop:news_delete' post.pk %}" class="fp-link-delete" onclick="return confirm('Delete this post?')">Delete</a>
+                </div>
+                {% endif %}
+            </div>
+            {% empty %}
+            <div class="fp-empty">
+                <i class="bi bi-newspaper"></i>
+                <p>No news updates yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div><!-- /fp-page -->
+
+    <!-- ══════════════════════════════
+         EDIT PROFILE MODAL
+    ══════════════════════════════ -->
+    <div id="editModal" class="fp-modal" onclick="if(event.target===this)closeModal('editModal')">
+        <div class="fp-modal-content">
+            <div class="fp-modal-header">
+                <h2>Edit Profile</h2>
+                <button class="fp-modal-close" onclick="closeModal('editModal')"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <form method="POST" enctype="multipart/form-data" action="{% url 'prop:franchise_edit' %}">
+                {% csrf_token %}
+                <div class="fp-form-group">
+                    <label>Office Location</label>
+                    <input type="text" name="location" value="{{ profile.location }}"
+                        placeholder="Enter your franchise area">
+                </div>
+                <div class="fp-form-group">
+                    <label>Contact Number</label>
+                    <input type="text" name="contact_number" value="{{ profile.phone }}" placeholder="Phone number">
+                </div>
+                <div class="fp-form-group">
+                    <label>Profile Picture</label>
+                    <input type="file" name="profile_image" accept="image/*">
+                </div>
+                <button type="submit" class="fp-btn fp-btn-primary" style="width:100%;">
+                    <i class="bi bi-check-circle-fill"></i> Save Changes
+                </button>
+                <button type="button" class="fp-btn fp-btn-outline" style="width:100%; margin-top:10px;"
+                    onclick="closeModal('editModal')">
+                    Cancel
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        /* ── TAB SWITCH ── */
+        const TAB_IDS = ['assigned', 'verified', 'pending', 'earnings', 'refer', 'reffer-code'];
+
+        function switchTab(id) {
+            TAB_IDS.forEach(t => {
+                const sec = document.getElementById('tab-' + t);
+                const btn = document.getElementById('btn-' + t);
+                if (sec) sec.style.display = (t === id) ? 'block' : 'none';
+                if (btn) btn.classList.toggle('active', t === id);
+            });
+        }
+
+        /* ── MODAL ── */
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        /* ── SETTINGS ── */
+        function openSettingsSheet() {
+            window.location.href = "{% url 'prop:settings' %}";
+        }
+
+        /* ── COPY CODE ── */
+        function copyCode() {
+            const code = '{{ profile.user_referral_code|default:"" }}';
+            if (!code) { alert('No referral code available.'); return; }
+            navigator.clipboard.writeText(code)
+                .then(() => alert('Code copied: ' + code))
+                .catch(() => alert('Could not copy. Code: ' + code));
+        }
+
+        /* ── SHARE CODE ── */
+        function shareCode() {
+            const code = '{{ profile.user_referral_code|default:"" }}';
+            const text = 'Join me on Weekdays using my referral code: ' + code;
+            if (navigator.share) {
+                navigator.share({ title: 'Weekdays Referral', text: text, url: window.location.origin });
+            } else {
+                const wa = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(text);
+                window.open(wa, '_blank');
+            }
+        }
+
+        /* ── INIT: show assigned by default ── */
+        document.addEventListener('DOMContentLoaded', () => switchTab('assigned'));
+    </script>
+
+    {% include 'footer.html' %}
+</body>
+
+</html>

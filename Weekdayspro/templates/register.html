@@ -1,0 +1,626 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Registration</title>
+  <link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/register.css' %}">
+</head>
+
+<body>
+  <div class="register-container">
+    <div class="header">
+      <img src="{% static 'images/fav-icon.png' %}" alt="Logo" />
+      <h1>GoNestro</h1>
+    </div>
+
+    <!-- STEPPER -->
+    <!-- <div class="stepper">
+      <div class="step-item active" data-step="1">
+        <div class="step-circle">1</div>
+        <div class="step-label">Account</div>
+      </div>
+      <div class="step-item" data-step="2">
+        <div class="step-circle">2</div>
+        <div class="step-label">Profile</div>
+      </div>
+      <div class="step-item" data-step="3">
+        <div class="step-circle">3</div>
+        <div class="step-label">Verify</div>
+      </div>
+      <div class="step-item" data-step="4">
+        <div class="step-circle">4</div>
+        <div class="step-label">Plan</div>
+      </div>
+    </div> -->
+
+    <div id="signup-success-msg" class="success-toast">
+      Account created successfully!
+    </div>
+
+    <form id="register-form" method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="hidden" name="username" id="id_username">
+      <input type="hidden" name="location" id="id_location">
+
+      <!-- STEP 1: ACCOUNT -->
+      <div class="form-step active" id="step-1">
+        <div class="field-group">
+          <label>Username</label>
+          <input type="text" id="username-input" class="input-control" placeholder="Enter your Username" required>
+        </div>
+
+        <div class="field-group">
+          <label>Email Address</label>
+          <input type="email" name="email" class="input-control" placeholder="example@mail.com" required>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="field-group">
+            <label>Locality</label>
+            <input type="text" id="loc-locality" class="input-control" placeholder="Area" required>
+          </div>
+          <div class="field-group">
+            <label>City</label>
+            <input type="text" id="loc-city" class="input-control" placeholder="City" required>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="field-group">
+            <label>State</label>
+            <input type="text" id="loc-state" class="input-control" placeholder="State" required>
+          </div>
+          <div class="field-group">
+            <label>Country</label>
+            <input type="text" id="loc-country" class="input-control" placeholder="Country" required>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>Password</label>
+          <div class="password-toggle">
+            <input type="password" name="password1" id="id_password1" class="input-control"
+              placeholder="Min 8 characters" required>
+            <i class="bi bi-eye toggle-password" data-target="id_password1"></i>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>Confirm Password</label>
+          <div class="password-toggle">
+            <input type="password" id="id_password2" class="input-control" placeholder="Repeat password" required>
+            <i class="bi bi-eye toggle-password" data-target="id_password2"></i>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>Referral Code (Optional)</label>
+          <input type="text" name="referred_by_code" class="input-control" placeholder="Enter code if any">
+        </div>
+
+        <button type="button" id="btn-step-1" class="btn btn-primary">Create Account <i
+            class="bi bi-arrow-right"></i></button>
+      </div>
+
+      <!-- STEP 2: PROFILE -->
+      <div class="form-step" id="step-2">
+        <div class="profile-upload">
+          <div class="image-preview-wrapper" onclick="document.getElementById('id_profile_image_path').click()">
+            <img src="{% static 'images/Default_profile_picture.jpeg' %}" id="image-preview" alt="Profile">
+            <div class="upload-overlay">
+              <i class="bi bi-camera-fill text-white fs-4"></i>
+            </div>
+            <div class="plus-badge">
+              <i class="bi bi-plus-lg"></i>
+            </div>
+          </div>
+          <input type="file" name="profile_image_path" id="id_profile_image_path" class="hidden" accept="image/*">
+        </div>
+
+        <div class="field-group">
+          <label>Select Your Role</label>
+          {{ form.role }}
+        </div>
+
+        <div id="company-name-container" class="field-group hidden">
+          <label>Company / Brand Name</label>
+          <input type="text" name="company_name" class="input-control" placeholder="Enter your Company Name">
+        </div>
+
+        <div id="company-logo-container" class="field-group hidden">
+          <label>Company Logo</label>
+          <input type="file" name="company_logo_path" class="input-control" accept="image/*">
+        </div>
+
+        <div id="about-us-container" class="field-group hidden">
+          <label>Bio / Description</label>
+          <textarea name="description" class="input-control" rows="3" placeholder="Tell us about yourself"></textarea>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div id="experience-container" class="field-group hidden">
+            <label>Experience (Years)</label>
+            <input type="number" name="experience" class="input-control" placeholder="e.g. 5">
+          </div>
+          <div id="deals-container" class="field-group hidden">
+            <label>Deals Done</label>
+            <input type="text" name="deals" class="input-control" placeholder="e.g. 20+">
+          </div>
+        </div>
+
+        <div id="area-serves-container" class="field-group hidden">
+          <label>Areas You Serve (Press Enter)</label>
+          <div class="tag-container" id="area-tag-container">
+            <div id="area-tags" class="tags-list"></div>
+            <input type="text" id="area-input" placeholder="Add location...">
+          </div>
+          <input type="hidden" name="area_serves" id="id_area_serves">
+        </div>
+
+        <div id="whatsapp-container" class="field-group hidden">
+          <label>WhatsApp Number</label>
+          <input type="text" name="whatsapp_number" class="input-control" placeholder="+91 00000 00000">
+        </div>
+
+        <div id="professional-fields" class="field-group hidden">
+          <label>Professional Category</label>
+          <select id="id_category" name="category" class="input-control"></select>
+        </div>
+
+        <div id="marketer-fields" class="field-group hidden">
+          <label>Interested Categories</label>
+          <ul class="category-list">
+            {% for checkbox in form.marketer_category %}
+            <li class="category-item">
+              {{ checkbox.tag }}
+              <span>{{ checkbox.choice_label }}</span>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <button type="button" id="btn-step-2" class="btn btn-primary">Continue <i
+            class="bi bi-arrow-right"></i></button>
+      </div>
+
+      <!-- STEP 3: VERIFY -->
+      <div class="form-step" id="step-3">
+        <div class="header" style="margin-bottom: 24px;">
+          <i class="bi bi-shield-check text-primary" style="font-size: 48px;"></i>
+          <h2 style="font-size: 20px; margin-top: 12px;">Verify Mobile Number</h2>
+          <p class="text-muted" style="font-size: 14px;">We'll send an OTP to your Mobile</p>
+        </div>
+
+        <div class="field-group">
+          <label>Mobile Number</label>
+          <div class="otp-row">
+            <input type="text" name="phone" id="id_phone" class="input-control" placeholder="Mobile Number" required>
+            <button type="button" id="send-otp-btn" class="btn btn-primary"
+              style="width: auto; padding: 0 20px;">Send</button>
+          </div>
+        </div>
+
+        <div id="otp-verify-row" class="field-group hidden">
+          <label>Enter 6-digit OTP</label>
+          <div class="otp-row">
+            <input type="text" id="otp-input" class="input-control" placeholder="0 0 0 0 0 0">
+            <button type="button" id="verify-otp-btn" class="btn btn-primary"
+              style="width: auto; padding: 0 20px;">Verify</button>
+          </div>
+        </div>
+
+        <div id="otp-message" style="font-size: 13px; margin-bottom: 16px; text-align: center;"></div>
+        <input type="hidden" id="otp-verified" value="false">
+
+        <button type="button" id="btn-step-3" class="btn btn-primary" disabled style="opacity: 0.6;">Continue <i
+            class="bi bi-arrow-right"></i></button>
+      </div>
+
+      <!-- STEP 4: PLAN -->
+      <div class="form-step" id="step-4">
+        <div class="header" style="margin-bottom: 24px;">
+          <h2 style="font-size: 20px;">Choose a Plan</h2>
+          <p class="text-muted" style="font-size: 14px;">Elevate your reach on Weekdays</p>
+        </div>
+
+        <input type="hidden" name="plan_type" id="selected-plan">
+        <div class="plan-grid">
+          <div class="plan-card" data-value="MARKETER_EXPORT">
+            <h3>Experts</h3>
+            <ul class="plan-features">
+              <li><i class="bi bi-check-circle-fill"></i> 5 Properties</li>
+              <li><i class="bi bi-check-circle-fill"></i> 5 Reels</li>
+              <li><i class="bi bi-check-circle-fill"></i> Direct Leads</li>
+            </ul>
+          </div>
+          <div class="plan-card" data-value="MARKETER_EXPORT_PRO">
+            <h3>Experts Pro</h3>
+            <ul class="plan-features">
+              <li><i class="bi bi-check-circle-fill"></i> 10 Properties</li>
+              <li><i class="bi bi-check-circle-fill"></i> 10 Reels</li>
+              <li><i class="bi bi-check-circle-fill"></i> Direct Leads</li>
+            </ul>
+          </div>
+          <div class="plan-card" data-value="MARKETER_EXPORT_PREMIUM">
+            <h3>Premium</h3>
+            <ul class="plan-features">
+              <li><i class="bi bi-check-circle-fill"></i> Unlimited Listings</li>
+              <li><i class="bi bi-check-circle-fill"></i> Priority Placement</li>
+              <li><i class="bi bi-check-circle-fill"></i> Direct Reach</li>
+            </ul>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <button type="button" id="skip-btn" class="btn btn-secondary">Skip for Now</button>
+          <button type="button" id="btn-step-4" class="btn btn-primary">Complete <i
+              class="bi bi-check2-all"></i></button>
+        </div>
+      </div>
+    </form>
+
+    <div class="login-footer">
+      Already have an account? <a href="/login/">Sign In</a>
+    </div>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      let currentStep = 1;
+      const steps = document.querySelectorAll(".form-step");
+      const stepItems = document.querySelectorAll(".step-item");
+
+      // Constants
+      const locParts = ["loc-locality", "loc-city", "loc-state", "loc-country"];
+      const profCats = ["Plumber", "Painter", "Electrician", "Constructor", "Centring", "Interior designer", "Architecture", "Civil engineer", "Tiles works", "Marble works", "Granite works", "Wood works", "Glass works", "Steel railing works", "Carpenter", "Doozer works", "JCB works", "Borewells", "Material supplier"];
+
+      // Utility Functions
+      function showStep(step) {
+        steps.forEach(s => s.classList.remove("active"));
+        stepItems.forEach(s => {
+          const sNum = parseInt(s.dataset.step);
+          s.classList.remove("active", "completed");
+          if (sNum === step) s.classList.add("active");
+          if (sNum < step) s.classList.add("completed");
+        });
+        const target = document.getElementById(`step-${step}`);
+        if (target) target.classList.add("active");
+        currentStep = step;
+        window.location.hash = "step" + step;
+        localStorage.setItem("reg_step", step);
+        window.scrollTo(0, 0);
+      }
+
+      function updateLocation() {
+        const parts = locParts.map(id => document.getElementById(id).value.trim()).filter(Boolean);
+        document.getElementById("id_location").value = parts.join(", ");
+      }
+
+      function updateFullName() {
+        const userVal = document.getElementById("username-input").value.trim();
+        if (userVal) {
+          document.getElementById("id_username").value = userVal;
+        }
+      }
+
+      // Role-based visibility
+      const roleSelect = document.getElementById("id_role");
+      if (roleSelect) roleSelect.className = "input-control"; // Apply style
+
+      const profFields = document.getElementById("professional-fields");
+      const markFields = document.getElementById("marketer-fields");
+
+      function updateRoleFields() {
+        if (!roleSelect) return;
+        const role = roleSelect.value;
+        const extras = [
+          document.getElementById("company-name-container"),
+          document.getElementById("company-logo-container"),
+          document.getElementById("about-us-container"),
+          document.getElementById("experience-container"),
+          document.getElementById("deals-container"),
+          document.getElementById("area-serves-container"),
+          document.getElementById("whatsapp-container")
+        ];
+
+        // Initially hide all dynamic components
+        if (profFields) profFields.classList.add("hidden");
+        if (markFields) markFields.classList.add("hidden");
+        extras.forEach(el => { if (el) el.classList.add("hidden"); });
+
+        // If no role is selected, stop here
+        if (!role) return;
+
+        // Logic for showing specific fields
+        const isSpecialRole = (role === "PROFESSIONAL" || role === "MARKETER");
+        if (isSpecialRole) {
+          extras.forEach(el => {
+            if (el) {
+              // Hide company fields for PROFESSIONALS
+              if (role === "PROFESSIONAL" && (el.id === "company-name-container" || el.id === "company-logo-container")) {
+                el.classList.add("hidden");
+              } else {
+                el.classList.remove("hidden");
+              }
+            }
+          });
+
+          if (role === "PROFESSIONAL" && profFields) {
+            profFields.classList.remove("hidden");
+            const sel = document.getElementById("id_category");
+            if (sel) {
+              sel.innerHTML = '<option value="">Select Category</option>';
+              profCats.forEach(c => sel.add(new Option(c, c)));
+            }
+          } else if (role === "MARKETER" && markFields) {
+            markFields.classList.remove("hidden");
+          }
+        }
+      }
+
+      if (roleSelect) {
+        roleSelect.addEventListener("change", updateRoleFields);
+        updateRoleFields();
+      }
+
+      // Tag Input Logic
+      const areaInput = document.getElementById("area-input");
+      const areaTagsContainer = document.getElementById("area-tags");
+      const hiddenAreaInput = document.getElementById("id_area_serves");
+      let areaTags = [];
+
+      function addAreaTag(text) {
+        text = text.trim();
+        if (text && !areaTags.includes(text)) {
+          areaTags.push(text);
+          const chip = document.createElement("div");
+          chip.className = "tag-chip";
+          chip.innerHTML = `<span>${text}</span><i class="bi bi-x remove-tag" data-tag="${text}"></i>`;
+          areaTagsContainer.appendChild(chip);
+          hiddenAreaInput.value = areaTags.join(", ");
+        }
+      }
+
+      if (areaInput) {
+        areaInput.addEventListener("keydown", function (e) {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            addAreaTag(this.value);
+            this.value = "";
+          }
+        });
+      }
+
+      if (areaTagsContainer) {
+        areaTagsContainer.addEventListener("click", function (e) {
+          if (e.target.classList.contains("remove-tag")) {
+            const tagToRemove = e.target.dataset.tag;
+            areaTags = areaTags.filter(t => t !== tagToRemove);
+            e.target.parentElement.remove();
+            hiddenAreaInput.value = areaTags.join(", ");
+          }
+        });
+      }
+
+      // --- STEP 1: SIGNUP ---
+      document.getElementById("btn-step-1").addEventListener("click", function () {
+        updateFullName();
+        updateLocation();
+
+        const data = {
+          username: document.getElementById("id_username").value,
+          email: document.querySelector("input[name='email']").value,
+          password: document.getElementById("id_password1").value,
+          location: document.getElementById("id_location").value,
+          referred_by_code: document.querySelector("input[name='referred_by_code']").value
+        };
+
+        if (!data.username || !data.email || !data.password) {
+          alert("Please fill all required fields.");
+          return;
+        }
+
+        if (data.password !== document.getElementById("id_password2").value) {
+          alert("Passwords do not match.");
+          return;
+        }
+
+        fetch("/register/step1/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "X-CSRFToken": "{{ csrf_token }}" },
+          body: JSON.stringify(data)
+        })
+          .then(res => res.json())
+          .then(res => {
+            if (res.success) {
+              const toast = document.getElementById("signup-success-msg");
+              toast.style.display = "block";
+              setTimeout(() => {
+                toast.style.display = "none";
+                showStep(2);
+              }, 1500);
+            } else {
+              alert(res.message);
+            }
+          })
+          .catch(err => alert("Something went wrong. Please try again."));
+      });
+
+      // --- STEP 2: PROFILE ---
+      document.getElementById("btn-step-2").addEventListener("click", function () {
+        const formData = new FormData();
+        formData.append("role", document.getElementById("id_role").value);
+        formData.append("description", document.querySelector("textarea[name='description']").value);
+        formData.append("experience", document.querySelector("input[name='experience']").value);
+        formData.append("deals", document.querySelector("input[name='deals']").value);
+        formData.append("area_serves", document.getElementById("id_area_serves").value);
+        formData.append("whatsapp_number", document.querySelector("input[name='whatsapp_number']").value);
+        formData.append("company_name", document.querySelector("input[name='company_name']").value);
+
+        if (document.getElementById("id_category")) {
+          formData.append("category", document.getElementById("id_category").value);
+        }
+
+        const profileImg = document.getElementById("id_profile_image_path").files[0];
+        if (profileImg) {
+          formData.append("profile_image_path", profileImg);
+        }
+
+        const companyLogo = document.querySelector("input[name='company_logo_path']").files[0];
+        if (companyLogo) {
+          formData.append("company_logo_path", companyLogo);
+        }
+
+        const marketerCats = Array.from(document.querySelectorAll("input[name='marketer_category']:checked")).map(cb => cb.value);
+        formData.append("marketer_category", JSON.stringify(marketerCats));
+
+        fetch("/register/step2/", {
+          method: "POST",
+          headers: { "X-CSRFToken": "{{ csrf_token }}" }, // FormData handles Content-Type automatically
+          body: formData
+        })
+          .then(res => res.json())
+          .then(res => {
+            if (res.success) {
+              showStep(3);
+            } else {
+              alert(res.message);
+            }
+          })
+          .catch(err => {
+            console.error(err);
+            alert("Failed to save profile. Please try again.");
+          });
+      });
+
+      // --- STEP 3: OTP ---
+      document.getElementById("send-otp-btn").addEventListener("click", function () {
+        const phone = document.querySelector("input[name='phone']").value;
+        const msgBox = document.getElementById("otp-message");
+        if (!phone) { alert("Enter phone number"); return; }
+
+        fetch(`/otp/send/?phone=${phone}`)
+          .then(res => res.json())
+          .then(data => {
+            if (data.error) {
+              msgBox.style.color = "var(--error)";
+              msgBox.innerText = data.error;
+            } else {
+              document.getElementById("otp-verify-row").classList.remove("hidden");
+              msgBox.style.color = "var(--success)";
+              msgBox.innerText = "OTP sent successfully!";
+            }
+          });
+      });
+
+      document.getElementById("verify-otp-btn").addEventListener("click", function () {
+        const phone = document.querySelector("input[name='phone']").value;
+        const otp = document.getElementById("otp-input").value;
+        const msgBox = document.getElementById("otp-message");
+
+        fetch(`/otp/verify/?phone=${phone}&otp=${otp}`)
+          .then(res => res.json())
+          .then(data => {
+            if (data.error) {
+              msgBox.style.color = "var(--error)";
+              msgBox.innerText = data.error;
+            } else {
+              msgBox.style.color = "var(--success)";
+              msgBox.innerText = "Phone verified!";
+              document.getElementById("otp-verified").value = "true";
+              const nextBtn = document.getElementById("btn-step-3");
+              nextBtn.disabled = false;
+              nextBtn.style.opacity = "1";
+            }
+          });
+      });
+
+      document.getElementById("btn-step-3").addEventListener("click", () => {
+        const role = document.getElementById("id_role").value;
+        if (role === "PROFESSIONAL") {
+          // Skip Step 4 (Plans) for Professionals
+          window.location.href = "/";
+        } else {
+          showStep(4);
+        }
+      });
+
+      // --- STEP 4: PLANS ---
+      document.getElementById("btn-step-4").addEventListener("click", function () {
+        const plan = document.getElementById("selected-plan").value;
+        if (!plan) { alert("Please select a plan."); return; }
+
+        fetch("/register/subscribe/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest"
+          },
+          body: JSON.stringify({ plan_type: plan })
+        })
+          .then(res => res.json())
+          .then(res => {
+            if (res.success) {
+              localStorage.removeItem("reg_step");
+              window.location.hash = "";
+              window.location.href = "/";
+            } else {
+              alert(res.message || "Failed to update plan.");
+            }
+          })
+          .catch(err => {
+            console.error("Plan update failed:", err);
+            // Fallback: try regular form submit
+            document.getElementById("register-form").submit();
+          });
+      });
+
+      // --- STEP 4: PLANS ---
+      document.getElementById("skip-btn").addEventListener("click", () => {
+        localStorage.removeItem("reg_step");
+        window.location.hash = "";
+        window.location.href = "/";
+      });
+
+      document.querySelectorAll(".plan-card").forEach(card => {
+        card.addEventListener("click", () => {
+          document.querySelectorAll(".plan-card").forEach(c => c.classList.remove("active"));
+          card.classList.add("active");
+          document.getElementById("selected-plan").value = card.dataset.value;
+        });
+      });
+
+      // Password Toggle
+      document.querySelectorAll(".toggle-password").forEach(icon => {
+        icon.addEventListener("click", function () {
+          const input = document.getElementById(this.dataset.target);
+          input.type = input.type === "password" ? "text" : "password";
+          this.classList.toggle("bi-eye");
+          this.classList.toggle("bi-eye-slash");
+        });
+      });
+
+      // Profile Image Preview
+      document.getElementById("id_profile_image_path").addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          document.getElementById("image-preview").src = URL.createObjectURL(file);
+        }
+      });
+
+      // Initial Step Detection
+      const hashStep = parseInt(window.location.hash.replace("#step", ""));
+      const savedStep = parseInt(localStorage.getItem("reg_step"));
+      const startStep = hashStep || savedStep || 1;
+      if (startStep > 1) showStep(startStep);
+    });
+  </script>
+</body>
+
+</html>

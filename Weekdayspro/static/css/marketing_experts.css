@@ -1,0 +1,208 @@
+.marketing-experts-scroll-container {
+  position: relative;
+  padding: 0 40px;
+  margin: 40px 0;
+}
+@media (max-width: 768px) {
+  .marketing-experts-scroll-container {
+    padding: 0 10px;
+  }
+}
+
+.marketing-experts-scroll {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding: 20px 5px;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+.marketing-experts-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.expert-card {
+  min-width: 320px;
+  max-width: 340px;
+  background: var(--pro-card);
+  border-radius: 16px;
+  border: 1px solid var(--pro-border);
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  flex-shrink: 0;
+  font-family: "Inter", sans-serif;
+}
+@media (max-width: 768px) {
+  .expert-card {
+    min-width: 280px;
+    max-width: 85vw;
+    width: 85vw;
+    padding: 12px;
+  }
+  .expert-card .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 10px;
+  }
+  .expert-card .expert-header .profile-pic {
+    width: 45px;
+    height: 45px;
+  }
+  .expert-card .stats-grid .stat-item .details .val {
+    font-size: 12px;
+    white-space: normal;
+    word-break: break-word;
+  }
+}
+
+.expert-card .expert-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.expert-card .expert-header .profile-pic {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--pro-success);
+}
+.expert-card .expert-header .expert-info {
+  flex: 1;
+}
+.expert-card .expert-header .expert-info .name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--pro-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.expert-card .expert-header .expert-info .name i {
+  color: var(--pro-success);
+  font-size: 14px;
+}
+.expert-card .expert-header .expert-info .title {
+  font-size: 11px;
+  color: var(--pro-text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.expert-card .area-serves {
+  margin-bottom: 15px;
+}
+.expert-card .area-serves .label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--pro-text-primary);
+  margin-bottom: 6px;
+  display: block;
+}
+.expert-card .area-serves .pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.expert-card .area-serves .pills .pill {
+  padding: 3px 10px;
+  background: var(--pro-bg);
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--pro-text-secondary);
+}
+
+.expert-card .stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  background: var(--pro-bg);
+  padding: 12px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+}
+.expert-card .stats-grid .stat-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.expert-card .stats-grid .stat-item .icon {
+  width: 30px;
+  height: 30px;
+  background: var(--pro-card);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--pro-text-primary);
+  font-size: 14px;
+}
+.expert-card .stats-grid .stat-item .details .val {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--pro-text-primary);
+  display: block;
+}
+.expert-card .stats-grid .stat-item .details .lbl {
+  font-size: 10px;
+  color: var(--pro-text-secondary);
+  font-weight: 600;
+}
+
+.expert-card .expert-desc {
+  font-size: 12px;
+  color: var(--pro-text-secondary);
+  line-height: 1.5;
+  margin-bottom: 20px;
+  height: 36px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.expert-card .expert-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.expert-card .expert-actions .call-btn {
+  flex: 1;
+  padding: 10px;
+  background: var(--pro-text-primary);
+  color: white;
+  border-radius: 25px;
+  text-align: center;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: opacity 0.2s;
+}
+.expert-card .expert-actions .call-btn:hover {
+  opacity: 0.9;
+}
+.expert-card .expert-actions .icon-action {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--pro-border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--pro-text-primary);
+  font-size: 16px;
+  transition: all 0.2s;
+}
+.expert-card .expert-actions .icon-action:hover {
+  background: var(--pro-bg);
+  border-color: var(--pro-text-primary);
+}

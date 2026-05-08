@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profile Menu</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+            transition: 0.3s;
+            background: #f4f6f9;
+            color: #000;
+        }
+
+        /* Dark Mode */
+        body.dark {
+            background: #121212;
+            color: #fff;
+        }
+
+        .navbar {
+            background: #007bff;
+            padding: 15px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .profile-btn {
+            background: #fff;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Dropdown */
+        .dropdown {
+            position: relative;
+        }
+
+        .menu {
+            position: absolute;
+            right: 0;
+            top: 50px;
+            background: #fff;
+            width: 200px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            display: none;
+            overflow: hidden;
+        }
+
+        body.dark .menu {
+            background: #1e1e1e;
+        }
+
+        .menu a, .menu button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            text-align: left;
+            border: none;
+            background: none;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .menu a:hover, .menu button:hover {
+            background: #f0f0f0;
+        }
+
+        body.dark .menu a:hover,
+        body.dark .menu button:hover {
+            background: #333;
+        }
+
+        .toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .switch {
+            width: 40px;
+            height: 20px;
+            background: #ccc;
+            border-radius: 20px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .switch::before {
+            content: "";
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: white;
+            border-radius: 50%;
+            top: 1px;
+            left: 2px;
+            transition: 0.3s;
+        }
+
+        .switch.active {
+            background: #007bff;
+        }
+
+        .switch.active::before {
+            transform: translateX(20px);
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="dropdown">
+        <button class="profile-btn" onclick="toggleMenu()">👤 Profile</button>
+
+        <div class="menu" id="menu">
+            <a href="#">Edit Profile</a>
+            <a href="#">Help</a>
+            <a href="#">About Us</a>
+            <a href="#">Privacy</a>
+
+            <!-- Dark Mode Toggle -->
+            <div class="toggle">
+                <span style="padding:12px;">Dark Mode</span>
+                <div class="switch" id="darkSwitch" onclick="toggleDark()"></div>
+            </div>
+
+            <a href="#">Logout</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    const menu = document.getElementById("menu");
+    const body = document.body;
+    const switchBtn = document.getElementById("darkSwitch");
+
+    function toggleMenu() {
+        menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
+
+    function toggleDark() {
+        body.classList.toggle("dark");
+        switchBtn.classList.toggle("active");
+
+        // Save preference
+        if (body.classList.contains("dark")) {
+            localStorage.setItem("theme", "dark");
+        } else {
+            localStorage.setItem("theme", "light");
+        }
+    }
+
+    // Load saved theme
+    if (localStorage.getItem("theme") === "dark") {
+        body.classList.add("dark");
+        switchBtn.classList.add("active");
+    }
+
+    // Close menu when clicking outside
+    window.onclick = function(e) {
+        if (!e.target.matches('.profile-btn')) {
+            menu.style.display = "none";
+        }
+    }
+</script>
+
+</body>
+</html>

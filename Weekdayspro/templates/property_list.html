@@ -1,0 +1,149 @@
+﻿{% load static time_filters %}
+<!-- !-->
+ 
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Property Listing</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+<link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+<link rel="stylesheet" href="{% static 'css/property_list.css' %}">
+ 
+  </head>
+
+  <body>
+    {% include 'NavBar.html' %}
+    <!-- <style>
+      .btn-outline-success {
+        max-width: 100px;
+      }
+    </style> -->
+    <div class="main-layout">
+      <div class="page-heading">
+        <h1>Featured Properties</h1>
+        <p>Discover the best properties available near you</p>
+      </div>
+      <div class="right-list" style="margin-bottom: 100px">
+        {% for item in data %}
+        <div class="property-card" onclick="goToProperty(event, {{ item.id }})">
+          <!-- ── Header (Sketch matched) ── -->
+          <div class="sketch-header">
+            <div class="user-part" onclick="handleProfileClick(this, event)" data-user-id="{{ item.user.id }}" data-role="{{ item.user.role }}">
+              <img src="{% if item.user.profile_image_path %}{{ item.user.profile_image_path.url }}{% else %}{% static 'default.jpg' %}{% endif %}" class="user-avatar" alt="User">
+              <div class="user-details">
+                <div class="name-row">
+                  <span class="user-name">{% if item.user.role == 'OWNER' %}Owner{% else %}{{ item.user.username }}{% endif %}</span>
+                  {% if item.is_verified %}
+                    <i class="bi bi-patch-check-fill verified-icon"></i>
+                  {% endif %}
+                </div>
+                <div class="stars">
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                </div>
+              </div>
+            </div>
+            
+            {% if user.is_authenticated and item.user != user and item.user.role != "OWNER" %}
+              <a href="{% url 'prop:start_chat_with_user' item.user.id %}?pre_message=Hi%20{{ item.user.username|urlencode }},%20I'm%20interested%20in%20your%20property%20{{ item.projectName|urlencode }}.%0AProperty%20Link:%20{{ request.scheme }}://{{ request.get_host }}{% url 'prop:property_detail' item.id %}" class="sketch-message-btn">
+                Message
+              </a>
+            {% endif %}
+          </div>
+
+          <!-- ── Property Image ── -->
+          <div class="sketch-image-wrapper">
+            {% if item.image %}
+              <img src="{{ item.image.url }}" alt="{{ item.projectName }}" loading="lazy">
+            {% else %}
+              <div class="image-placeholder"><i class="bi bi-image"></i></div>
+            {% endif %}
+          </div>
+
+          <!-- ── Content Section ── -->
+          <div class="sketch-content">
+            <div class="title-approval-row">
+              <span class="property-name">{{ item.projectName|truncatechars:20 }}</span>
+              <span class="approve-type">{{ item.approvalType|upper }}</span>
+            </div>
+
+            <div class="description-line">
+              {{ item.extent }} {{ item.units|lower }} {{ item.facing|default:""|lower }} facing {{ item.selectProperty|lower }} for {{ item.get_look_display|lower }}
+            </div>
+
+            <div class="address-line">
+                @ {{ item.address|truncatechars:40 }}
+            </div>
+
+            <div class="price-line">
+              {{ item.price|indian_price }}
+            </div>
+
+            <div class="nearby-line">
+              <span class="nearby-label">Nearby :</span>
+              {% if item.nearby_places %}
+                <div class="nearby-tags">
+                  {% for place in item.nearby_places|slice:":3" %}
+                    <span class="sketch-tag">{{ place }}</span>
+                  {% endfor %}
+                </div>
+              {% else %}
+                <span class="no-nearby">No places added</span>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- ── Footer ── -->
+          <div class="sketch-footer">
+            <button class="sketch-contact-btn" onclick="handleContact(event, {{ item.user.id }}, {{ item.id }}, '{% if item.user.role == 'OWNER' %}9000774529{% else %}{{ item.user.phone }}{% endif %}')">
+              <i class="bi bi-telephone-fill"></i> Contact 
+            </button>
+            <div class="footer-icons">
+              <i class="bi bi-share sketch-icon" onclick="shareProfile(event, {{ item.id }})"></i>
+              <i class="bi bi-bookmark sketch-icon {% if item.is_saved %}active{% endif %}" 
+                {% if user.is_authenticated %} onclick="toggleSave(event, {{ item.id }}, this)" {% else %} onclick="redirectToLogin()" {% endif %}></i>
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+          <div class="empty-icon"><i class="bi bi-house-slash"></i></div>
+          <h2>No Properties Found</h2>
+          <p>There are no properties available right now. Check back soon or try a different search.</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+   
+    <script>
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBqk0zEZL46G-ppnMd5794tXdFb4LFz0oA&libraries=places&callback=onGoogleMapsLoaded"
+      async
+      defer
+    
+  </script>
+
+    <script>
+      const IS_AUTHENTICATED = {{ user.is_authenticated|yesno:"true,false" }};
+      const LOGIN_URL = "{% url 'prop:login' %}";
+    </script>
+    <script src="{% static 'js/property_list.js' %}"></script>
+
+    <script src="{% static 'js/Leads.js' %}"></script>
+    
+    {% include 'footer.html' %}
+  </body>
+</html>

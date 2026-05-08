@@ -1,0 +1,53 @@
+{% include 'NavBar.html' %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/notifications.css' %}">
+
+<div class="main-content notifications-page">
+    <div class="notif-container">
+        <div class="notif-header">
+            <h1 class="notif-title">Notifications</h1>
+            {% if notifications %}
+            <span class="notif-count">{{ notifications|length }} New</span>
+            {% endif %}
+        </div>
+
+        <div class="notif-list-wrapper">
+            {% if notifications %}
+                {% for n in notifications %}
+                <div class="notif-card" data-link="{{ n.link|default:'#' }}">
+                    <div class="notif-icon-box {{ n.notification_type }}">
+                        {% if n.notification_type == 'message' %}
+                            <i class="bi bi-chat-left-text"></i>
+                        {% elif n.notification_type == 'match' %}
+                            <i class="bi bi-house-check"></i>
+                        {% else %}
+                            <i class="bi bi-bell"></i>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="notif-body">
+                        <div class="notif-top">
+                            <span class="notif-subject">{{ n.title }}</span>
+                            <span class="notif-time">{{ n.created_at|timesince }} ago</span>
+                        </div>
+                        <p class="notif-msg">{{ n.message }}</p>
+                        <div class="notif-action-hint">Click to view details <i class="bi bi-arrow-right"></i></div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="notif-empty">
+                    <div class="empty-icon">
+                        <i class="bi bi-bell-slash"></i>
+                    </div>
+                    <h3>All caught up!</h3>
+                    <p>You have no new notifications at the moment.</p>
+                    <a href="/" class="back-home-btn">Go back home</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/notifications.js' %}"></script>

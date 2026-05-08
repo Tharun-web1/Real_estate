@@ -1,0 +1,206 @@
+/* Color Palette Variables */
+:root {
+    --pro-bg: #F5F7FA;
+    --pro-card: #FFFFFF;
+    --pro-border: #E5E7EB;
+    --pro-text-primary: #1C1C1C;
+    --pro-text-secondary: #6B7280;
+    --pro-success: #10B981;
+    --pro-warning: #F59E08;
+    --pro-error: #EF4444;
+}
+
+/* Dark Mode Overrides (if needed) */
+body.dark-mode, .dark-theme {
+    --pro-bg: #0F172A;
+    --pro-card: #1E293B;
+    --pro-border: #334155;
+    --pro-text-primary: #E5E7EB;
+    --pro-text-secondary: #94A3B8;
+}
+
+.pro-projects-scroll-container {
+    position: relative;
+    padding: 0 40px;
+    margin: 40px 0;
+    @media (max-width: 768px) { padding: 0 10px; }
+}
+
+.pro-projects-scroll {
+    display: flex;
+    gap: 25px;
+    overflow-x: auto;
+    padding: 20px 5px;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+}
+
+.pro-project-card {
+    min-width: 380px;
+    max-width: 420px;
+    background: var(--pro-card);
+    border-radius: 20px;
+    border: 1px solid var(--pro-border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    flex-shrink: 0;
+    font-family: 'Inter', sans-serif;
+    transition: transform 0.3s, box-shadow 0.3s;
+    
+    @media (max-width: 768px) { min-width: 85%; max-width: 85%; }
+
+    &:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.12); }
+
+    /* 1. Header (Company Info) */
+    .card-header {
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        
+        .company-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            
+            .logo { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 1px solid var(--pro-border); }
+            .details {
+                .name { font-size: 15px; font-weight: 700; color: var(--pro-text-primary); margin-bottom: 2px; }
+                .badges {
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    font-size: 12px;
+                    color: var(--pro-success);
+                    font-weight: 600;
+                    .stars { color: var(--pro-warning); letter-spacing: -1px; }
+                }
+            }
+        }
+        .chat-btn { color: #3498db; font-size: 22px; transition: transform 0.2s; &:hover { transform: scale(1.1); } }
+    }
+
+    /* 2. Media Area */
+    .card-media {
+        position: relative;
+        height: 240px;
+        background: #000;
+        img { width: 100%; height: 100%; object-fit: cover; opacity: 0.95; }
+        .price-overlay {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            background: rgba(28, 28, 28, 0.85);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 15px;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+    }
+
+    /* 3. Project Details Body */
+    .card-body {
+        padding: 20px;
+        
+        .title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            h3 { font-size: 20px; font-weight: 800; margin: 0; color: var(--pro-text-primary); letter-spacing: -0.5px; }
+            .category { font-size: 11px; font-weight: 800; color: var(--pro-text-secondary); background: var(--pro-bg); padding: 2px 8px; border-radius: 4px; }
+        }
+
+        .address {
+            font-size: 14px;
+            color: var(--pro-text-secondary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            i { color: var(--pro-error); }
+        }
+
+        .pills-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 18px;
+            .pill {
+                padding: 5px 12px;
+                background: var(--pro-bg);
+                border: 1px solid var(--pro-border);
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: 600;
+                color: var(--pro-text-primary);
+            }
+        }
+
+        .nearby-section {
+            margin-bottom: 25px;
+            .nearby-title { font-size: 13px; font-weight: 700; color: var(--pro-text-secondary); margin-bottom: 8px; display: block; }
+            .nearby-pills {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                .nearby-pill {
+                    padding: 4px 10px;
+                    background: transparent;
+                    border: 1px solid var(--pro-border);
+                    border-radius: 8px;
+                    font-size: 11px;
+                    color: var(--pro-text-secondary);
+                    font-weight: 500;
+                }
+            }
+        }
+
+        .view-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: var(--pro-bg);
+            border: 1px solid var(--pro-border);
+            border-radius: 12px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--pro-text-primary);
+            font-weight: 700;
+            font-size: 14px;
+            transition: all 0.2s;
+            &:hover { background: var(--pro-border); transform: scale(1.02); }
+        }
+    }
+
+    /* 4. Footer Actions */
+    .card-footer {
+        padding: 15px 20px;
+        border-top: 1px solid var(--pro-border);
+        display: flex;
+        justify-content: space-between;
+        background: rgba(245, 247, 250, 0.4);
+        
+        .action {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--pro-text-primary);
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.2s;
+            i { font-size: 18px; }
+            &:hover { color: #3498db; }
+            &.save i { color: var(--pro-text-secondary); }
+            &.save:hover i { color: var(--pro-error); }
+        }
+    }
+}

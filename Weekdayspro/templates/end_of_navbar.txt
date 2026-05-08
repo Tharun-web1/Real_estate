@@ -1,0 +1,7 @@
+#TYPE System.String
+"PSPath","PSParentPath","PSChildName","PSDrive","PSProvider","ReadCount","Length"
+"C:\Users\Administrator\Desktop\weekdays\testings\templates\NavBar.html","C:\Users\Administrator\Desktop\weekdays\testings\templates","NavBar.html","C","Microsoft.PowerShell.Core\FileSystem","1109","22"
+"C:\Users\Administrator\Desktop\weekdays\testings\templates\NavBar.html","C:\Users\Administrator\Desktop\weekdays\testings\templates","NavBar.html","C","Microsoft.PowerShell.Core\FileSystem","1110","19"
+"C:\Users\Administrator\Desktop\weekdays\testings\templates\NavBar.html","C:\Users\Administrator\Desktop\weekdays\testings\templates","NavBar.html","C","Microsoft.PowerShell.Core\FileSystem","1111","9"
+"C:\Users\Administrator\Desktop\weekdays\testings\templates\NavBar.html","C:\Users\Administrator\Desktop\weekdays\testings\templates","NavBar.html","C","Microsoft.PowerShell.Core\FileSystem","1112","13"
+"C:\Users\Administrator\Desktop\weekdays\testings\templates\NavBar.html","C:\Users\Administrator\Desktop\weekdays\testings\templates","NavBar.html","C","Microsoft.PowerShell.Core\FileSystem","1113","13"

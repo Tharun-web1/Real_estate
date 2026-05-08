@@ -1,0 +1,151 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Property | Weekdays Franchise</title>
+    <link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'css/franchise_verify_property.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="header" style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h1>Property Verification</h1>
+                <p class="text-muted">Perform a detailed check and submit your findings.</p>
+            </div>
+            <a href="{% url 'prop:franchise_profile' %}" class="btn-verify" style="text-decoration: none; background: var(--bg-gray); color: var(--text-main); border: 1px solid var(--border);">
+                <i class="bi bi-arrow-left"></i> Back to Profile
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="section-title"><i class="bi bi-info-circle"></i> Property Overview</div>
+            <div class="property-brief">
+                {% if prop.image %}
+                <img src="{{ prop.image.url }}" class="brief-img">
+                {% else %}
+                <img src="{% static 'images/fav-icon.png' %}" class="brief-img">
+                {% endif %}
+                <div class="brief-info">
+                    <h3>{{ prop.projectName|default:prop.selectProperty }}</h3>
+                    <p><i class="bi bi-geo-alt"></i> {{ prop.address }}</p>
+                    <p><i class="bi bi-person"></i> Owner: {{ prop.user.username }}</p>
+                </div>
+            </div>
+
+            {% if verification and verification.owner_feedback %}
+            <div class="owner-feedback-alert">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <div>
+                    <strong style="display: block; margin-bottom: 4px; color: #92400e;">Owner Feedback (Re-verification Request)</strong>
+                    <p style="margin: 0; font-size: 14px; color: #b45309;">{{ verification.owner_feedback }}</p>
+                </div>
+            </div>
+            {% endif %}
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="property_id" value="{{ prop.id }}">
+
+                <div class="section-title"><i class="bi bi-pencil-square"></i> Verification Form</div>
+
+                <div class="form-group">
+                    <label>Verified Price (₹)</label>
+                    <input type="number" name="amount" value="{{ prop.price }}" placeholder="Enter confirmed price" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Physical Location Check</label>
+                    <input type="text" name="verified_location" value="{{ prop.address }}" placeholder="Enter exact location details" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Detailed Review / Comments</label>
+                    <textarea name="reviews" placeholder="Describe the property condition, surroundings, and any issues found..." required>{{ verification.reviews }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Site Visit Video</label>
+                    <div class="file-upload">
+                        <i class="bi bi-cloud-arrow-up upload-icon"></i>
+                        <p style="margin: 0; font-weight: 600;">Click to upload video</p>
+                        <p style="margin: 5px 0 0 0; font-size: 12px; color: var(--text-muted);">Max size: 50MB (MP4, MOV)</p>
+                        <input type="file" id="video_input" name="video_file" accept="video/*" {% if not verification %}required{% endif %}>
+                    </div>
+                    <div id="video_preview_container" style="margin-top: 15px; {% if not verification.video_file %}display: none;{% endif %}">
+                        <p style="font-size: 12px; font-weight: 600; margin-bottom: 5px;">Selected Video:</p>
+                        <video id="video_preview" controls style="width: 100%; border-radius: 12px; background: black;">
+                            {% if verification.video_file %}<source src="{{ verification.video_file.url }}">{% endif %}
+                        </video>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Property Images (Multiple)</label>
+                    <div class="file-upload" style="background: #f0fdf4; border-color: #22c55e44;">
+                        <i class="bi bi-images upload-icon" style="color: #22c55e;"></i>
+                        <p style="margin: 0; font-weight: 600;">Click to upload images</p>
+                        <p style="margin: 5px 0 0 0; font-size: 12px; color: var(--text-muted);">Select one or more photos</p>
+                        <input type="file" id="images_input" name="verification_images" accept="image/*" multiple>
+                    </div>
+                    <div id="images_preview_container" style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px;">
+                        {% if verification.images.all %}
+                            {% for img in verification.images.all %}
+                            <img src="{{ img.image.url }}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0;">
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Submit Verification Report</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Video Preview
+        document.getElementById('video_input').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const container = document.getElementById('video_preview_container');
+            const video = document.getElementById('video_preview');
+            
+            if (file) {
+                const url = URL.createObjectURL(file);
+                video.src = url;
+                container.style.display = 'block';
+            }
+        });
+
+        // Images Preview
+        document.getElementById('images_input').addEventListener('change', function(e) {
+            const files = e.target.files;
+            const container = document.getElementById('images_preview_container');
+            
+            // For new selections, we might want to clear or append. 
+            // Here we'll show new ones alongside existing or just replace.
+            // Let's clear new-previews only (optional)
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
+                
+                reader.onload = function(event) {
+                    const img = document.createElement('img');
+                    img.src = event.target.result;
+                    img.style.width = '80px';
+                    img.style.height = '80px';
+                    img.style.objectFit = 'cover';
+                    img.style.borderRadius = '8px';
+                    img.style.border = '1px solid #e2e8f0';
+                    container.appendChild(img);
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
+</html>

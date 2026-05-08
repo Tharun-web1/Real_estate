@@ -1,0 +1,111 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  background-color: var(--card-bg);
+  border-bottom: 1px solid var(--border-color);
+  padding: 12px $spacing-lg;
+  margin-left: 250px;
+  @include flex-between;
+
+  @include mobile {
+    margin-left: 0;
+    padding: 12px $spacing-md;
+  }
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+  }
+
+  &__toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--text-primary);
+    @include mobile {
+      display: block;
+    }
+  }
+
+  &__search {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 6px 16px;
+    background-color: var(--bg-color);
+    
+    @include mobile {
+      display: none;
+    }
+
+    select {
+      border: none;
+      background: transparent;
+      color: var(--text-primary);
+      font-weight: 500;
+      outline: none;
+      padding-right: 8px;
+      border-right: 1px solid var(--border-color);
+    }
+
+    input {
+      border: none;
+      background: transparent;
+      padding-left: 12px;
+      outline: none;
+      color: var(--text-primary);
+      &::placeholder {
+        color: var(--text-secondary);
+      }
+    }
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+  }
+
+  &__btn {
+    @include button-outline;
+    padding: 8px 16px;
+    border-radius: 20px;
+    @include mobile {
+      display: none;
+    }
+  }
+
+  &__profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    
+    img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    &-info {
+      @include mobile {
+        display: none;
+      }
+      .name {
+        font-family: $font-heading;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+      .location {
+        font-size: 12px;
+        color: var(--text-secondary);
+      }
+    }
+  }
+}

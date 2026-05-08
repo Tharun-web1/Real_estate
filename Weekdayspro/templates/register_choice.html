@@ -1,0 +1,171 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .card-container {
+            background: #fff;
+            width: 400px;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.6s ease-in-out;
+            text-align: center;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo-wrapper {
+            margin-bottom: 10px;
+        }
+
+        .logo-wrapper img {
+            width: 120px;
+            max-width: 100%;
+        }
+
+        h2 {
+            margin-bottom: 25px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .option-btn {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            border: none;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: white;
+        }
+
+        .option-btn p {
+            text-decoration: none;
+        }
+
+        .owner-btn {
+            background: #1D4384;
+        }
+
+        .owner-btn:hover {
+            background: #1D4384;
+        }
+
+        .company-btn {
+            background: #c23321;
+        }
+
+        .company-btn:hover {
+            background: #c23321;
+        }
+
+        .footer-text {
+            margin-top: 15px;
+            font-size: 13px;
+        }
+
+        .footer-text a {
+            color: #1D4384;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer-text a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .card-container {
+                padding: 25px 20px;
+            }
+
+            .logo-wrapper img {
+                width: 140px;
+            }
+        }
+
+        .option-btn {
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card-container">
+
+        <div class="logo-wrapper">
+            <img src="{% static 'images/fav-icon.png' %}" alt="Logo">
+        </div>
+
+        <h2>Register</h2>
+
+        <!-- Register as Owner -->
+        <a href="{% url 'prop:register' %}" class="option-btn owner-btn">
+            <i class="fa-solid fa-user"></i>
+            Register as Citizen/Agent
+        </a>
+
+        <!-- Register as Company -->
+        <a href="{% url 'prop:company_register' %}" class="option-btn company-btn">
+            <i class="fa-solid fa-building"></i>
+            Register as Builder/Developer (Company)
+        </a>
+
+        <div class="footer-text">
+            Already have an account?
+            <a href="{% url 'prop:login' %}">Login</a>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

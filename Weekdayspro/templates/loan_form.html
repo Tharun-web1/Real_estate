@@ -1,0 +1,166 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Loan Service</title>
+
+<link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}">
+<link rel="stylesheet" href="{% static 'css/loan_form.css' %}">
+
+
+</head>
+
+<body>
+
+{% include 'NavBar.html' %}
+
+<div class="loan-page">
+
+    <!-- ================= TOP ================= -->
+    <div class="top-section">
+
+        <!-- LEFT -->
+        <div class="loan-info">
+            <h3>What type of loan we help?</h3>
+            
+                <div class="loans">
+                <button>Purchase Loan</button>
+                <button>🏠Mortgage Loans</button>
+                <button>🏗 Construction Loans</button>
+                </div>
+            
+                <div class="contact">
+            <button>
+    <i class="bi bi-telephone-fill"></i> Contact
+</button>  <span>for more details</span> 
+    
+                </div>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="right-side"> 
+           <div class="imag">
+    <i class="bi bi-house-check loan-icon"></i>
+</div>
+
+             <div class="eligibility">
+                <h3>Eligibility</h3>
+                <p>✔ Age above 21</p>
+                <p>✔ Stable income</p>
+                <p>✔ Good credit score</p>
+            </div>
+            </div>
+
+            <!-- EMI -->
+            <div class="emi-box">
+                <h3>EMI Calculator</h3>
+
+                <label>Loan Amount: ₹<span id="amtVal">50,000</span></label>
+                <input type="range" id="amount" min="10,000" max="1000000" value="50,000">
+
+                <label>Interest (% yearly): <span id="rateVal">10</span></label>
+                <input type="range" id="rate" min="1" max="100" value="10">
+
+                <label>Tenure (Months): <span id="timeVal">12</span></label>
+                <input type="range" id="time" min="6" max="60" value="12">
+
+                <!-- <button onclick="calculateEMI()">Calculate EMI</button> -->
+
+                <div class="emi-result">
+                    <p id="emi"></p>
+                    <p id="total"></p>
+                    <p id="interest"></p>
+                </div>
+            </div>
+
+        
+    </div>
+
+    <!-- ================= FORM ================= -->
+    <div class="form-section">
+
+        <h3>Loan Application</h3>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <input type="text" name="full_name" placeholder="Full Name" required>
+            <input type="email" name="email" placeholder="Email" required>
+
+            <input type="text" name="phone" placeholder="Phone Number" required>
+            <input type="date" name="dob" required>
+
+            <input type="text" name="address" placeholder="Address" required>
+            <input type="text" name="city" placeholder="City" required>
+
+            <input type="number" name="loan_amount" placeholder="Loan Amount" required>
+
+            <select name="loan_type" required>
+                <option value="">Select Loan Type</option>
+                <option>Construction Loans</option>
+                <option>Mortgage Loans</option>
+                <option>Purchase Loan</option>
+            </select>
+
+            <button type="submit">Submit Application</button>
+        </form>
+
+    </div>
+
+</div>
+ 
+<script defer>
+document.addEventListener("DOMContentLoaded", function () {
+
+    function calculateEMI(P, annualRate, months) {
+        let r = annualRate / 12 / 100;
+        let emi = (P * r * Math.pow(1 + r, months)) /
+                  (Math.pow(1 + r, months) - 1);
+
+        let total = emi * months;
+        let interest = total - P;
+
+        return { emi, total, interest };
+    }
+
+    const amount = document.getElementById("amount");
+    const rate = document.getElementById("rate");
+    const time = document.getElementById("time");
+
+    const amtVal = document.getElementById("amtVal");
+    const rateVal = document.getElementById("rateVal");
+    const timeVal = document.getElementById("timeVal");
+
+    const emiText = document.getElementById("emi");
+    const totalText = document.getElementById("total");
+    const interestText = document.getElementById("interest");
+
+    function update() {
+        let P = parseFloat(amount.value) || 0;
+        let R = parseFloat(rate.value) || 0;
+        let M = parseInt(time.value) || 1;
+
+        amtVal.innerText = P.toLocaleString("en-IN");
+        rateVal.innerText = R;
+        timeVal.innerText = M;
+
+        let result = calculateEMI(P, R, M);
+
+        emiText.innerText = "EMI: ₹ " + result.emi.toFixed(2);
+        totalText.innerText = "Total: ₹ " + result.total.toFixed(2);
+        interestText.innerText = "Interest: ₹ " + result.interest.toFixed(2);
+    }
+
+    amount.addEventListener("input", update);
+    rate.addEventListener("input", update);
+    time.addEventListener("input", update);
+
+    update();
+});
+</script>
+<script src="{% static 'js/loan_form.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+// Stories / Highlights
+.stories {
+  display: flex;
+  gap: $spacing-md;
+  overflow-x: auto;
+  padding-bottom: $spacing-sm;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    min-width: 70px;
+
+    .stories__img-wrap {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      padding: 2px;
+      border: 2px solid var(--border-color);
+      
+      img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+    }
+
+    .stories__name {
+      font-size: 12px;
+      color: var(--text-primary);
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+    }
+  }
+}
+
+// Enter Feed Card
+.feed-input {
+  @include card-style;
+  margin-bottom: $spacing-lg;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: $spacing-md;
+    color: var(--text-secondary);
+
+    i {
+      font-size: 20px;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: $spacing-sm;
+    flex-wrap: wrap;
+
+    button {
+      @include button-outline;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+  }
+}
+
+// Premium Projects Grid
+.premium-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: $spacing-md;
+  margin-bottom: $spacing-lg;
+
+  &__card {
+    @include card-style;
+    padding: 0;
+    overflow: hidden;
+
+    .img-wrap {
+      position: relative;
+      height: 180px;
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .price {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        background: rgba(0,0,0,0.7);
+        color: #fff;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-weight: 500;
+      }
+    }
+
+    .content {
+      padding: $spacing-md;
+      
+      h3 {
+        font-size: 16px;
+        margin-bottom: 8px;
+        color: var(--text-primary);
+      }
+      
+      p {
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin-bottom: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    .actions {
+      border-top: 1px solid var(--border-color);
+      padding: $spacing-sm $spacing-md;
+      @include flex-between;
+      
+      .btn-view {
+        @include button-primary;
+        width: 100%;
+        text-align: center;
+        text-decoration: none;
+      }
+    }
+  }
+}
+
+// Post Feed Card
+.post-card {
+  @include card-style;
+  margin-bottom: $spacing-md;
+
+  &__header {
+    @include flex-between;
+    margin-bottom: $spacing-sm;
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      
+      img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+      
+      h4 {
+        margin: 0;
+        font-size: 14px;
+        color: var(--text-primary);
+      }
+      
+      span {
+        font-size: 12px;
+        color: var(--text-secondary);
+      }
+    }
+  }
+
+  &__content {
+    margin-bottom: $spacing-sm;
+    p {
+      font-size: 14px;
+      color: var(--text-primary);
+      line-height: 1.5;
+      margin-bottom: $spacing-sm;
+    }
+    
+    .post-img {
+      width: 100%;
+      border-radius: 8px;
+      object-fit: cover;
+      max-height: 400px;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: $spacing-sm;
+    border-top: 1px solid var(--border-color);
+
+    button {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      
+      &:hover {
+        color: var(--text-primary);
+      }
+      
+      i {
+        font-size: 18px;
+      }
+    }
+  }
+}

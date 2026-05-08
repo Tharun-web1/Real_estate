@@ -1,0 +1,177 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    
+<link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+    <title>All Projects</title>
+    <style>
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            background: #f5f7fa;
+            padding: 30px;
+            color: #333;
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #1f2937;
+        }
+
+        /* ===== FILTER CARDS ===== */
+        .filter-box {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .filter-card {
+            padding: 15px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            color: white;
+            transition: 0.3s;
+        }
+
+        .all-card { background: #6c757d; }
+        .normal-card { background: #6c757d; }
+        .pro-card { background: #007bff; }
+
+        .filter-card:hover {
+            transform: translateY(-3px);
+            opacity: 0.9;
+        }
+
+        .active {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* ===== TABLE ===== */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #ffffff;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 14px 16px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        th {
+            background: #007bff;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        tr:hover {
+            background: #e6f0ff;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .plan-normal { background: gray; }
+        .plan-pro { background: #007bff; }
+        .rera-true { background: #10b981; }
+        .rera-false { background: #ef4444; }
+
+    </style>
+</head>
+<body>
+{% include 'header.html' %}
+<br>
+<h2>All Projects</h2>
+
+<!-- ===== FILTER CARDS ===== -->
+<div class="filter-box">
+    <div class="filter-card all-card active" onclick="filterProjects('ALL')">All Projects</div>
+    <div class="filter-card normal-card" onclick="filterProjects('COMPANY_NORMAL')">Company Normal</div>
+    <div class="filter-card pro-card" onclick="filterProjects('COMPANY_PRO')">Company Pro</div>
+    <div class="filter-card premium-card" onclick="filterProjects('COMPANY_PREMIUM')">Company Premium</div>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Project Name</th>
+            <th>User</th>
+            <th>Plan Type</th>
+            <th>Location</th>
+            <th>Pricing</th>
+            <th>RERA Approved</th>
+        </tr>
+    </thead>
+    <tbody id="projectTable">
+        {% for project in projects %}
+        <tr data-plan="{{ project.plan_type }}">
+            <td>{{ project.id }}</td>
+            <td>{{ project.project_name }}</td>
+            <td>{{ project.user.username }}</td>
+            <td>
+<span class="badge 
+{% if project.plan_type == 'COMPANY_NORMAL' %}plan-normal
+{% elif project.plan_type == 'COMPANY_PRO' %}plan-pro
+{% elif project.plan_type == 'COMPANY_PREMIUM' %}plan-premium
+{% endif %}">
+            </td>
+            <td>{{ project.project_location }}</td>
+            <td>₹ {{ project.pricing }}</td>
+            <td>
+                <span class="badge {% if project.rera_approved %}rera-true{% else %}rera-false{% endif %}">
+                    {% if project.rera_approved %}Yes{% else %}No{% endif %}
+                </span>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+function filterProjects(type) {
+    let rows = document.querySelectorAll("#projectTable tr");
+    let cards = document.querySelectorAll(".filter-card");
+
+    // Remove active class
+    cards.forEach(card => card.classList.remove("active"));
+
+    // Add active to clicked
+    event.target.classList.add("active");
+
+    rows.forEach(row => {
+        if (type === "ALL") {
+            row.style.display = "";
+        } else {
+            if (row.getAttribute("data-plan") === type) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        }
+    });
+}
+</script>
+
+</body>
+</html>

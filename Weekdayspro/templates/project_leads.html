@@ -1,0 +1,78 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>{{ project.project_name }} | Leads</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        body { background:#f2f4f8; font-family:"Poppins",sans-serif; margin:0; }
+        .container {
+            max-width: 600px; margin: auto; background:#fff; padding:20px;
+            border-radius:12px; box-shadow:0 0 20px rgba(0,0,0,0.1); margin-top:100px;
+        }
+        h2 { text-align:center; font-weight:bold; margin-bottom:20px; }
+
+        .lead-item {
+            padding:14px; border:1px solid #ddd; display:flex; justify-content:space-between;
+            gap:10px; border-radius:10px; margin-bottom:12px; background:#fff;
+        }
+        .lead-info { display:flex; flex-direction:column; gap:5px; }
+        .lead-name { font-size:15px; font-weight:600; }
+        .lead-phone { font-weight:bold; color:green; font-size:14px; }
+
+        .icons { display:flex; align-items:center; gap:15px; }
+        .icons a { font-size:20px; text-decoration:none; }
+        .call { color:#0d6efd; }
+        .chat { color:#1d4384; }
+        @media (max-width: 768px) {
+   .lead-phone {
+    display: none !important;
+  }
+}
+    </style>
+</head>
+
+<body>
+
+{% include 'NavBar.html' %}
+
+<div class="container">
+
+    <h2>{{ project.project_name }} — Leads</h2>
+
+    {% if leads %}
+        {% for lead in leads %}
+            <div class="lead-item">
+
+                <div class="lead-info">
+                    <div class="lead-name">{{ lead.leadFrom.username }}</div>
+                 
+                </div>
+
+                <div class="icons">
+                    <a href="tel:{{ lead.leadFrom.phone }}" class="call">
+                        <i class="fa-solid fa-phone"></i>
+                    </a>
+
+                    <a href="{% url 'prop:start_chat_with_user' lead.leadFrom.id %}" class="chat">
+   <i class="bi bi-chat-dots-fill"></i>
+</a>
+                </div>
+
+            </div>
+        {% endfor %}
+    {% else %}
+        <p style="text-align:center; color:#777;">No leads found.</p>
+    {% endif %}
+
+</div>
+
+{% include 'footer.html' %}
+
+</body>
+</html>

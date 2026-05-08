@@ -1,0 +1,305 @@
+/* --- Base --- */
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+/* --- Reels Grid --- */
+.reels-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 80px;
+  padding: 10px;
+}
+
+/* --- Reel Card --- */
+.reel-card {
+  position: relative;
+  z-index: 1;
+  border-radius: 14px;
+  overflow: visible;
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  cursor: pointer;
+  height: 170px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s ease;
+}
+.reel-card:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+}
+.reel-card video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 14px;
+  pointer-events: auto;
+  z-index: 2;
+}
+.reel-card {
+  /* --- Info Bubble --- */
+}
+.reel-card .reel-info {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+}
+.reel-card .reel-info span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  background: rgba(37, 99, 235, 0.9);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 20px;
+}
+.reel-card {
+  /* --- 3-dot menu --- */
+}
+.reel-card .more-menu {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 50;
+}
+.reel-card .more-menu .dots-btn {
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  transition: 0.2s ease;
+}
+
+/* --- Dropdown --- */
+.dropdown-content {
+  position: absolute;
+  top: 36px;
+  right: 0;
+  display: none;
+  flex-direction: column;
+  min-width: 120px;
+  padding: 6px 0;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  z-index: 999;
+  animation: fadeIn 0.2s ease;
+}
+.dropdown-content button {
+  background: none;
+  border: none;
+  color: #e2e8f0;
+  padding: 10px 14px;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+.dropdown-content button:hover {
+  background: rgba(59, 130, 246, 0.15);
+}
+.dropdown-content button:last-child {
+  color: #f87171;
+}
+.dropdown-content button:last-child:hover {
+  background: rgba(239, 68, 68, 0.15);
+}
+.dropdown-content button + button {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* --- Modal --- */
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.95);
+  width: 90vw;
+  max-width: 420px;
+  display: none;
+  flex-direction: column;
+  border-radius: 16px;
+  z-index: 9999;
+  background: linear-gradient(145deg, #1e293b, #020617);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.25s ease;
+}
+.modal.active {
+  display: flex;
+  transform: translate(-50%, -50%) scale(1);
+}
+.modal::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: -1;
+}
+.modal video {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  position: relative;
+  z-index: 1;
+}
+
+/* --- Close Button FIXED --- */
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 38px;
+  height: 38px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(6px);
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  transition: 0.2s ease;
+}
+.close-btn:hover {
+  background: rgba(239, 68, 68, 0.9);
+  transform: scale(1.1);
+}
+
+/* --- Modal Info --- */
+.modal-info {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+  font-size: 13px;
+  color: #cbd5e1;
+  background: rgba(15, 23, 42, 0.9);
+}
+
+/* --- Edit Modal --- */
+#editModal form {
+  background: #fff;
+  padding: 16px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+#editModal form textarea, #editModal form input {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+}
+
+/* Buttons */
+.save-btn {
+  background: #2563eb;
+  color: #fff;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+}
+
+.cancel-btn {
+  background: #64748b;
+  color: #fff;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+}
+
+/* --- Delete Modal --- */
+.delete-box {
+  padding: 20px;
+  text-align: center;
+}
+.delete-box h3 {
+  color: #fff;
+}
+.delete-box p {
+  color: #cbd5e1;
+  font-size: 13px;
+}
+
+.delete-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.delete-btn {
+  background: #ef4444;
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+}
+.delete-btn:hover {
+  background: #dc2626;
+}
+
+/* --- Toast --- */
+#toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1e293b;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 8px;
+  display: none;
+}
+
+/* --- Animation --- */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* --- Responsive --- */
+@media (max-width: 599px) {
+  .reels-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 600px) and (max-width: 1023px) {
+  .reels-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .reel-card {
+    height: 200px;
+  }
+}
+@media (min-width: 1024px) {
+  .reels-container {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .reel-card {
+    height: 250px;
+  }
+}
+#popupVideo {
+  pointer-events: auto;
+}
+
+/*# sourceMappingURL=all_reels_new.css.map */

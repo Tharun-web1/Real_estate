@@ -1,0 +1,203 @@
+{% include 'NavBar.html' %}
+{% load static %}
+{% load time_filters %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/recent_properties.css' %}">
+</head>
+<body>
+
+<div class="main-wrapper">
+    <!-- Header Section -->
+    <div class="page-title-section">
+        <div class="mobile-header-actions">
+            <button class="mobile-filter-trigger" onclick="toggleFilters()">
+                <i class="bi bi-sliders"></i> Filter
+            </button>
+        </div>
+        <h1 class="page-title">Featured Properties</h1>
+        <p class="page-subtitle">Showing all properties.</p>
+    </div>
+
+    <div class="content-layout">
+        <!-- 1. Left Sidebar Filter -->
+        <aside class="filter-sidebar" id="filterBox">
+            <div class="filter-header">
+                <h3>Filters</h3>
+                <span class="filter-close" onclick="toggleFilters()"><i class="bi bi-x-lg"></i></span>
+            </div>
+
+            <form method="GET">
+                <div class="field">
+                    <label>Location</label>
+                    <input type="text" id="locationSearch" name="location" placeholder="Enter location" value="{{ request.GET.location }}">
+                </div>
+
+                <div class="field">
+                    <label>Verified</label>
+                    <select name="verified">
+                        <option value="">All</option>
+                        <option value="1" {% if request.GET.verified == '1' %}selected{% endif %}>Verified</option>
+                        <option value="0" {% if request.GET.verified == '0' %}selected{% endif %}>Unverified</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Price Range</label>
+                    <div class="price-row">
+                        <input type="number" name="min_price" placeholder="Min ₹" value="{{ request.GET.min_price }}">
+                        <input type="number" name="max_price" placeholder="Max ₹" value="{{ request.GET.max_price }}">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label>Road Facing</label>
+                    <select name="road">
+                        <option value="">All</option>
+                        <option value="North" {% if request.GET.road == 'North' %}selected{% endif %}>North</option>
+                        <option value="South" {% if request.GET.road == 'South' %}selected{% endif %}>South</option>
+                        <option value="East" {% if request.GET.road == 'East' %}selected{% endif %}>East</option>
+                        <option value="West" {% if request.GET.road == 'West' %}selected{% endif %}>West</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Purpose</label>
+                    <select name="look">
+                        <option value="">All</option>
+                        <option value="Sell" {% if request.GET.look == 'Sell' %}selected{% endif %}>Sell</option>
+                        <option value="Rent" {% if request.GET.look == 'Rent' %}selected{% endif %}>Rent</option>
+                    </select>
+                </div>
+
+                <div class="filter-actions">
+                    <a href="{{ request.path }}" class="reset-btn">Reset</a>
+                    <button type="submit" class="apply-btn">Apply</button>
+                </div>
+            </form>
+        </aside>
+
+        <!-- 2. Main Content Area -->
+        <div class="right-content">
+            <div class="property-feed-container">
+                {% for p in properties %}
+                    <div class="property-feed-card" onclick="window.location.href='{% url 'prop:property_detail' p.id %}'" style="cursor: pointer;">
+                        <!-- 1. User Header -->
+                        <div class="card-user-header">
+                            {% if p.user.role == 'OWNER' %}
+                                {% if p.user.profile_image_path %}
+                                    <img src="{{ p.user.profile_image_path.url }}" class="profile-pic" onerror="this.src='{% static 'default.jpg' %}'">
+                                {% else %}
+                                    <img src="{% static 'default.jpg' %}" class="profile-pic">
+                                {% endif %}
+                            {% else %}
+                                <a href="{% url 'prop:user_detail' p.user.id %}" onclick="event.stopPropagation();">
+                                    {% if p.user.profile_image_path %}
+                                        <img src="{{ p.user.profile_image_path.url }}" class="profile-pic" onerror="this.src='{% static 'default.jpg' %}'">
+                                    {% else %}
+                                        <img src="{% static 'default.jpg' %}" class="profile-pic">
+                                    {% endif %}
+                                </a>
+                            {% endif %}
+                        <div class="user-info">
+                                <div class="top-row">
+                                    <span class="name">
+                                        {% if p.user.role == 'OWNER' %}
+                                            Owner
+                                        {% else %}
+                                            {{ p.user.company_name|default:p.user.username|truncatechars:15 }}
+                                        {% endif %}
+                                    </span>
+                                    <i class="bi bi-patch-check-fill verified"></i>
+                                </div>
+                                <div class="stars">
+                                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                                </div>
+                            </div>
+                            {% if p.user.role != 'OWNER' %}
+                            <a href="{% if user.is_authenticated %}{% url 'prop:start_chat_with_user' p.user.id %}{% else %}{% url 'prop:login' %}{% endif %}" class="message-btn" onclick="event.stopPropagation();">Message</a>
+                            {% endif %}
+                        </div>
+
+                        <!-- 2. Media -->
+                        <div class="card-media">
+                            {% if p.image %}
+                                <img src="{{ p.image.url }}" onerror="this.src='{% static 'default.jpg' %}'">
+                            {% else %}
+                                <img src="{% static 'default.jpg' %}">
+                            {% endif %}
+                        </div>
+
+                        <!-- 3. Details -->
+                        <div class="card-details-body">
+                            <div class="title-row">
+                                <h3 class="p-name">{{ p.projectName|default:"Unnamed Property" }}</h3>
+                                <span class="time-badge">{{ p.created_at|custom_time }}</span>
+                            </div>
+                            <div class="description">
+                                {{ p.extent|default:"" }} Sqyd {{ p.facing|default:"" }} For {{ p.look|default:"Sale" }}
+                            </div>
+                            <div class="location">
+                                <i class="bi bi-geo-alt-fill"></i> @ {{ p.address|default:"Location"|truncatechars:30 }}
+                            </div>
+                            
+                            <div class="price-block">
+                                ₹ 
+                                {% if p.price >= 10000000 %}
+                                    {{ p.price|div:10000000|floatformat:1 }} Cr
+                                {% elif p.price >= 100000 %}
+                                    {{ p.price|div:100000|floatformat:1 }} Lakh
+                                {% else %}
+                                    {{ p.price }}
+                                {% endif %}
+                            </div>
+
+                            <div class="card-nearby-section">
+                                <span class="label">Nearby</span>
+                                <div class="pills">
+                                    {% if p.nearby_places %}
+                                        {% for place in p.nearby_places %}
+                                            <span class="pill">{{ place }}</span>
+                                        {% endfor %}
+                                    {% else %}
+                                        <span class="pill">No Nearby Places</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4. Footer Actions -->
+                        <div class="card-actions-footer">
+                            <a href="tel:{% if p.user.role == 'OWNER' %}9000774529{% else %}{{ p.user.phone }}{% endif %}" class="footer-contact-btn" onclick="event.stopPropagation();">
+                                <i class="bi bi-telephone-fill"></i> Contact
+                            </a>
+                            <div class="footer-icon-btn share" onclick="event.stopPropagation(); shareProject('{{ p.projectName|escapejs }}', '{{ p.address|escapejs }}', '{{ p.price }}', '{% url 'prop:property_detail' p.id %}')" title="Share">
+                                <i class="bi bi-share"></i>
+                            </div>
+                            <div class="footer-icon-btn save" onclick="event.stopPropagation(); {% if user.is_authenticated %}toggleSave(event, {{ p.id }}, this){% else %}redirectToLogin(){% endif %}" title="Save">
+                                <i class="bi bi-bookmark"></i>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div style="grid-column: 1/-1; text-align: center; padding: 100px; color: var(--text-secondary);">
+                        <i class="bi bi-house-slash" style="font-size: 50px;"></i>
+                        <h3>No properties found.</h3>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBqk0zEZL46G-ppnMd5794tXdFb4LFz0oA&libraries=places&callback=onGoogleMapsLoaded" async defer></script>
+<script src="{% static 'js/recent_properties.js' %}"></script>
+
+</body>
+</html>
+{% include 'footer.html' %}

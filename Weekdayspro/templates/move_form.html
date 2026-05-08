@@ -1,0 +1,248 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Move Form</title>
+<link rel="stylesheet" href="{% static 'css/moveform.css' %}" />
+<link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+<style>
+/* =========================== GLOBAL =========================== */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #e2e2e2;
+    margin: 0;
+    padding: 0;
+}
+
+/* =========================== MAIN CONTAINER =========================== */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 60px;
+    padding: 60px 20px;
+    flex-wrap: wrap;
+    margin-top: 80px;
+}
+
+/* =========================== IMAGE + FORM DIV =========================== */
+.content-wrapper {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    max-width: 1000px;
+    width: 100%;
+}
+
+/* =========================== IMAGE SECTION =========================== */
+.image-container {
+    flex: 1;
+    min-width: 300px;
+}
+
+.image-container img {
+    width: 100%;
+    max-width: 500px;
+    border-radius: 12px;
+    object-fit: cover;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+/* =========================== FORM SECTION =========================== */
+.form-container {
+    flex: 1;
+    min-width: 280px;
+    max-width: 500px;
+    background: #fff;
+    border-radius: 18px;
+    padding: 40px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.form-container h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Form inputs */
+input, select, textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    background: #f8f8f8;
+    font-size: 15px;
+    outline: none;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: #e63946;
+    background: #fff;
+    box-shadow: 0 0 5px rgba(230,57,70,0.3);
+}
+
+/* Form groups - two fields side by side */
+.form-group {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+textarea {
+    height: 90px;
+    resize: none;
+}
+
+/* Button */
+button {
+    width: auto;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #e63946, #ff4757);
+    color: #fff;
+    font-size: 18px;
+    
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background: linear-gradient(90deg, #ff4757, #e63946);
+    transform: translateY(-2px);
+}
+
+/* Margin for form elements */
+form > * {
+    margin-bottom: 18px;
+}
+
+/* =========================== RESPONSIVE =========================== */
+@media (max-width: 950px) {
+    .content-wrapper {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .image-container img {
+        display: none;
+    }
+
+    .form-container {
+        width: 100%;
+        max-width: 450px;
+        padding: 30px;
+    }
+
+    .form-group {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 500px) {
+    .form-container h2 {
+        font-size: 20px;
+    }
+
+    button {
+        font-size: 16px;
+    }
+}
+</style>
+<style>
+    .fa{
+        margin:auto;
+    }
+    .nav-links button{
+margin: auto;
+ }
+ .nav-links{
+    align-items: center;
+ }
+ 
+</style>
+</head>
+<body>
+
+{% include 'NavBar.html' %}
+
+<style>
+    .menu-btn{
+        color: black;
+        padding: 10px;
+    }
+</style>
+
+<div class="container">
+    <div class="content-wrapper">
+        <div class="image-container">
+            <img src="{% static 'images/delevery.jpg' %}" alt="Delivery Man">
+        </div>
+
+        <div class="form-container">
+            <h2>Kindly Please Fill This Form</h2>
+
+            <form method="POST">
+                {% csrf_token %}
+                <input type="text" name="customer_name" placeholder="Customer Name" required>
+
+                <div class="form-group">
+                    <input type="tel" name="number" placeholder="Number" pattern="[0-9]{10}" title="Enter 10 digit number" required>
+                    <input type="tel" name="alternate_number" placeholder="Alternate Number" pattern="[0-9]{10}" title="Enter 10 digit number">
+                </div>
+
+                <select name="service_type" required>
+                    <option value="">Type Of Service</option>
+                    <option>Home Shifting</option>
+                    <option>Office Relocation</option>
+                    <option>Car Transport</option>
+                    <option>Storage Service</option>
+                </select>
+
+                <div class="form-group">
+                    <input type="text" name="from_location" placeholder="From Location" required>
+                    <input type="text" name="to_location" placeholder="To Location" required>
+                </div>
+
+                <div class="form-group">
+                    <input type="text" name="from_floor" placeholder="From Floor">
+                    <input type="text" name="to_floor" placeholder="To Floor">
+                </div>
+
+                <div class="form-group">
+                    <input type="text" name="men_power" placeholder="No of Men Power">
+                    <select name="vehicle_type">
+                        <option value="">Type Of Vehicle</option>
+                        <option>Mini Truck</option>
+                        <option>Pickup Van</option>
+                        <option>Canter</option>
+                        <option>Container</option>
+                    </select>
+                </div>
+
+                <textarea name="additional_info" placeholder="Additional Info"></textarea>
+
+                <button type="submit">Contact</button>
+            </form>
+
+            {% if success %}
+            <script>
+                alert("✅ Your request has been submitted successfully!");
+            </script>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% include 'footer.html' %}
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+</html>

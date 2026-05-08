@@ -1,0 +1,138 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Form</title>
+<link rel="stylesheet" href="{% static 'css/contactform.css' %}" />
+<link rel="stylesheet" href="{% static 'css/contact_form.css'%}">
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+<style>
+  .bottom-boxes {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.box {
+    flex: 1;   /* soft light color */
+    border-radius: 20px;
+    padding: 0px;
+    display: flex;
+    align-items: center;
+    border: none; 
+    justify-content: center;
+    transition: 0.3s;
+}
+
+/* Hover effect (optional but premium) */
+.box:hover {
+    transform: translateY(-6px);
+}
+</style>
+</head>
+<body>
+
+{% include 'NavBar.html' %}
+
+<div class="container">
+<div class="page">
+
+    <!-- RIGHT SIDE -->
+    <div class="service">
+
+        <!-- CARD -->
+        <div class="card">
+            <h3>How gonestre construction service provide?</h3>
+            <p>We provide complete construction solutions and support.</p>
+            
+             <div class="contact">
+            <button>
+   <a href=""> <i class="bi bi-telephone-fill"></i> Contact</a>
+</button>  <span>for more details</span> 
+    
+                </div>
+        </div>
+
+        <!-- TABLE -->
+        <h3>Difference between Local builders / GoNestro</h3>
+
+        <table>
+            <tr>
+                <th>local builders</th>
+                <th>GoNestro</th>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+
+<div class="bottom-boxes">
+
+    <!-- Construction Animation -->
+    <div class="box">
+        <lottie-player 
+            src="{% static 'lottie/lottie/construction.json' %}"
+            background="transparent"
+            speed="1"
+            style="width: 100px; height: 100px;"
+            loop autoplay>
+        </lottie-player>
+    </div>
+
+    <!-- Building Development Animation -->
+    <div class="box">
+        <lottie-player 
+            src="{% static 'lottie/lottie/building_developing.json' %}"
+            background="transparent"
+            speed="1"
+            style="width: 100px; height: 100px;"
+            loop autoplay>
+        </lottie-player>
+    </div>
+
+</div>
+
+    </div>
+
+  <div class="form-container">
+    <h2>Kindly Please Fill This Form</h2>
+    <form method="POST">
+      {% csrf_token %}
+      <input type="text" name="customer_name" placeholder="Customer Name" required>
+     <input type="tel" name="number" placeholder="Number" pattern="[0-9]{10}" title="Enter 10 digit number" required>
+      <input type="tel" name="alternate_number" placeholder="Alternate Number" pattern="[0-9]{10}" title="Enter 10 digit number">
+      <select name="renovation_type" required>
+        <option value="">Select Renovation Type</option>
+        <option>Home Renovation</option>
+        <option>Office Renovation</option>
+        <option>Kitchen Renovation</option>
+        <option>Bathroom Renovation</option>
+        <option>New Construction</option>
+
+      </select>
+      <input type="text" name="location" placeholder="Location" required>
+      <textarea name="additional_info" placeholder="Additional Info"></textarea>
+      <button type="submit">Submit</button>
+    </form>
+
+    {% if success %}
+    <script>
+      alert(" Form submitted successfully! Our team will contact you soon.");
+    </script>
+    {% endif %}
+  </div>
+</div>
+
+ {% include 'footer.html' %}
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+</html>

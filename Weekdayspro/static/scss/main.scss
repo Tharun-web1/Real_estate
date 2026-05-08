@@ -1,0 +1,61 @@
+@import 'variables';
+@import 'mixins';
+@import 'sidebar';
+@import 'header';
+@import 'cards';
+
+:root {
+  --bg-color: #{$bg-color};
+  --card-bg: #{$card-bg};
+  --border-color: #{$border-color};
+  --text-primary: #{$text-primary};
+  --text-secondary: #{$text-secondary};
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-color: #{$dark-bg-color};
+    --card-bg: #{$dark-card-bg};
+    --border-color: #{$dark-border-color};
+    --text-primary: #{$dark-text-primary};
+  }
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: $font-body;
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: $font-heading;
+}
+
+.main-content {
+  margin-left: 0px;
+  margin-right: 300px;
+  padding: $spacing-lg;
+  background-color: var(--bg-color);
+  min-height: 100vh;
+  
+  @include mobile {
+    margin-left: 0;
+    padding: $spacing-md;
+  }
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: $spacing-md;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

@@ -1,0 +1,338 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create News Post | Weekdays</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-page: #f8fafc;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            font-family: 'Outfit', sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .form-card {
+            background: #fff;
+            width: 100%;
+            max-width: 550px;
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+            border: 1px solid #f1f5f9;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .header h2 {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text-main);
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 10px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: 14px;
+            border: 1.5px solid #e2e8f0;
+            font-family: inherit;
+            font-size: 15px;
+            color: var(--text-main);
+            transition: border-color 0.2s, box-shadow 0.2s;
+            box-sizing: border-box;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
+
+        textarea.form-control {
+            resize: none;
+        }
+
+        .upload-zone {
+            border: 2px dashed #cbd5e1;
+            border-radius: 18px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #fdfdfd;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--primary);
+            background: #f5f3ff;
+        }
+
+        .upload-zone i {
+            font-size: 32px;
+            color: var(--primary);
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .upload-zone p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin: 0;
+            font-weight: 500;
+        }
+
+        #media_file {
+            display: none;
+        }
+
+        #preview-container {
+            margin-top: 20px;
+            border-radius: 14px;
+            overflow: hidden;
+            display: none;
+            position: relative;
+        }
+
+        #preview-container img, #preview-container video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .remove-preview {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        .messages {
+            margin-bottom: 25px;
+        }
+
+        .message {
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .message.error {
+            background: #fef2f2;
+            color: #ef4444;
+            border: 1px solid #fee2e2;
+        }
+
+        .message.success {
+            background: #f0fdf4;
+            color: #22c55e;
+            border: 1px solid #dcfce7;
+        }
+        @media (max-width: 600px) {
+            .form-card {
+                padding: 25px 20px;
+                border-radius: 0;
+                box-shadow: none;
+                border: none;
+                margin-top: 80px !important;
+            }
+            .header h2 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+{% include 'NavBar.html' %}
+
+<div class="form-card" style="margin: 100px auto 50px;">
+    <div class="header">
+        <h2>Publish News</h2>
+        <p>Share real estate updates with the community</p>
+    </div>
+
+    <div style="background: #fff7ed; border: 1px solid #ffedd5; color: #9a3412; padding: 12px 18px; border-radius: 12px; margin-bottom: 25px; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 10px;">
+        <i class="bi bi-exclamation-triangle-fill" style="font-size: 18px;"></i>
+        <span>GoNestro is only for real estate content. Non-relevant posts will be removed.</span>
+    </div>
+
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="message {{ message.tags }}">
+            <i class="bi bi-info-circle-fill"></i> {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div style="background: #f1f5f9; padding: 15px; border-radius: 12px; margin-bottom: 25px;">
+        <h4 style="margin: 0 0 10px 0; font-size: 13px; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px;">Allowed Keywords:</h4>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+            {% for kw in keywords %}
+            <span style="background: #fff; border: 1px solid #e2e8f0; color: var(--primary); padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600;">{{ kw.keyword }}</span>
+            {% empty %}
+            <span style="color: var(--text-muted); font-size: 12px;">No keywords defined by admin yet.</span>
+            {% endfor %}
+        </div>
+        <p style="margin: 10px 0 0 0; font-size: 11px; color: var(--text-muted);">* Your description must contain at least one of these keywords to be published.</p>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data" id="feed-form">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label>Heading</label>
+            {{ form.heading }}
+        </div>
+
+        <div class="form-group">
+            <label>Description / Content</label>
+            {{ form.news_content }}
+        </div>
+
+        <div class="form-group">
+            <label>Media Upload</label>
+            <div class="upload-zone" onclick="document.getElementById('media_file').click()">
+                <i class="bi bi-cloud-arrow-up-fill"></i>
+                <p id="upload-text">Click to add Image or Video (Max 30s)</p>
+                <input type="file" name="media_file" id="media_file" accept="image/*,video/*">
+            </div>
+            <div id="preview-container">
+                <div class="remove-preview" onclick="clearPreview()"><i class="bi bi-x"></i></div>
+                <div id="preview-media"></div>
+            </div>
+        </div>
+
+        <button type="submit" class="submit-btn">Publish News</button>
+        <a href="{% url 'prop:feed_list' %}" style="display: block; text-align: center; margin-top: 20px; text-decoration: none; color: var(--text-muted); font-size: 14px; font-weight: 500;">Cancel and Go Back</a>
+    </form>
+</div>
+
+<script>
+    const fileInput = document.getElementById("media_file");
+    const previewContainer = document.getElementById("preview-container");
+    const previewMedia = document.getElementById("preview-media");
+    const uploadText = document.getElementById("upload-text");
+
+    fileInput.addEventListener("change", function(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        if (file.type.startsWith("video")) {
+            const video = document.createElement('video');
+            video.preload = 'metadata';
+            video.onloadedmetadata = function() {
+                window.URL.revokeObjectURL(video.src);
+                if (video.duration > 30.5) {
+                    alert("Video must be 30 seconds or less.");
+                    clearPreview();
+                } else {
+                    showPreview(file, true);
+                }
+            }
+            video.src = URL.createObjectURL(file);
+        } else {
+            showPreview(file, false);
+        }
+    });
+
+    function showPreview(file, isVideo) {
+        const url = URL.createObjectURL(file);
+        if (isVideo) {
+            previewMedia.innerHTML = `<video src="${url}" controls muted style="max-width:100%"></video>`;
+        } else {
+            previewMedia.innerHTML = `<img src="${url}" style="max-width:100%">`;
+        }
+        previewContainer.style.display = "block";
+        uploadText.innerText = file.name;
+    }
+
+    function clearPreview() {
+        fileInput.value = "";
+        previewMedia.innerHTML = "";
+        previewContainer.style.display = "none";
+        uploadText.innerText = "Click to add Image or Video (Max 30s)";
+    }
+
+    const form = document.getElementById("feed-form");
+    const headingInput = document.querySelector('input[name="heading"]');
+    const contentInput = document.querySelector('textarea[name="news_content"]');
+
+    form.addEventListener("submit", function(e) {
+        if (!headingInput.value.trim() && !contentInput.value.trim() && !fileInput.files.length) {
+            e.preventDefault();
+            alert("Please provide at least some content to publish.");
+        }
+    });
+</script>
+
+</body>
+</html>

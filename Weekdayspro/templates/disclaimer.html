@@ -1,0 +1,119 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disclaimer & Policies | GoNestro</title>
+    <link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'css/disclaimer.css' %}">
+</head>
+<body>
+
+    {% include 'NavBar.html' %}
+
+    <div class="policy-header">
+        <div class="container">
+            <h1>Disclaimer & Policies</h1>
+            <p>Effective Date: April 23, 2026</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="content-card">
+            
+            <!-- DISCLAIMER -->
+            <div class="policy-section disclaimer-sec">
+                <h2><i class="bi bi-exclamation-triangle-fill"></i> Disclaimer</h2>
+                <p>The information provided on GoNestro (website, mobile application, and services) is for general informational purposes only.</p>
+
+                <h3>1. Platform Role</h3>
+                <p>GoNestro acts solely as an intermediary platform that connects property buyers, sellers, agents, builders, and service professionals.</p>
+                <ul>
+                    <li>We do not own, sell, or directly deal in properties.</li>
+                    <li>We do not act as a broker, agent, or legal authority.</li>
+                </ul>
+
+                <h3>2. No Guarantees</h3>
+                <p>GoNestro does not guarantee:</p>
+                <ul>
+                    <li>Accuracy, completeness, or reliability of property listings.</li>
+                    <li>Availability, pricing, or condition of properties.</li>
+                    <li>Successful transactions between users.</li>
+                    <li>Returns on property investments.</li>
+                </ul>
+                <p>Users are advised to independently verify all details before making decisions.</p>
+
+                <h3>3. User Responsibility</h3>
+                <ul>
+                    <li>You will verify property documents, ownership, and legal status.</li>
+                    <li>You will conduct due diligence before entering any transaction.</li>
+                    <li>You are solely responsible for your decisions and actions.</li>
+                </ul>
+
+                <h3>4. Third-Party Services</h3>
+                <p>GoNestro may connect users with third-party service providers such as legal advisors, packers and movers, and construction professionals.</p>
+                <p>We do not guarantee or take responsibility for the quality, reliability, or outcomes of these services.</p>
+
+                <h3>5. Limitation of Liability</h3>
+                <p>GoNestro shall not be held liable for any direct or indirect loss, damage, disputes, fraud, or misrepresentation by users. Use of the platform is at your own risk.</p>
+            </div>
+
+            <!-- CONTENT & LISTING POLICY -->
+            <div class="policy-section">
+                <h2><i class="bi bi-file-earmark-text"></i> Content & Listing Policy</h2>
+                <p>This policy governs all content, property listings, and information shared on GoNestro.</p>
+
+                <h3>1. Accuracy & Authenticity</h3>
+                <ul>
+                    <li>Contain accurate property details.</li>
+                    <li>Include genuine pricing and location.</li>
+                    <li>Use real images (no misleading visuals).</li>
+                </ul>
+
+                <h3>2. Prohibited Content</h3>
+                <ul>
+                    <li>Fake or non-existent property listings.</li>
+                    <li>Misleading pricing or false claims.</li>
+                    <li>Duplicate or spam listings.</li>
+                    <li>Illegal properties or unauthorized sales.</li>
+                    <li>Offensive, abusive, or harmful content.</li>
+                </ul>
+
+                <h3>3. Platform Rights</h3>
+                <p>GoNestro reserves the right to remove, edit, or block any listing without notice, and to suspend or terminate user accounts for policy violations.</p>
+            </div>
+
+            <!-- GRIEVANCE REDRESSAL -->
+            <div class="policy-section">
+                <h2><i class="bi bi-person-heart"></i> Grievance Redressal Policy</h2>
+                <p>GoNestro is committed to addressing user concerns in a fair and transparent manner, in accordance with applicable Indian laws.</p>
+
+                <h3>1. Grievance Officer</h3>
+                <div class="officer-box">
+                    <p>Grievance Officer: GoNestro Support Team</p>
+                    <p><i class="bi bi-envelope"></i> Email: support@gonestro.com</p>
+                </div>
+
+                <h3>2. Resolution Timeline</h3>
+                <ul>
+                    <li><strong>Acknowledgement:</strong> Within 48 hours.</li>
+                    <li><strong>Resolution:</strong> Within 15 days from receipt.</li>
+                </ul>
+
+                <h3>3. How to Submit a Complaint</h3>
+                <p>Send an email with your name, contact details, a clear description of the issue, and any supporting evidence.</p>
+            </div>
+
+            <div style="text-align: center; border-top: 1px solid #f1f5f9; padding-top: 40px;">
+                <p style="font-weight: 700; color: var(--primary);">GoNestro – Find. Connect. Move.</p>
+            </div>
+        </div>
+    </div>
+
+    {% include 'footer.html' %}
+
+</body>
+</html>

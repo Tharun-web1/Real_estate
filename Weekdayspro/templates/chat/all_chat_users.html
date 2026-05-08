@@ -1,0 +1,329 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+<title>Available Users</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+<style>
+/* ── Base ─────────────────────────────────────────── */
+body {
+  background-color: var(--nav-bg);
+  font-family: var(--nav-font-body);
+  color: var(--nav-text-primary);
+  margin: 0;
+}
+
+.page-wrapper {
+  padding: 24px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* ── Chat Container ───────────────────────────────── */
+.chat-container {
+  background: var(--nav-card);
+  border-radius: 24px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  border: 1px solid var(--nav-border);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Search Bar ───────────────────────────────────── */
+.chat-search {
+  padding: 20px;
+  background: var(--nav-card);
+  border-bottom: 1px solid var(--nav-border);
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.chat-search i {
+  position: absolute;
+  left: 35px;
+  color: var(--nav-text-secondary);
+  font-size: 18px;
+  pointer-events: none;
+}
+
+.chat-search input {
+  width: 100%;
+  background: var(--nav-bg);
+  border: 1px solid var(--nav-border);
+  padding: 12px 15px 12px 45px;
+  border-radius: 14px;
+  font-size: 15px;
+  color: var(--nav-text-primary);
+  outline: none;
+  transition: all 0.2s;
+}
+
+.chat-search input:focus {
+  border-color: var(--nav-success);
+  box-shadow: 0 0 0 3px rgba(16,185,129,0.1);
+  background: var(--nav-card);
+}
+
+/* ── Filter Chips ─────────────────────────────────── */
+.filter-scroll {
+  display: flex;
+  gap: 10px;
+  padding: 15px 20px;
+  overflow-x: auto;
+  background: var(--nav-card);
+  border-bottom: 1px solid var(--nav-border);
+  scrollbar-width: none;
+}
+
+.filter-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.filter-chip {
+  padding: 8px 18px;
+  border-radius: 12px;
+  border: 1px solid var(--nav-border);
+  background: var(--nav-bg);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--nav-text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.filter-chip:hover {
+  border-color: var(--nav-success);
+  color: var(--nav-success);
+}
+
+.filter-chip.active {
+  background: var(--nav-success);
+  color: #fff;
+  border-color: var(--nav-success);
+  box-shadow: 0 4px 10px rgba(16,185,129,0.2);
+}
+
+/* ── Chat List ────────────────────────────────────── */
+.chat-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.chat-item {
+  border-bottom: 1px solid var(--nav-border);
+  transition: all 0.2s;
+}
+
+.chat-item:last-child {
+  border-bottom: none;
+}
+
+.chat-item:hover {
+  background: var(--nav-bg);
+}
+
+.profile-link {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 16px 20px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px; /* Squircle style */
+  object-fit: cover;
+  border: 2px solid var(--nav-border);
+  background: var(--nav-bg);
+}
+
+.chat-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+
+.chat-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--nav-text-primary);
+}
+
+.chat-time {
+  font-size: 12px;
+  color: var(--nav-text-secondary);
+}
+
+.chat-meta {
+  font-size: 13px;
+  color: var(--nav-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.unread-badge {
+  background: var(--nav-success);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 10px;
+  text-transform: uppercase;
+}
+
+/* ── Responsive ───────────────────────────────────── */
+@media (max-width: 1100px) {
+  .page-wrapper {
+    padding: 15px;
+  }
+  .chat-container {
+    border-radius: 18px;
+    margin-bottom: 70px;
+  }
+  .avatar {
+    width: 44px;
+    height: 44px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+{% include 'NavBar.html' %}
+
+<div class="page-wrapper">
+  <div class="chat-container">
+
+    <!-- SEARCH -->
+    <div class="chat-search">
+      <i class="bi bi-search"></i>
+      <input type="text" id="userSearch" placeholder="Search by name...">
+    </div>
+
+    <!-- FILTER -->
+    <div class="filter-scroll">
+      <button class="filter-chip active" data-plan="all">All</button>
+      <button class="filter-chip" data-plan="COMPANY_NORMAL">Companies</button>
+      <button class="filter-chip" data-plan="COMPANY_PRO">Pro</button>
+      <button class="filter-chip" data-plan="COMPANY_PREMIUM">Premium</button>
+      <button class="filter-chip" data-plan="MARKETER_EXPORT">Experts</button>
+      <button class="filter-chip" data-plan="MARKETER_EXPORT_PRO">Experts Pro</button>
+      <button class="filter-chip" data-plan="MARKETER_EXPORT_PREMIUM">Experts Premium</button>
+      <button class="filter-chip" data-plan="PROFESSIONAL_SINGLE">Construction</button>
+    </div>
+
+    <!-- USERS -->
+    <ul class="chat-list">
+      {% for item in users_sorted %}
+      {% with user=item.user %}
+      <li class="chat-item" data-plan="{{ item.plan_type }}">
+        <a href="{% url 'prop:start_chat_with_user' user.id %}" class="profile-link">
+          <img src="{{ user.profile_image_path.url|default:'/static/images/default-avatar.png' }}" class="avatar" 
+               onerror="this.src='/static/images/default-avatar.png'">
+          <div class="chat-info">
+            <div class="chat-header">
+              <span class="chat-name">{{ user.username }}</span>
+              {% if item.last_message_time %}
+                <span class="chat-time">{{ item.last_message_time|date:"H:i" }}</span>
+              {% endif %}
+            </div>
+
+            <div class="chat-meta">
+              {% if item.unread_count > 0 %}
+                <span class="unread-badge">{{ item.unread_count }} New</span>
+              {% else %}
+                <span>@{{ user.username|lower }}</span>
+              {% endif %}
+            </div>
+          </div>
+        </a>
+      </li>
+      {% endwith %}
+      {% endfor %}
+    </ul>
+
+  </div>
+</div>
+
+
+<script>
+const searchInput = document.getElementById("userSearch");
+const filterBtns = document.querySelectorAll(".filter-chip");
+
+let activePlan = "all";
+let searchText = "";
+
+// Filter click
+filterBtns.forEach(btn => {
+  btn.addEventListener("click", () => {
+    filterBtns.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    activePlan = btn.dataset.plan;
+    applyFilters();
+  });
+});
+
+// Search typing
+searchInput.addEventListener("keyup", () => {
+  searchText = searchInput.value.toLowerCase();
+  applyFilters();
+});
+
+// Apply filter
+function applyFilters() {
+  const users = document.querySelectorAll(".chat-item");
+  users.forEach(u => {
+    const plan = (u.dataset.plan || "").trim();
+    const name = u.querySelector(".chat-name").innerText.toLowerCase();
+    const planMatch = (activePlan === "all" || plan === activePlan);
+    const nameMatch = name.includes(searchText);
+    // Use "" to restore natural display instead of forcing "flex" on <li>
+    u.style.display = (planMatch && nameMatch) ? "" : "none";
+  });
+}
+
+// Auto refresh users
+function refreshUsers() {
+  fetch(window.location.href)
+    .then(res => res.text())
+    .then(html => {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      const newList = doc.querySelector(".chat-list");
+      const oldList = document.querySelector(".chat-list");
+      if (newList && oldList) {
+        oldList.innerHTML = newList.innerHTML;
+        applyFilters();
+      }
+    });
+}
+
+setInterval(refreshUsers, 3000);
+</script>
+
+{% include 'footer.html' %}
+
+</body>
+
+</html>

@@ -1,0 +1,136 @@
+:root {
+  --primary: #1e1b4b;
+  --accent: #4f46e5;
+  --warning: #f59e0b;
+  --text-main: #111827;
+  --text-muted: #4b5563;
+  --bg-light: #f8fafc;
+  --white: #ffffff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Outfit", sans-serif;
+  line-height: 1.7;
+  color: var(--text-main);
+  background-color: var(--bg-light);
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Header */
+.policy-header {
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+  color: var(--white);
+  padding: 80px 0 60px;
+  text-align: center;
+}
+
+.policy-header h1 {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+/* Content Card */
+.content-card {
+  background: var(--white);
+  padding: 60px;
+  border-radius: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  margin-top: -40px;
+  margin-bottom: 80px;
+}
+
+.policy-section {
+  margin-bottom: 60px;
+}
+
+.policy-section h2 {
+  color: var(--primary);
+  font-size: 26px;
+  margin-bottom: 25px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.policy-section h2 i {
+  color: var(--accent);
+}
+
+.policy-section.disclaimer-sec h2 i {
+  color: var(--warning);
+}
+
+.policy-section h3 {
+  font-size: 19px;
+  color: var(--primary);
+  margin: 25px 0 15px;
+}
+
+.policy-section p {
+  margin-bottom: 15px;
+  color: var(--text-muted);
+}
+
+.policy-section ul {
+  margin-bottom: 20px;
+  padding-left: 20px;
+}
+
+.policy-section ul li {
+  margin-bottom: 12px;
+  color: var(--text-muted);
+  list-style: none;
+  padding-left: 25px;
+  position: relative;
+}
+
+.policy-section ul li::before {
+  content: "\f272";
+  font-family: "bootstrap-icons";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-weight: bold;
+}
+
+.policy-section.disclaimer-sec ul li::before {
+  color: var(--warning);
+}
+
+.officer-box {
+  background: var(--bg-light);
+  padding: 30px;
+  border-radius: 20px;
+  border-left: 4px solid var(--accent);
+}
+
+.officer-box p {
+  margin-bottom: 10px;
+  font-weight: 500;
+  color: var(--primary);
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .content-card {
+    padding: 30px;
+    margin-top: -20px;
+  }
+  .policy-header h1 {
+    font-size: 28px;
+  }
+}

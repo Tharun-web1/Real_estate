@@ -1,0 +1,186 @@
+/* =============================
+   GLOBAL PAGE STYLE
+============================= */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+}
+
+.register-form-container {
+    width: 100%;
+    max-width: 450px;
+    background: #fff;
+    margin: 25px auto;
+    padding: 20px;
+    box-shadow: 0 0 10px #ccc;
+    border-radius: 10px;
+}
+
+.formHeading {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* =============================
+   INPUT FIELDS
+============================= */
+.register-form-container input,
+.register-form-container select,
+.register-form-container textarea {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+    box-sizing: border-box;
+}
+
+/* =============================
+   PROFILE IMAGE
+============================= */
+.profile-Photo {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.profile-preview {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto 10px;
+}
+
+.profile-Photo label {
+    background: #007bff;
+    color: white;
+    padding: 8px 18px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-block;
+}
+
+/* Hide file input */
+#id_profile_image_path {
+    display: none;
+}
+
+/* =============================
+   OTP SECTION
+============================= */
+.otp-section {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.otp-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.otp-btn:hover {
+    background: #0056b3;
+}
+
+.hidden {
+    display: none;
+}
+
+/* =============================
+   ERROR MESSAGE
+============================= */
+.error-messages p {
+    background: #ffdddd;
+    color: #d00;
+    padding: 8px 10px;
+    border-left: 4px solid red;
+    border-radius: 5px;
+}
+
+/* =============================
+   ROLE SECTIONS
+============================= */
+#role-container {
+    margin-top: 15px;
+}
+
+#professional-fields,
+#owner-fields,
+#marketer-fields {
+    margin-top: 15px;
+    padding: 12px;
+    background: #fafafa;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+/* =============================
+   BUTTONS
+============================= */
+#register-btn,
+button[type="button"] {
+    width: 100%;
+    padding: 12px;
+    background: #28a745;
+    color: white;
+    border: none;
+    margin-top: 15px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+button[type="button"]:hover,
+#register-btn:hover {
+    background: #218838;
+}
+
+/* Company registration button */
+button[onclick] {
+    background: #6c757d;
+}
+
+button[onclick]:hover {
+    background: #495057;
+}
+
+/* =============================
+   MOBILE RESPONSIVE
+============================= */
+@media (max-width: 480px) {
+
+    .register-form-container {
+        max-width: 95%;
+        padding: 15px;
+    }
+
+    .profile-preview {
+        width: 100px;
+        height: 100px;
+    }
+
+    .otp-btn {
+        font-size: 14px;
+        padding: 9px;
+    }
+
+    input, select, textarea {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    button {
+        font-size: 15px;
+        padding: 11px;
+    }
+}

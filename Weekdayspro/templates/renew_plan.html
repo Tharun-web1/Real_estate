@@ -1,0 +1,295 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+<title>Renew Subscription</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+
+<style>
+
+/* ================== RENEW PAGE ================== */
+
+.renew-body-wrapper {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
+}
+
+.renew-page-container {
+    background: #ffffff;
+    width: 95%;
+    max-width: 1100px;
+    padding: 40px;
+    border-radius: 18px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    text-align: center;
+    margin: 120px auto 80px auto;
+}
+
+.renew-page-title {
+    margin-bottom: 35px;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+/* ========== PLAN WRAPPER ========== */
+
+.renew-plan-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+.renew-plan-card {
+    width: 280px;
+    padding: 30px;
+    border-radius: 18px;
+    background: #f8f9ff;
+    cursor: pointer;
+    transition: 0.4s;
+    border: 2px solid transparent;
+    position: relative;
+}
+
+.renew-plan-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+
+.renew-selected-plan {
+    border: 2px solid #2563eb;
+    background: #eef2ff;
+}
+
+.renew-plan-heading {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.renew-plan-price {
+    font-size: 22px;
+    font-weight: bold;
+    margin: 15px 0;
+    color: #2563eb;
+}
+
+.renew-plan-feature {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.renew-plan-badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: gold;
+    color: black;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.renew-mobile-nav{
+    display:none;
+}
+
+/* ========== MOBILE VERSION ========== */
+
+@media (max-width: 768px) {
+
+    .renew-plan-wrapper {
+        position: relative;
+    }
+
+    .renew-plan-card {
+        display: none;
+        width: 100%;
+    }
+
+    .renew-plan-card.active {
+        display: block;
+    }
+
+    .renew-mobile-nav {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 15px;
+    }
+
+    .renew-nav-btn {
+        background: #2563eb;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+}
+
+.renew-duration-select {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.renew-total-box {
+    margin-top: 25px;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.renew-submit-btn {
+    margin-top: 60px;
+    padding: 14px 40px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+</style>
+</head>
+
+<body class="renew-body-wrapper">
+
+{% include 'NavBar.html' %}
+
+<div class="renew-page-container">
+
+<button type="button" onclick="history.back()"
+    style="background:#4169e1;color:#fff;padding:10px 20px;
+    border:none;border-radius:8px;cursor:pointer;margin-bottom:20px;">
+    ← Back
+</button>
+
+<h2 class="renew-page-title">Upgrade / Renew Your Company Plan</h2>
+
+<form method="POST" action="{% url 'prop:select_plan' %}">
+{% csrf_token %}
+
+<input type="hidden" name="plan_type" id="renewPlanInput">
+
+<div class="renew-plan-wrapper">
+
+<div class="renew-plan-card"
+     onclick="selectRenewPlan('COMPANY_NORMAL',14999,this)">
+    <div class="renew-plan-heading">Silver</div>
+    <div class="renew-plan-feature">✔ Unlimited Projects</div>
+    <div class="renew-plan-price">₹14,999 / month</div>
+</div>
+
+<div class="renew-plan-card"
+     onclick="selectRenewPlan('COMPANY_PRO',19999,this)">
+    <div class="renew-plan-badge">Popular</div>
+    <div class="renew-plan-heading">Gold</div>
+    <div class="renew-plan-feature">✔ Featured Listings</div>
+    <div class="renew-plan-price">₹19,999 / month</div>
+</div>
+
+<div class="renew-plan-card"
+     onclick="selectRenewPlan('COMPANY_PREMIUM',24999,this)">
+    <div class="renew-plan-heading">Platinum</div>
+    <div class="renew-plan-feature">✔ Premium Support</div>
+    <div class="renew-plan-price">₹24,999 / month</div>
+</div>
+
+</div>
+
+<!-- Mobile Navigation -->
+<div class="renew-mobile-nav">
+    <button type="button" class="renew-nav-btn" onclick="prevRenewPlan()">Prev</button>
+    <button type="button" class="renew-nav-btn" onclick="nextRenewPlan()">Next</button>
+</div>
+
+<select name="duration" id="renewDurationSelect"
+        class="renew-duration-select" required>
+<option value="1">1 Month</option>
+<option value="3">3 Months</option>
+<option value="6">6 Months</option>
+</select>
+<br>
+<div class="renew-total-box">
+Total Amount: ₹ <span id="renewTotalAmount">0</span>
+</div>
+
+<button type="submit" class="renew-submit-btn">
+Renew Now
+</button>
+
+</form>
+</div>
+
+<script>
+
+let renewPrice = 0;
+let currentRenewIndex = 0;
+const renewCards = document.querySelectorAll(".renew-plan-card");
+
+function selectRenewPlan(plan, price, element) {
+
+document.getElementById("renewPlanInput").value = plan;
+renewPrice = price;
+
+renewCards.forEach(card =>
+card.classList.remove("renew-selected-plan"));
+
+element.classList.add("renew-selected-plan");
+
+calculateRenewAmount();
+}
+
+function calculateRenewAmount() {
+let months =
+document.getElementById("renewDurationSelect").value;
+
+if (renewPrice > 0) {
+document.getElementById("renewTotalAmount").innerText =
+renewPrice * months;
+}
+}
+
+document.getElementById("renewDurationSelect")
+.addEventListener("change", calculateRenewAmount);
+
+
+/* ===== MOBILE SLIDER ===== */
+
+function showRenewCard(index) {
+renewCards.forEach(card =>
+card.classList.remove("active"));
+
+renewCards[index].classList.add("active");
+}
+
+function nextRenewPlan() {
+currentRenewIndex =
+(currentRenewIndex + 1) % renewCards.length;
+showRenewCard(currentRenewIndex);
+}
+
+function prevRenewPlan() {
+currentRenewIndex =
+(currentRenewIndex - 1 + renewCards.length)
+% renewCards.length;
+showRenewCard(currentRenewIndex);
+}
+
+if (window.innerWidth <= 768) {
+showRenewCard(currentRenewIndex);
+}
+
+</script>
+
+{% include 'footer.html' %}
+</body>
+</html>

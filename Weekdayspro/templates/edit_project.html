@@ -1,0 +1,311 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Project</title>
+
+<link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+    <style>
+        body {
+            background: #f4f4f4;
+            font-family: Arial;
+            padding: 20px;
+        }
+ .form-box {
+    background: #fff;
+    padding: 20px;
+    width: 600px;
+    margin: auto;
+    border-radius: 8px;
+    box-shadow: 0px 3px 10px rgba(0,0,0,0.1);
+    margin-top: 100px;
+}
+
+/* Inputs */
+input, textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+/* Button */
+.buttn {
+    width: 100%;
+    background: blue;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.buttn:hover {
+    background: darkblue;
+}
+
+/* Media Files */
+img, video {
+    margin-top: 10px;
+    width: 100%;
+    max-width: 250px;
+    border-radius: 6px;
+}
+.navbar-mobile
+{
+    margin-left:-20px;
+}
+
+/* тнР Mobile Responsive Design */
+@media (max-width: 768px) {
+    .form-box {
+        width: 90%;     /* shrink on tablets */
+        margin-top: 40px;
+        padding: 15px;
+       
+    }
+
+
+    input, textarea {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .buttn  {
+        font-size: 16px;
+        padding: 10px;
+    }
+
+    img, video {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-box {
+        width: 95%;     /* smaller phones */
+        padding: 12px;
+        margin-top: 80px;
+    }
+
+    input, textarea {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .buttn  {
+        font-size: 16px;
+        padding: 10px;
+    }
+}
+/* Add Nearby (+) button */
+.add-nearby-btn {
+    display: inline-block;    
+    margin-top: 10px;
+    background: #6366f1;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.add-nearby-btn:hover {
+    background: #4f46e5;
+}
+
+/* Remove (✕) button */
+.remove-nearby-btn {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f87171; /* red */
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 18px;
+    border: none;
+    transition: 0.2s;
+}
+
+.remove-nearby-btn:hover {
+    background: #dc2626;
+}
+
+/* Nearby item wrapper */
+.nearby-item {
+    position: relative;
+    margin-bottom: 12px;
+}
+    </style>
+</head>
+
+<body>
+     {% include 'NavBar.html' %}
+
+<div class="form-box">
+    <h2>Edit Project</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <label>Project Name</label>
+        <input type="text" name="project_name" value="{{ project.project_name }}">
+
+        <label>Type of Project</label>
+        <input type="text" name="type_of_project" value="{{ project.type_of_project }}">
+
+        <label>Project Location</label>
+        <input type="text" name="project_address" value="{{ project.project_address }}">
+
+        <label>Location URL</label>
+        <input type="text" name="location_url" value="{{ project.location_url }}">
+<h3>Nearby Locations</h3>
+
+<div class="nearby-box">
+  <div id="nearby-container">
+
+    {% if project.nearby_locations %}
+      {% for place in project.nearby_locations %}
+        <div class="nearby-item">
+          <input type="text" name="nearby_locations[]" value="{{ place }}" required>
+          <button type="button" class="remove-nearby-btn" onclick="removeField(this)">✕</button>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="nearby-item">
+        <input type="text" name="nearby_locations[]" placeholder="e.g. School (1 km)" required>
+        <button type="button" class="remove-nearby-btn" onclick="removeField(this)">✕</button>
+      </div>
+    {% endif %}
+
+  </div>
+
+  <button type="button" class="add-nearby-btn" onclick="addNearbyField()">+ Add Nearby</button>
+</div>
+        <label>Number of Units</label>
+        <input type="text" name="number_of_units" value="{{ project.number_of_units }}">
+
+        <label>Available Units</label>
+        <input type="text" name="available_units" value="{{ project.available_units }}">
+
+        <label>Available Facing</label>
+        <input type="text" name="available_facing" value="{{ project.available_facing }}">
+
+        <label>Available Sizes</label>
+        <input type="text" name="available_sizes" value="{{ project.available_sizes }}">
+
+        <label>RERA Approved</label>
+        <input type="checkbox" name="rera_approved" {% if project.rera_approved %}checked{% endif %}>
+
+        <label>Select Amenities</label>
+        <input type="text" name="select_amenities" value="{{ project.select_amenities }}">
+
+        <label>Highlights</label>
+        <input type="text" name="highlights" value="{{ project.highlights }}">
+
+        <label>Type of Approval</label>
+        <input type="text" name="type_of_approval" value="{{ project.type_of_approval }}">
+
+        <label>Total Project Extent </label>
+        <input type="text" name="total_project_area" value="{{ project.total_project_area }}">
+
+        <label>Contact Info</label>
+        <input type="number" name="contact_info" value="{{ project.contact_info }}">
+
+        <label>Pricing</label>
+        <input type="number" name="pricing" value="{{ project.pricing }}">
+
+        <hr>
+
+        <!-- Image -->
+        <label>Current Image</label><br>
+        {% if project.image %}
+            <img src="{{ project.image.url }}">
+        {% endif %}
+        <input type="file" name="image">
+
+        <!-- Video -->
+        <label>Current Video</label><br>
+        {% if project.video %}
+            <video src="{{ project.video.url }}" controls></video>
+        {% endif %}
+        <input type="file" name="video">
+
+        <!-- Document -->
+        <label>Current Document</label><br>
+        {% if project.document %}
+            <a href="{{ project.document.url }}" target="_blank">Download Document</a>
+        {% endif %}
+        <input type="file" name="document">
+
+        <br><br>
+        <button  class="buttn " type="submit">Save Changes</button>
+
+    </form>
+</div>
+<script>
+  // Add new nearby field
+  function addNearbyField() {
+    const container = document.getElementById("nearby-container");
+
+    const div = document.createElement("div");
+    div.classList.add("nearby-item");
+
+    div.innerHTML = `
+      <input type="text" name="nearby_locations[]" placeholder="e.g. Hospital (2 km)" required>
+      <button type="button" class="remove-nearby-btn" onclick="removeField(this)">✕</button>
+    `;
+
+    container.appendChild(div);
+    updateRemoveButtons();
+  }
+
+  // Remove field
+  function removeField(btn) {
+    const container = document.getElementById("nearby-container");
+    const item = btn.parentElement;
+
+    if (container.children.length > 1) {
+      item.remove();
+    } else {
+      alert("At least one nearby place is required");
+    }
+
+    updateRemoveButtons();
+  }
+
+  // Hide remove button for first field
+  function updateRemoveButtons() {
+    const items = document.querySelectorAll(".nearby-item");
+
+    items.forEach((item, index) => {
+      const btn = item.querySelector(".remove-nearby-btn");
+
+      if (index === 0) {
+        btn.style.display = "none"; // hide first
+      } else {
+        btn.style.display = "block";
+      }
+    });
+  }
+
+  // Initialize on page load
+  document.addEventListener("DOMContentLoaded", function () {
+    updateRemoveButtons();
+  });
+</script>
+{% include 'footer.html' %}
+
+</body>
+</html>

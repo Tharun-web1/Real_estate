@@ -1,0 +1,277 @@
+/* Construction Professionals Card Styles */
+.professionals-scroll-container {
+    position: relative;
+    padding: 0 40px;
+    margin: 40px 0;
+}
+
+@media (max-width: 768px) {
+    .professionals-scroll-container {
+        padding: 0 10px;
+    }
+}
+
+.professionals-scroll {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    padding: 20px 5px;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+}
+
+.professionals-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.professional-card {
+    min-width: 320px;
+    max-width: 340px;
+    background: #fff;
+    border-radius: 20px;
+    border: 1px solid #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
+    flex-shrink: 0;
+    font-family: 'Inter', sans-serif;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.professional-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+}
+
+@media (max-width: 768px) {
+    .professional-card {
+        min-width: 280px;
+        max-width: 85vw;
+        width: 85vw;
+        padding: 15px;
+    }
+    .professional-card .stats-row {
+        flex-direction: column;
+        gap: 8px;
+    }
+    .professional-card .stat-box {
+        padding: 8px 12px;
+    }
+    .professional-card .stat-box .val {
+        font-size: 13px;
+        white-space: normal;
+        word-break: break-word;
+    }
+}
+
+/* Card Top Section */
+.professional-card .card-top {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.professional-card .profile-img-wrap {
+    width: 65px;
+    height: 65px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #f8fafc;
+    border: 2px solid #fff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.professional-card .profile-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.professional-card .info-main {
+    flex: 1;
+}
+
+.professional-card .name {
+    font-size: 17px;
+    font-weight: 700;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 2px;
+}
+
+.professional-card .name i {
+    color: #3b82f6;
+    font-size: 15px;
+}
+
+.professional-card .category {
+    font-size: 12px;
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Service Area */
+.professional-card .service-area {
+    margin-bottom: 18px;
+}
+
+.professional-card .service-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.professional-card .area-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.professional-card .area-pill {
+    padding: 5px 14px;
+    background: #eff6ff;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #1d4ed8;
+    transition: all 0.2s;
+}
+
+/* Stats Section */
+.professional-card .stats-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.professional-card .stat-box {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #f8fafc;
+    padding: 12px;
+    border-radius: 16px;
+    border: 1px solid #f1f5f9;
+}
+
+.professional-card .stat-box i {
+    font-size: 20px;
+    color: #334155;
+}
+
+.professional-card .stat-box .stat-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.professional-card .stat-box .val {
+    font-size: 14px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.professional-card .stat-box .lbl {
+    font-size: 10px;
+    color: #64748b;
+    font-weight: 600;
+}
+
+/* Description Section */
+.professional-card .desc-box {
+    margin-bottom: 25px;
+    min-height: 40px;
+}
+
+.professional-card .desc-box p {
+    font-size: 13px;
+    color: #475569;
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin: 0;
+}
+
+/* Footer Actions */
+.professional-card .card-footer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-top: 20px;
+    border-top: 1px solid #f1f5f9;
+    margin-top: auto;
+}
+
+.professional-card .call-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: #0f172a;
+    color: #fff;
+    padding: 14px;
+    border-radius: 14px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.professional-card .call-btn:hover {
+    background: #1e293b;
+    transform: scale(1.02);
+}
+
+.professional-card .icon-btn {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border: 1.5px solid #f1f5f9;
+    border-radius: 14px;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.professional-card .icon-btn:hover {
+    border-color: #3b82f6;
+    color: #3b82f6;
+    background: #eff6ff;
+}
+
+/* Empty Reels Style */
+.empty-reels-msg {
+    width: 100%;
+    padding: 60px 40px;
+    text-align: center;
+    background: #f8fafc;
+    border: 2px dashed #cbd5e1;
+    border-radius: 24px;
+    color: #64748b;
+    font-weight: 500;
+    margin: 20px 0;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+

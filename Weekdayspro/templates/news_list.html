@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Updates</title>
+    <link rel="stylesheet" href="{% static 'css/news_list.css' %}">
+</head>
+<body>
+
+<div class="header">
+    <h2>📸 Updates</h2>
+    <a href="{% url 'prop:news_create' %}" class="add-btn">+ Add New</a>
+</div>
+
+<div class="container">
+    {% if posts %}
+    <div class="grid">
+        {% for post in posts %}
+        <div class="card">
+            <div class="media">
+                {% if post.media_type == 'image' and post.image %}
+                    <img src="{{ post.image.url }}">
+                {% elif post.media_type == 'video' and post.video %}
+                    <video src="{{ post.video.url }}" muted></video>
+                {% endif %}
+            </div>
+            <div class="content">
+                <p>{{ post.news_content|truncatewords:20 }}</p>
+                <small style="color: #999; display: block; margin-top: 10px;">{{ post.created_at|date:"M d, Y" }}</small>
+            </div>
+            <div class="actions">
+                <a href="{% url 'prop:news_edit' post.pk %}" class="btn edit">Edit</a>
+                <a href="{% url 'prop:news_delete' post.pk %}" class="btn delete" onclick="return confirm('Are you sure?')">Delete</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty">
+        <i>📭</i>
+        <p>No updates found. Start by sharing something!</p>
+        <a href="{% url 'prop:news_create' %}" class="add-btn" style="display: inline-block; margin-top: 15px;">Create First Update</a>
+    </div>
+    {% endif %}
+</div>
+
+</body>
+</html>

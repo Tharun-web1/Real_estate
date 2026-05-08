@@ -1,0 +1,197 @@
+.feed-scroll-container {
+    position: relative;
+    padding: 0 10px;
+    margin: 30px 0;
+    width: 100%;
+    
+    @media (max-width: 768px) {
+        padding: 0 5px;
+    }
+}
+
+.feed-scroll {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    padding: 20px 5px;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+}
+
+.feed-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 45px;
+    height: 45px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    font-size: 20px;
+    color: #333;
+    transition: all 0.3s;
+    
+    @media (max-width: 768px) {
+        display: none; // Hide arrows on mobile
+    }
+    
+    &:hover { background: #f0f0f0; transform: translateY(-50%) scale(1.1); }
+    &.prev { left: 0; }
+    &.next { right: 0; }
+}
+
+/* VERTICAL POST DESIGN (Based on new sketch) */
+.feed-card {
+    min-width: 350px; // Standard desktop size (fits approx 3)
+    max-width: 380px;
+    background: #fff;
+    border-radius: 20px;
+    border: 1px solid #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 420px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+    flex-shrink: 0;
+    transition: transform 0.3s;
+    
+    @media (max-width: 768px) {
+        min-width: 85%; // Show 1 card + bit of next on mobile
+        max-width: 85%;
+        height: 400px;
+    }
+    
+    &:hover { transform: translateY(-5px); }
+}
+
+/* 1. Card Top (Description) */
+.card-header {
+    padding: 15px 20px;
+    position: relative;
+    
+    .time-badge {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 11px;
+        color: #999;
+        font-weight: 500;
+    }
+
+    .description {
+        font-size: 14px;
+        color: #444;
+        line-height: 1.5;
+        margin-top: 5px;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        font-weight: 500;
+    }
+}
+
+/* 2. Card Middle (Media) */
+.card-media {
+    flex: 1;
+    background: #000; // Black background for better video/img contrast
+    overflow: hidden;
+    img, video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+/* 3. Card Footer (User & Actions) */
+.card-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fafafa;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .profile-img {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #fff;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .user-details {
+        .user-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: #111;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 120px;
+        }
+        .stars {
+            color: #ffc107;
+            font-size: 9px;
+            display: flex;
+            gap: 1px;
+        }
+    }
+}
+
+.action-btns {
+    display: flex;
+    gap: 10px;
+
+    .action-btn {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        color: white;
+        text-decoration: none;
+        transition: all 0.2s;
+        
+        &:hover { transform: scale(1.1); opacity: 0.9; }
+        &.call { background: #2ecc71; }
+        &.chat { background: #3498db; }
+    }
+}
+
+/* Text-Only cards */
+.feed-card.text-only {
+    .card-header {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        background: linear-gradient(135deg, #1a2a6c 0%, #b21f1f 50%, #fdbb2d 100%);
+        color: white;
+        .description {
+            color: white;
+            font-size: 18px;
+            -webkit-line-clamp: 6;
+            font-weight: 600;
+        }
+        .time-badge { color: rgba(255,255,255,0.7); }
+    }
+}

@@ -1,0 +1,688 @@
+/* =============================================================
+   PROJECT DETAIL — Scoped Responsive Styles
+   Breakpoints: 1280px+ (large desktop), 1101–1280 (desktop/tablet),
+                768–1100 (tablet), 480–767 (large mobile),
+                <480px (small mobile)
+   ============================================================= */
+
+/* ── Variables ─────────────────────────────────────────────── */
+:root {
+  --pd-primary: #0d6efd;
+  --pd-primary-dk: #0a58ca;
+  --pd-green: #25d366;
+  --pd-surface: #ffffff;
+  --pd-bg: #f5f7fa;
+  --pd-border: #e2e8f0;
+  --pd-text: #1e293b;
+  --pd-muted: #64748b;
+  --pd-radius: 14px;
+  --pd-shadow: 0 2px 12px rgba(0, 0, 0, .07);
+  --pd-sidebar-w: 280px;
+  /* matches NavBar sidebar */
+  --pd-header-h: 65px;
+}
+
+/* ── Reset helpers ──────────────────────────────────────────── */
+.project-detail-body * {
+  box-sizing: border-box;
+}
+
+/* ── Body & Page Shell ──────────────────────────────────────── */
+.project-detail-body {
+  background: var(--pd-bg);
+  font-family: "Roboto", sans-serif;
+  color: var(--pd-text);
+  line-height: 1.6;
+}
+
+/* pd-main-content sits inside the NavBar's main-content-wrapper div,
+   so we only need to handle top/side padding here. */
+.pd-main-content {
+  padding: 24px 48px 48px;
+  min-height: 100vh;
+}
+
+/* ── Page Wrapper ───────────────────────────────────────────── */
+.page-wrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* ── Page Header ────────────────────────────────────────────── */
+.page-header {
+  margin-bottom: 24px;
+}
+
+.page-header h1 {
+  font-size: clamp(1.25rem, 2.5vw, 2rem);
+  font-weight: 700;
+  color: var(--pd-text);
+  margin-bottom: 6px;
+  font-family: "Poppins", "Inter", sans-serif;
+  line-height: 1.3;
+}
+
+.page-header .text-muted {
+  color: var(--pd-muted);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* ── Three-Column Layout (Desktop ≥ 1101px) ─────────────────── */
+.detail-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr 280px;
+  grid-template-areas: "left center right";
+  gap: 20px;
+  align-items: start;
+}
+
+.col-left {
+  grid-area: left;
+}
+
+.col-center {
+  grid-area: center;
+}
+
+.col-right {
+  grid-area: right;
+}
+
+/* ── Card Base ──────────────────────────────────────────────── */
+.card {
+  background: var(--pd-surface);
+  border-radius: var(--pd-radius);
+  box-shadow: var(--pd-shadow);
+  border: 1px solid var(--pd-border);
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+/* ── Builder Card ───────────────────────────────────────────── */
+.builder-card {
+  position: sticky;
+  top: calc(var(--pd-header-h) + 16px);
+}
+
+.builder-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.builder-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--pd-border);
+  flex-shrink: 0;
+}
+
+.builder-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--pd-text);
+  font-family: "Poppins", "Inter", sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.builder-name .text-primary {
+  color: var(--pd-primary);
+}
+
+/* Action buttons row */
+.builder-actions {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 16px;
+  padding: 12px 0;
+  border-top: 1px solid var(--pd-border);
+  border-bottom: 1px solid var(--pd-border);
+}
+
+.action-btn-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.circle-btn {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1.5px solid var(--pd-border);
+  background: #f8fafc;
+  color: var(--pd-text);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.circle-btn:hover {
+  background: var(--pd-primary);
+  color: #fff;
+  border-color: var(--pd-primary);
+  transform: scale(1.07);
+}
+
+.circle-btn.saved {
+  background: var(--pd-primary);
+  color: #fff;
+  border-color: var(--pd-primary);
+}
+
+.btn-text {
+  font-size: 0.72rem;
+  color: var(--pd-muted);
+}
+
+/* WhatsApp Button */
+.whatsapp-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 11px 16px;
+  background: var(--pd-green);
+  color: #fff;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: opacity 0.2s;
+  margin-top: 4px;
+}
+
+.whatsapp-btn:hover {
+  opacity: 0.9;
+}
+
+/* ── Media Gallery ──────────────────────────────────────────── */
+.media-gallery {
+  position: relative;
+  border-radius: var(--pd-radius);
+  overflow: hidden;
+  background: #0f172a;
+  height: 360px;
+  margin-bottom: 16px;
+}
+
+.main-slide {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: opacity 0.3s ease;
+}
+
+.price-tag {
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  background: rgba(0, 0, 0, .65);
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 1rem;
+  backdrop-filter: blur(4px);
+}
+
+.gallery-nav {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  transform: translateY(-50%);
+  padding: 0 12px;
+  pointer-events: none;
+}
+
+.nav-arrow {
+  pointer-events: all;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .85);
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.nav-arrow:hover {
+  background: #fff;
+}
+
+/* ── Info Grid ──────────────────────────────────────────────── */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.info-item {
+  background: var(--pd-surface);
+  border: 1px solid var(--pd-border);
+  border-radius: 10px;
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: center;
+  box-shadow: var(--pd-shadow);
+}
+
+.info-label {
+  font-size: 0.72rem;
+  color: var(--pd-muted);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  font-weight: 600;
+}
+
+.info-value {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--pd-text);
+  font-family: "Poppins", "Inter", sans-serif;
+}
+
+/* ── Section Title ──────────────────────────────────────────── */
+.section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--pd-text);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: "Poppins", "Inter", sans-serif;
+}
+
+.section-title i {
+  color: var(--pd-primary);
+}
+
+/* ── Amenities ──────────────────────────────────────────────── */
+.amenities-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.amenity-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  color: #1d4ed8;
+  font-weight: 500;
+}
+
+/* ── Video ──────────────────────────────────────────────────── */
+.video-wrapper {
+  border-radius: 10px;
+  overflow: hidden;
+  background: #000;
+}
+
+.video-wrapper video {
+  width: 100%;
+  max-height: 340px;
+  display: block;
+}
+
+/* ── Doc List ───────────────────────────────────────────────── */
+.doc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.doc-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: #f8fafc;
+  border: 1px solid var(--pd-border);
+  border-radius: 8px;
+  font-size: 0.875rem;
+  gap: 8px;
+}
+
+.view-link {
+  color: var(--pd-primary);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.view-link:hover {
+  text-decoration: underline;
+}
+
+/* ── Map Container ──────────────────────────────────────────── */
+.map-container {
+  border-radius: 10px;
+  overflow: hidden;
+  height: 220px;
+}
+
+.map-container iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+/* ── Growth Estimation ──────────────────────────────────────── */
+.growth-estimation {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.growth-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.875rem;
+  color: var(--pd-text);
+}
+
+.growth-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--pd-primary);
+  flex-shrink: 0;
+}
+
+/* ── Utility ────────────────────────────────────────────────── */
+.text-muted {
+  color: var(--pd-muted);
+}
+
+
+/* =============================================================
+   RESPONSIVE BREAKPOINTS
+   ============================================================= */
+
+/* ── Large Desktop ≥ 1280px ─────────────────────────────────── */
+@media (min-width: 1280px) {
+  .detail-layout {
+    grid-template-columns: 280px 1fr 300px;
+    gap: 24px;
+  }
+
+  .media-gallery {
+    height: 400px;
+  }
+
+  .info-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ── Standard Desktop 1101 – 1279px ────────────────────────── */
+@media (min-width: 1101px) and (max-width: 1279px) {
+  .detail-layout {
+    grid-template-columns: 240px 1fr 260px;
+    gap: 16px;
+  }
+
+  .media-gallery {
+    height: 320px;
+  }
+}
+
+/* ── Tablet / Small Desktop 769 – 1100px ───────────────────── */
+@media (max-width: 1100px) {
+
+  /* The NavBar hides the sidebar; main-content-wrapper goes full-width */
+  .pd-main-content {
+    padding: 16px 16px 40px;
+  }
+
+  /* Switch to 2-column: builder left, right sidebar drops below center */
+  .detail-layout {
+    grid-template-columns: 220px 1fr;
+    grid-template-areas:
+      "left center"
+      "right right";
+    gap: 16px;
+  }
+
+  .col-right {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .col-right .card {
+    margin-bottom: 0;
+  }
+
+  .builder-card {
+    position: static;
+  }
+
+  .media-gallery {
+    height: 300px;
+  }
+
+  .info-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ── Tablet Portrait 600 – 768px ───────────────────────────── */
+@media (max-width: 768px) {
+  .pd-main-content {
+    padding: 12px 12px 36px;
+  }
+
+  /* Single column, reorder: header → builder → image → info → sections → sidebar */
+  .detail-layout {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "left"
+      "center"
+      "right";
+    gap: 12px;
+  }
+
+  .col-right {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .col-right .card {
+    margin-bottom: 0;
+  }
+
+  .builder-card {
+    position: static;
+  }
+
+  /* Builder card horizontal on mobile */
+  .builder-header {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .builder-avatar {
+    width: 52px;
+    height: 52px;
+  }
+
+  .media-gallery {
+    height: 260px;
+  }
+
+  .info-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .page-header h1 {
+    font-size: 1.35rem;
+  }
+
+  .map-container {
+    height: 200px;
+  }
+
+  /* Put brochure & map side-by-side if screen allows */
+  .video-wrapper video {
+    max-height: 240px;
+  }
+}
+
+/* ── Large Mobile 480 – 599px ───────────────────────────────── */
+@media (max-width: 599px) {
+  .col-right {
+    grid-template-columns: 1fr;
+  }
+
+  .col-right .card {
+    margin-bottom: 12px;
+  }
+
+  .info-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .media-gallery {
+    height: 230px;
+  }
+
+  .builder-actions {
+    gap: 6px;
+  }
+
+  .circle-btn {
+    width: 42px;
+    height: 42px;
+    font-size: 1rem;
+  }
+}
+
+/* ── Small Mobile < 480px ───────────────────────────────────── */
+@media (max-width: 479px) {
+  .pd-main-content {
+    padding: 8px 10px 32px;
+  }
+
+  .page-header {
+    margin-bottom: 14px;
+  }
+
+  .page-header h1 {
+    font-size: 1.15rem;
+  }
+
+  .media-gallery {
+    height: 210px;
+    border-radius: 10px;
+  }
+
+  .price-tag {
+    font-size: 0.85rem;
+    padding: 5px 11px;
+  }
+
+  .info-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .info-item {
+    padding: 10px 8px;
+  }
+
+  .info-value {
+    font-size: 0.875rem;
+  }
+
+  .card {
+    padding: 14px;
+    border-radius: 10px;
+  }
+
+  .builder-avatar {
+    width: 46px;
+    height: 46px;
+  }
+
+  .builder-actions {
+    padding: 10px 0;
+  }
+
+  .circle-btn {
+    width: 38px;
+    height: 38px;
+    font-size: 0.95rem;
+  }
+
+  .btn-text {
+    font-size: 0.68rem;
+  }
+
+  .amenity-tag {
+    font-size: 0.75rem;
+    padding: 5px 10px;
+  }
+
+  .section-title {
+    font-size: 0.9rem;
+  }
+
+  .whatsapp-btn {
+    font-size: 0.82rem;
+    padding: 10px 12px;
+  }
+
+  .map-container {
+    height: 180px;
+  }
+
+  .nav-arrow {
+    width: 34px;
+    height: 34px;
+    font-size: 1rem;
+  }
+
+  .doc-item {
+    font-size: 0.8rem;
+  }
+}

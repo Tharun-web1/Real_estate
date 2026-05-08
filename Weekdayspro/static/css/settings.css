@@ -1,0 +1,130 @@
+/* settings.css */
+:root {
+  --s-primary: #0f172a;
+  --s-accent: #2563eb;
+  --s-accent-lt: #eff6ff;
+  --s-danger: #ef4444;
+  --s-text: #1e293b;
+  --s-muted: #64748b;
+  --s-bg: #f8fafc;
+  --s-card: #ffffff;
+  --s-border: #e2e8f0;
+  --s-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background-color: var(--s-bg);
+  color: var(--s-text);
+  margin: 0;
+  padding: 0;
+}
+
+.s-container {
+  max-width: 600px;
+  margin: 80px auto 100px;
+  padding: 0 20px;
+}
+
+.s-header {
+  margin-bottom: 24px;
+}
+
+.s-header h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--s-primary);
+}
+
+.s-section {
+  background: var(--s-card);
+  border-radius: 20px;
+  border: 1px solid var(--s-border);
+  box-shadow: var(--s-shadow);
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.s-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--s-border);
+  cursor: pointer;
+  transition: background 0.2s;
+  text-decoration: none;
+  color: inherit;
+}
+
+.s-item:last-child {
+  border-bottom: none;
+}
+
+.s-item:hover {
+  background: var(--s-accent-lt);
+}
+
+.s-item-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.s-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: var(--s-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: var(--s-muted);
+}
+
+.s-item:hover .s-icon {
+  background: white;
+  color: var(--s-accent);
+}
+
+.s-label {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.s-desc {
+  font-size: 12px;
+  color: var(--s-muted);
+  margin-top: 2px;
+}
+
+.s-chevron {
+  font-size: 14px;
+  color: var(--s-muted);
+}
+
+.s-logout {
+  color: var(--s-danger) !important;
+}
+
+.s-logout .s-icon {
+  color: var(--s-danger);
+  background: #fef2f2;
+}
+
+.s-logout:hover {
+  background: #fef2f2;
+}
+
+.s-footer {
+  text-align: center;
+  margin-top: 30px;
+  font-size: 12px;
+  color: var(--s-muted);
+}
+
+.s-version {
+  margin-top: 5px;
+  opacity: 0.6;
+}

@@ -1,0 +1,157 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Center | GoNestro Support</title>
+    <link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'css/help.css' %}">
+</head>
+<body>
+
+    {% include 'NavBar.html' %}
+
+    <div class="help-hero">
+        <div class="container">
+            <h1>GoNestro Help Center</h1>
+            <p>Welcome! We’re here to make your real estate journey smooth and hassle-free. How can we help you today?</p>
+            
+            <div class="search-container">
+                <input type="text" placeholder="Search for answers (e.g. 'how to sell faster')">
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- ROLE BASED SECTIONS -->
+        <div class="help-sections">
+            <!-- Buyers -->
+            <div class="help-card">
+                <i class="bi bi-house-heart"></i>
+                <h3>I Want to Buy</h3>
+                <ul>
+                    <li>Search based on location & budget</li>
+                    <li>Explore verified listings</li>
+                    <li>Connect with trusted agents</li>
+                    <li>Legal document support</li>
+                </ul>
+            </div>
+
+            <!-- Sellers -->
+            <div class="help-card">
+                <i class="bi bi-tag"></i>
+                <h3>I Want to Sell</h3>
+                <ul>
+                    <li>List your property in minutes</li>
+                    <li>Reach genuine active buyers</li>
+                    <li>Pricing & market trend guidance</li>
+                    <li>Sell smarter, not harder</li>
+                </ul>
+            </div>
+
+            <!-- Agents -->
+            <div class="help-card">
+                <i class="bi bi-person-badge"></i>
+                <h3>I Am an Agent</h3>
+                <ul>
+                    <li>Create a professional profile</li>
+                    <li>Generate high-quality leads</li>
+                    <li>Build trust with verification</li>
+                    <li>Grow your digital presence</li>
+                </ul>
+            </div>
+
+            <!-- Builders -->
+            <div class="help-card">
+                <i class="bi bi-building"></i>
+                <h3>I Am a Builder</h3>
+                <ul>
+                    <li>Showcase residential projects</li>
+                    <li>Reach targeted investors</li>
+                    <li>Promote upcoming developments</li>
+                    <li>Improve project credibility</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- SERVICES -->
+        <div class="services-box">
+            <h3>Our Complete Real Estate Solutions</h3>
+            <div class="services-grid">
+                <div class="service-item">Property Discovery</div>
+                <div class="service-item">Verified Connections</div>
+                <div class="service-item">Legal & Drafting</div>
+                <div class="service-item">Document Verification</div>
+                <div class="service-item">Maintenance & Cleaning</div>
+                <div class="service-item">Packers & Movers</div>
+                <div class="service-item">Investment Guidance</div>
+                <div class="service-item">Support Promise</div>
+            </div>
+        </div>
+
+        <!-- FAQ SECTION -->
+        <div class="section-title">
+            <h2>Frequently Asked Questions</h2>
+        </div>
+        <div class="faq-container">
+            <div class="faq-item">
+                <h4 onclick="toggleFaq(this)">What is GoNestro? <i class="bi bi-plus"></i></h4>
+                <p>GoNestro is a complete real estate platform that helps users buy, sell, invest, and manage properties with trusted connections and end-to-end services.</p>
+            </div>
+            <div class="faq-item">
+                <h4 onclick="toggleFaq(this)">Is GoNestro free to use? <i class="bi bi-plus"></i></h4>
+                <p>Basic features like browsing properties and connecting with professionals are free. Premium features may be introduced for enhanced visibility and services.</p>
+            </div>
+            <div class="faq-item">
+                <h4 onclick="toggleFaq(this)">Are the properties verified? <i class="bi bi-plus"></i></h4>
+                <p>We promote verified listings and encourage document validation to ensure safer transactions through our platform.</p>
+            </div>
+            <div class="faq-item">
+                <h4 onclick="toggleFaq(this)">How can I sell my property faster? <i class="bi bi-plus"></i></h4>
+                <p>Ensure your listing is complete, priced correctly, and includes clear, high-quality images. Verified listings typically get much more attention.</p>
+            </div>
+            <div class="faq-item">
+                <h4 onclick="toggleFaq(this)">Can I get help with legal documentation? <i class="bi bi-plus"></i></h4>
+                <p>Yes, GoNestro provides support for document verification, agreement drafting, and professional legal assistance throughout the deal.</p>
+            </div>
+        </div>
+
+        <!-- CONTACT SUPPORT -->
+        <div class="support-box">
+            <h2>Still Need Help?</h2>
+            <div class="support-channels">
+                <div class="channel">
+                    <i class="bi bi-envelope-at"></i>
+                    <span>support@gonestro.com</span>
+                </div>
+                <div class="channel">
+                    <i class="bi bi-telephone"></i>
+                    <span>+91-XXXXXXXXXX</span>
+                </div>
+                <div class="channel">
+                    <i class="bi bi-chat-left-dots"></i>
+                    <span>In-App Support (Coming Soon)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% include 'footer.html' %}
+
+    <script>
+        function toggleFaq(element) {
+            const item = element.parentElement;
+            item.classList.toggle('active');
+            const icon = element.querySelector('i');
+            if (item.classList.contains('active')) {
+                icon.classList.replace('bi-plus', 'bi-dash');
+            } else {
+                icon.classList.replace('bi-dash', 'bi-plus');
+            }
+        }
+    </script>
+</body>
+</html>

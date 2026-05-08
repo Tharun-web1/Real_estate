@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Update</title>
+    <link rel="stylesheet" href="{% static 'css/news_form.css' %}">
+</head>
+<body>
+{% include 'NavBar.html' %}
+<div class="container">
+    <h2>Add Update</h2>
+    <a href="{% url 'prop:profiless' %}" style="position: absolute; top: 20px; right: 20px; text-decoration: none; font-size: 20px;">👤</a>
+    
+    <form method="POST" enctype="multipart/form-data" id="update-form">
+        {% csrf_token %}
+
+        <!-- Direct Upload Box -->
+        <div id="upload-section">
+            <label class="upload-box" id="drop-zone">
+                <span><i class="bi bi-cloud-arrow-up"></i> +</span>
+                <p>Click to upload Image or Video (Max 30s)</p>
+        <input type="file" name="media_file" id="media_file" accept="image/*,video/*">
+            </label>
+        </div>
+
+        <!-- Preview -->
+        <div class="preview" id="preview"></div>
+
+        <!-- Heading -->
+        <label>Heading</label>
+        <input type="text" name="heading" placeholder="Enter heading..." style="width:100%; padding:10px; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:10px; font-family:inherit;">
+
+        <!-- News Content -->
+        <label>Description</label>
+        <textarea name="news_content" placeholder="Write your update..." rows="4" style="width:100%; padding:10px; border-radius:8px; border:1px solid #e2e8f0; font-family:inherit;"></textarea>
+
+        <button type="submit">Save Update</button>
+    </form>
+</div>
+
+<script>
+    const preview = document.getElementById("preview");
+    const fileInput = document.getElementById("media_file");
+    const dropZone = document.getElementById("drop-zone");
+
+    fileInput.addEventListener("change", handleFileSelect);
+
+    function handleFileSelect(event) {
+        const file = event.target.files[0];
+        preview.innerHTML = "";
+        if (!file) return;
+
+        if (file.type.startsWith("video")) {
+            const video = document.createElement('video');
+            video.preload = 'metadata';
+            video.onloadedmetadata = function() {
+                window.URL.revokeObjectURL(video.src);
+                if (video.duration > 30.5) { // Allow slight buffer
+                    alert("Video must be 30 seconds or less.");
+                    fileInput.value = "";
+                    preview.innerHTML = "";
+                } else {
+                    showPreview(file);
+                }
+            }
+            video.src = URL.createObjectURL(file);
+        } else {
+            showPreview(file);
+        }
+    }
+
+    function showPreview(file) {
+        const url = URL.createObjectURL(file);
+        if (file.type.startsWith("image")) {
+            preview.innerHTML = `<img src="${url}">`;
+        } else if (file.type.startsWith("video")) {
+            preview.innerHTML = `<video src="${url}" controls autoplay muted></video>`;
+        }
+    }
+
+    // Drag and Drop (Premium feel)
+    dropZone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropZone.style.borderColor = "#0095f6";
+        dropZone.style.background = "#f0f9ff";
+    });
+
+    dropZone.addEventListener("dragleave", () => {
+        dropZone.style.borderColor = "#ddd";
+        dropZone.style.background = "transparent";
+    });
+
+    dropZone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        fileInput.files = e.dataTransfer.files;
+        handleFileSelect({ target: fileInput });
+    });
+</script>
+
+</body>
+</html>

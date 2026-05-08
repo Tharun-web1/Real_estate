@@ -1,0 +1,471 @@
+// =============================================================================
+// _user-card.scss  —  Reusable User Profile Card Component
+// Depends on: _variables.scss, _mixins.scss
+// =============================================================================
+
+// ── Page shell ────────────────────────────────────────────────────────────────
+.uc-page {
+  background: #f0f2f8;
+  min-height: 100vh;
+  font-family: $font-heading;
+}
+
+// ── Filter sidebar (preserved, just cleaned) ──────────────────────────────────
+.uc-filter {
+  width: 300px;
+  padding: 16px;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 4px 18px rgba(0,0,0,.08);
+  border: 1px solid #e3e6ec;
+  position: fixed;
+  top: 70px;
+  left: 12px;
+  max-height: calc(100vh - 90px);
+  overflow-y: auto;
+  z-index: 200;
+
+  h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 12px;
+    @include flex-between;
+  }
+
+  input, select {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    margin-top: 10px;
+    font-size: 13px;
+    font-family: $font-heading;
+    background: #fafafa;
+    transition: border-color .2s;
+
+    &:focus { outline: none; border-color: #4c3eb6; }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  &__apply {
+    flex: 1;
+    padding: 10px;
+    background: #2e8b35;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s;
+    &:hover { background: darken(#2e8b35, 8%); }
+  }
+
+  &__reset {
+    flex: 1;
+    padding: 10px;
+    background: #233b8e;
+    color: #fff;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    transition: background .2s;
+    &:hover { background: darken(#233b8e, 8%); }
+  }
+}
+
+// Mobile filter toggle button
+.uc-filter-toggle {
+  display: none;
+  background: #233b8e;
+  color: #fff;
+  border: none;
+  padding: 9px 18px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 14px;
+  font-family: $font-heading;
+}
+
+// ── Layout wrapper ─────────────────────────────────────────────────────────────
+.uc-layout {
+  display: flex;
+  gap: 24px;
+  padding: 24px 20px 40px;
+  margin-top: 60px; // nav offset
+}
+
+.uc-main {
+  flex: 1;
+  margin-left: 320px; // sidebar width + gap
+}
+
+// Section heading
+.uc-section-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0 0 18px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e8e8f0;
+
+  span {
+    font-size: 13px;
+    font-weight: 500;
+    color: #6b7280;
+    margin-left: 10px;
+  }
+}
+
+// ── Cards Grid ─────────────────────────────────────────────────────────────────
+.uc-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 40px;
+}
+
+// ── User Card ─────────────────────────────────────────────────────────────────
+.uc-card {
+  @include card-style;
+  padding: 18px;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 4px 20px rgba(0,0,0,.07);
+  border: 1px solid #eef0f6;
+  transition: transform .25s ease, box-shadow .25s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 32px rgba(76,62,182,.13);
+  }
+
+  // ── Top Section: wallpaper (companies) ─────────────────────────────────────
+  &__wallpaper {
+    width: calc(100% + 36px);
+    height: 90px;
+    margin: -18px -18px 0;
+    border-radius: 20px 20px 0 0;
+    object-fit: cover;
+    background: linear-gradient(135deg, #4c3eb6 0%, #7c6fd4 100%);
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    &--empty {
+      background: linear-gradient(135deg, #e8e8f4 0%, #d0d0e8 100%);
+    }
+  }
+
+  // ── Header: avatar + name + stars ─────────────────────────────────────────
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    margin-top: 14px;
+    margin-bottom: 10px;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  &__avatar {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 10px rgba(0,0,0,.15);
+    flex-shrink: 0;
+    background: #e8e8f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    i { font-size: 24px; color: #9090b0; }
+  }
+
+  &__identity {
+    flex: 1;
+    min-width: 0;
+    padding-top: 2px;
+  }
+
+  &__name-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+
+  &__name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a1a2e;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+  }
+
+  // Blue verified tick
+  &__verified {
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    background: #1da1f2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    i {
+      font-size: 9px;
+      color: #fff;
+    }
+  }
+
+  &__stars {
+    display: flex;
+    gap: 2px;
+
+    i {
+      font-size: 13px;
+      color: #f5c518;
+    }
+  }
+
+  // ── Sub-info: @username + location ────────────────────────────────────────
+  &__subinfo {
+    margin-bottom: 12px;
+  }
+
+  &__username {
+    font-size: 13px;
+    color: #4c3eb6;
+    font-weight: 500;
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  &__location {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: #6b7280;
+
+    i { font-size: 13px; color: #9090b0; }
+  }
+
+  // ── Divider ───────────────────────────────────────────────────────────────
+  &__divider {
+    border: none;
+    border-top: 1px solid #eef0f6;
+    margin: 10px 0;
+  }
+
+  // ── Stats grid (3 cols) ───────────────────────────────────────────────────
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    margin-bottom: 0;
+    border-bottom: 1px solid #eef0f6;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+  }
+
+  &__stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 4px;
+    text-align: center;
+    border-right: 1px solid #eef0f6;
+
+    &:last-child { border-right: none; }
+
+    i {
+      font-size: 22px;
+      color: #4c8ef5;
+      margin-bottom: 5px;
+    }
+
+    &-label {
+      font-size: 11px;
+      color: #9090b0;
+      margin-bottom: 3px;
+      line-height: 1;
+    }
+
+    &-value {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1a1a2e;
+      line-height: 1;
+    }
+  }
+
+  // ── Second row stats (2 cols) ─────────────────────────────────────────────
+  &__stats2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+    border-bottom: 1px solid #eef0f6;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+  }
+
+  &__stat2 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 6px;
+    border-right: 1px solid #eef0f6;
+
+    &:last-child { border-right: none; }
+
+    i {
+      font-size: 18px;
+      color: #4c8ef5;
+      flex-shrink: 0;
+    }
+
+    &-body { display: flex; flex-direction: column; }
+
+    &-label {
+      font-size: 11px;
+      color: #9090b0;
+      line-height: 1;
+      margin-bottom: 2px;
+    }
+
+    &-value {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1a1a2e;
+      line-height: 1;
+    }
+  }
+
+  // ── Description ───────────────────────────────────────────────────────────
+  &__bio {
+    font-size: 12px;
+    color: #6b7280;
+    line-height: 1.5;
+    text-align: center;
+    margin-bottom: 14px;
+    min-height: 18px;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  // ── Actions row ───────────────────────────────────────────────────────────
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: auto;
+  }
+
+  // Primary call button
+  &__call {
+    flex: 1;
+    height: 44px;
+    background: linear-gradient(135deg, #4c3eb6 0%, #6355cc 100%);
+    color: #fff;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    transition: opacity .2s, transform .15s;
+    box-shadow: 0 4px 14px rgba(76,62,182,.35);
+
+    &:hover { opacity: .9; transform: scale(1.02); }
+    &:active { transform: scale(.97); }
+
+    i { color: #fff; }
+  }
+
+  // Icon buttons (share / chat)
+  &__icon-btn {
+    @include icon-button(44px);
+    background: #f0f2f8;
+    border: 1px solid #e0e2ea;
+    font-size: 17px;
+    color: #4c3eb6;
+    text-decoration: none;
+    flex-shrink: 0;
+
+    i { color: #4c3eb6; }
+
+    &:hover {
+      background: #e0e2f4;
+    }
+  }
+}
+
+// ── Company card variant (wallpaper at top) ────────────────────────────────────
+.uc-card--company {
+  padding-top: 0;
+
+  .uc-card__header {
+    margin-top: 10px;
+    padding: 0 4px;
+  }
+}
+
+// ── Responsive ─────────────────────────────────────────────────────────────────
+
+// Large tablet / small laptop
+@media (max-width: 1200px) {
+  .uc-grid { grid-template-columns: repeat(3, 1fr); }
+  .uc-main { margin-left: 316px; }
+}
+
+// Tablet
+@media (max-width: 992px) {
+  .uc-grid { grid-template-columns: repeat(2, 1fr); }
+  .uc-main { margin-left: 0; }
+  .uc-filter { display: none; position: static; width: 100%; margin-bottom: 16px; }
+  .uc-filter--open { display: block; }
+  .uc-filter-toggle { display: block; }
+  .uc-layout { padding: 16px; flex-direction: column; margin-top: 56px; }
+}
+
+// Mobile
+@media (max-width: 600px) {
+  .uc-grid { grid-template-columns: 1fr; gap: 14px; }
+
+  .uc-card {
+    padding: 14px;
+
+    &__avatar { width: 50px; height: 50px; }
+    &__name   { font-size: 14px; }
+  }
+}

@@ -1,0 +1,685 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add New Property</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/add_property_new.css' %}">
+  </head>
+  <body>
+
+      {% include 'NavBar.html' %}
+            <div class="week">
+
+    <div class="addProperty">
+<!-- Internal styles moved to add_property_new.css -->
+      <form method="post" id="addPropertyForm" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        
+        <!-- Global Form Errors -->
+        {% if form.errors %}
+        <div class="form-errors-banner" style="background: #fee2e2; border: 1px solid #ef4444; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+          <h4 style="color: #991b1b; margin-top: 0; margin-bottom: 8px;"><i class="fa-solid fa-triangle-exclamation"></i> Please fix the following errors:</h4>
+          <ul style="color: #b91c1c; font-size: 14px; margin-bottom: 0;">
+            {% for field, errors in form.errors.items %}
+              <li><strong>{{ field|capfirst }}:</strong> {{ errors|striptags }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+<!-- Step navigation logic moved to add_property.js -->
+        {% endif %}
+
+        <!-- Step 1: Basic Info -->
+        <div class="form-step active" id="step-1">
+          <h2>Welcome {{ user.username|default:'User' }}</h2>
+          <div class="form-section">
+            <h3>Looking to</h3>
+            <div class="options">
+              {% for value, text in form.look.field.choices %}
+              <button
+                type="button"
+                class="option"
+                data-field="look"
+                data-value="{{ value }}"  required>
+                {{ text }}
+               
+              </button>
+              {% endfor %}
+            </div>
+            {{ form.look.as_hidden }}
+            <!-- Show Django error here -->
+            <span id="lookError" style="color:red; font-size:14px;"></span>
+          </div>
+
+          <div class="form-section">
+            <h3>What is your Property</h3>
+            <div class="options">
+              {% for value, text in form.selectProperty.field.choices %}
+              <button
+                type="button"
+                class="option"
+                data-field="selectProperty"
+                data-value="{{ value }}"
+              >
+                {{ text }}
+              </button>
+              {% endfor %}
+            </div>
+            {{ form.selectProperty.as_hidden }}
+             <span id="propertyError" style="color:red; font-size:14px;"></span>
+          </div>
+
+          <div class="buttons" style="justify-content: flex-end">
+            <button type="button" class="next" onclick="nextStep()">
+              Next &rarr;
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 2: Property Details -->
+        <div class="form-step" id="step-2">
+          <h2>Additional Information</h2>
+          <div class="input-grid">
+            <!-- Fields for Plot -->
+            <div class="conditional-fields" data-property-type="Plot">
+              <div class="form-field">
+                {{ form.projectName.label_tag }} {{ form.projectName  }}
+              </div>
+              <div class="form-field">
+                {{ form.extent.label_tag }} {{ form.extent }}
+              </div>
+              <div class="form-field">
+    <label for="id_units">Units</label>
+    <select name="units" id="id_units" class="form-control">
+        <option value="">-- Select Unit --</option>
+        <option value="SQYD">SQYD</option>
+        <option value="SFT">SFT</option>
+    </select>
+</div>
+
+              <div class="form-field">
+                {{ form.facing.label_tag }} {{ form.facing }}
+              </div>
+              <div class="form-field">
+                {{ form.roadSize.label_tag }} {{ form.roadSize }}
+              </div>
+              <div class="form-field">
+                {{ form.dimensions.label_tag }} {{ form.dimensions }}
+              </div>
+            </div>
+
+            <!-- Fields for House -->
+            <div class="conditional-fields" data-property-type="House">
+              <div class="form-field">
+                {{ form.projectName.label_tag }} {{ form.projectName }}
+              </div>
+              <div class="form-field">
+                {{ form.extent.label_tag }} {{ form.extent }}
+              </div>
+              <div class="form-field">
+                <label for="id_units">Units</label>
+    <select name="units" id="id_units" class="form-control">
+        <option value="">-- Select Unit --</option>
+        <option value="SQYD">SQYD</option>
+        <option value="SFT">SFT</option>
+    </select>
+              </div>
+              <div class="form-field furniture-field">
+  <label>Furniture</label>
+  <select name="furniture" class="form-control">
+    <option value="">-- Select furniture --</option>
+    <option value="Furnished">Furnished</option>
+    <option value="Semi-Furnished">Semi-Furnished</option>
+    <option value="Unfurnished">Unfurnished</option>
+  </select>
+</div>
+              <div class="form-field">
+                {{ form.numberOfBHK.label_tag }} {{ form.numberOfBHK }}
+              </div>
+              <div class="form-field">
+                {{ form.numberOfFloors.label_tag }} {{ form.numberOfFloors }}
+              </div>
+              <div class="form-field">
+                {{ form.facing.label_tag }} {{ form.facing }}
+              </div>
+              <div class="form-field">
+                {{ form.roadSize.label_tag }} {{ form.roadSize }}
+              </div>
+              <div class="form-field">
+                {{ form.dimensions.label_tag }} {{ form.dimensions }}
+              </div>
+              <div class="form-field">
+                {{ form.builtUpArea.label_tag }} {{ form.builtUpArea }}
+              </div>
+              <div class="form-field">
+                {{ form.carpetArea.label_tag }} {{ form.carpetArea }}
+              </div>
+              <div class="form-field">
+                {{ form.openArea.label_tag }} {{ form.openArea }}
+              </div>
+
+              <div class="form-field rental-income-field">
+                {{ form.rentalIncome.label_tag }} {{ form.rentalIncome }}
+              </div>
+              {% comment %} <div class="form-field">
+                {{ form.roadFacing.label_tag }} {{ form.roadFacing }}
+              </div> {% endcomment %}
+            </div>
+
+            <!-- Fields for Flat -->
+            <div class="conditional-fields" data-property-type="Flat">
+              <div class="form-field">
+                {{ form.projectName.label_tag }} {{ form.projectName }}
+              </div>
+              <div class="form-field">
+                {{ form.communityType.label_tag }} {{ form.communityType }}
+              </div>
+              <div class="form-field">
+                {{ form.facing.label_tag }} {{ form.facing }}
+              </div>
+              <div class="form-field">
+                {{ form.extent.label_tag }} {{ form.extent }}
+              </div>
+              <div class="form-field">
+                <label for="id_units">Units</label>
+    <select name="units" id="id_units" class="form-control">
+        <option value="">-- Select Unit --</option>
+        <option value="SQYD">SQYD</option>
+        <option value="SFT">SFT</option>
+    </select>
+              </div>
+              <div class="form-field furniture-field">
+  <label>Furniture</label>
+  <select name="furniture" class="form-control">
+    <option value="">-- Select furniture --</option>
+    <option value="Furnished">Furnished</option>
+    <option value="Semi-Furnished">Semi-Furnished</option>
+    <option value="Unfurnished">Unfurnished</option>
+  </select>
+</div>
+              <div class="form-field">
+                {{ form.builtUpArea.label_tag }} {{ form.builtUpArea }}
+              </div>
+              <div class="form-field">
+                {{ form.carpetArea.label_tag }} {{ form.carpetArea }}
+              </div>
+              <div class="form-field">
+                {{ form.numberOfBHK.label_tag }} {{ form.numberOfBHK }}
+              </div>
+            
+            </div>
+
+            <!-- Fields for Villa -->
+            <div class="conditional-fields" data-property-type="Villa">
+              <div class="form-field">
+                {{ form.projectName.label_tag }} {{ form.projectName }}
+              </div>
+              <div class="form-field">
+                {{ form.facing.label_tag }} {{ form.facing }}
+              </div>
+              <div class="form-field">
+                {{ form.numberOfFloors.label_tag }} {{ form.numberOfFloors }}
+              </div>
+              <div class="form-field">
+                {{ form.numberOfBHK.label_tag }} {{ form.numberOfBHK }}
+              </div>
+              <div class="form-field">
+                {{ form.dimensions.label_tag }} {{ form.dimensions }}
+              </div>
+              <div class="form-field">
+                {{ form.roadSize.label_tag }} {{ form.roadSize }}
+              </div>
+              <div class="form-field">
+                {{ form.extent.label_tag }} {{ form.extent }}
+              </div>
+              <div class="form-field">
+                <label for="id_units">Units</label>
+    <select name="units" id="id_units" class="form-control">
+        <option value="">-- Select Unit --</option>
+        <option value="SQYD">SQYD</option>
+        <option value="SFT">SFT</option>
+    </select>
+              </div>
+              <div class="form-field furniture-field">
+  <label>Furniture</label>
+  <select name="furniture" class="form-control">
+    <option value="">-- Select furniture --</option>
+    <option value="Furnished">Furnished</option>
+    <option value="Semi-Furnished">Semi-Furnished</option>
+    <option value="Unfurnished">Unfurnished</option>
+  </select>
+</div>
+              <div class="form-field">
+                {{ form.builtUpArea.label_tag }} {{ form.builtUpArea }}
+              </div>
+              <div class="form-field">
+                {{ form.openArea.label_tag }} {{ form.openArea }}
+              </div>
+              <div class="form-field rental-income-field">
+                {{ form.rentalIncome.label_tag }} {{ form.rentalIncome }}
+              </div>
+            </div>
+
+            <!-- Fields for Farm -->
+            <div class="conditional-fields" data-property-type="Farm">
+              <div class="form-field">
+                {{ form.projectName.label_tag }} {{ form.projectName }}
+              </div>
+              <div class="form-field">
+                {{ form.extent.label_tag }} {{ form.extent }}
+              </div>
+                            <div class="form-field">
+                {{ form.roadSize.label_tag }} {{ form.roadSize }}
+              </div>
+              <div class="form-field">
+                <label for="id_units">Units</label>
+    <select name="units" id="id_units" class="form-control">
+        <option value="">-- Select Unit --</option>
+         <option value="GUNTAS">Guntas</option>
+    <option value="HECTARES">Hectares</option>
+        <option value="SQYD">SQYD</option>
+        <option value="SFT">SFT</option>
+    </select>
+              </div>
+              <div class="form-field">
+                {{ form.facing.label_tag }} {{ form.facing }}
+              </div>
+              <div class="form-field">
+                {{ form.dimensions.label_tag }} {{ form.dimensions }}
+              </div>
+            </div>
+
+            <!-- Fields for Lands -->
+            <div class="conditional-fields" data-property-type="Lands">
+              <div class="form-field">
+                {{ form.landType.label_tag }} {{ form.landType }}
+              </div>
+              <div class="form-field">
+                {{ form.extent.label_tag }} {{ form.extent }}
+              </div>
+              <div class="form-field">
+                <label for="id_units">Units</label>
+    <select name="units" id="id_units" class="form-control">
+        <option value="">-- Select Unit --</option>
+         <option value="GUNTAS">Guntas</option>
+    <option value="HECTARES">Hectares</option>
+        <option value="SQYD">SQYD</option>
+        <option value="SFT">SFT</option>
+    </select>
+              </div>
+              <div class="form-field">
+                {{ form.soilType.label_tag }} {{ form.soilType }}
+              </div>
+              <div class="form-field">
+                {{ form.waterSource.label_tag }} {{ form.waterSource }}
+              </div>
+              <div class="form-field">
+                {{ form.roadSize.label_tag }} {{ form.roadSize }}
+              </div>
+              <div class="form-field">
+                {{ form.roadFacing.label_tag }} {{ form.roadFacing }}
+              </div>
+            </div>
+
+            <!-- Fields for Developmentlands -->
+            <div
+              class="conditional-fields"
+              data-property-type="Developmentlands"
+            >
+              <div class="form-field">
+                {{ form.landType.label_tag }} {{ form.landType }}
+              </div>
+              <div class="form-field">
+                {{ form.extent.label_tag }} {{ form.extent }}
+              </div>
+              <div class="form-field">
+               <label for="id_units">Units</label>
+    <select name="units" id="id_units" class="form-control">
+        <option value="">-- Select Unit --</option>
+         <option value="GUNTAS">Guntas</option>
+    <option value="HECTARES">Hectares</option>
+        <option value="SQYD">SQYD</option>
+        <option value="SFT">SFT</option>
+    </select>
+              </div>
+              <div class="form-field">
+                {{ form.soilType.label_tag }} {{ form.soilType }}
+              </div>
+              <div class="form-field">
+                {{ form.zone.label_tag }} {{ form.zone }}
+              </div>
+              <div class="form-field">
+                {{ form.roadSize.label_tag }} {{ form.roadSize }}
+              </div>
+              <div class="form-field">
+                {{ form.developmentType.label_tag }} {{ form.developmentType }}
+              </div>
+              <div class="form-field">
+                {{ form.expectedAdvance.label_tag }} {{ form.expectedAdvance }}
+              </div>
+              <div class="form-field">
+                {{ form.ratio.label_tag }} {{ form.ratio }}
+              </div>
+              <div class="form-field">
+                {{ form.roadFacing.label_tag }} {{ form.roadFacing }}
+              </div>
+            </div>
+
+            <!-- Fields for Disputelands -->
+            <div class="conditional-fields" data-property-type="Disputelands">
+              <div class="form-field">
+                {{ form.landType.label_tag }} {{ form.landType }}
+              </div>
+              <div class="form-field">
+                {{ form.extent.label_tag }} {{ form.extent }}
+              </div>
+              <div class="form-field">
+                <label for="id_units">Units</label>
+    <select name="units" id="id_units" class="form-control">
+        <option value="">-- Select Unit --</option>
+         <option value="GUNTAS">Guntas</option>
+    <option value="HECTARES">Hectares</option>
+        <option value="SQYD">SQYD</option>
+        <option value="SFT">SFT</option>
+
+    </select>
+              </div>
+              <div class="form-field">
+                {{ form.soilType.label_tag }} {{ form.soilType }}
+              </div>
+              <div class="form-field">
+                {{ form.zone.label_tag }} {{ form.zone }}
+              </div>
+              <div class="form-field">
+                {{ form.roadSize.label_tag }} {{ form.roadSize }}
+              </div>
+              <div class="form-field">
+                {{ form.disputeDetails.label_tag }} {{ form.disputeDetails }}
+              </div>
+              <div class="form-field">
+                {{ form.problemDetails.label_tag }} {{ form.problemDetails }}
+              </div>
+              <div class="form-field">
+                {{ form.actualPrice.label_tag }} {{ form.actualPrice }}
+              </div>
+              <div class="form-field">
+                {{ form.salePrice.label_tag }} {{ form.salePrice }}
+              </div>
+              <div class="form-field">
+                {{ form.roadFacing.label_tag }} {{ form.roadFacing }}
+              </div>
+            </div>
+
+            <!-- Fields for Commerciallands -->
+            <div
+              class="conditional-fields"
+              data-property-type="Commerciallands"
+            >
+              <div class="form-field">
+                {{ form.landType.label_tag }} {{ form.landType }}
+              </div>
+              <div class="form-field">
+                {{ form.extent.label_tag }} {{ form.extent }}
+              </div>
+              <div class="form-field">
+                <label for="id_units">Units</label>
+    <select name="units" id="id_units" class="form-control">
+        <option value="">-- Select Unit --</option>
+        <option value="SQYD">SQYD</option>
+        <option value="SFT">SFT</option>
+         <option value="GUNTAS">Guntas</option>
+    <option value="HECTARES">Hectares</option>
+    </select>
+              </div>
+              <div class="form-field">
+                {{ form.soilType.label_tag }} {{ form.soilType }}
+              </div>
+              <div class="form-field">
+                {{ form.waterSource.label_tag }} {{ form.waterSource }}
+              </div>
+              <div class="form-field">
+                {{ form.roadSize.label_tag }} {{ form.roadSize }}
+              </div>
+              <div class="form-field">
+                {{ form.roadFacing.label_tag }} {{ form.roadFacing }}
+              </div>
+            </div>
+          </div>
+
+          <div class="buttons">
+            <button type="button" onclick="prevStep()">&larr; Back</button>
+            <button type="button" class="next" onclick="nextStep()">
+              Next &rarr;
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 3: Final Details -->
+        <div class="form-step" id="step-3">
+          <h2>Final Details</h2>
+      <div class="input-grid">
+     <div id="reraSection">
+    <div class="form-field">
+        <label>{{ form.reraApproved.label }} <span style="color:red;">*</span></label>
+        {{ form.reraApproved }}
+    </div>
+    </div>
+
+    <div id="approvalTypeSection" class="form-field">
+        {{ form.approvalType.label_tag }} {{ form.approvalType }}
+    </div>
+
+    <!-- Predefined amenities -->
+    <div id="amenitiesSection">
+    <div class="form-field">
+        <label>{{ form.predefined_amenities.label }} <span style="color:red;">*</span></label>
+        {{ form.predefined_amenities }}
+    </div>
+
+    <!-- Custom amenities with ADD button & display list -->
+    <div class="form-field">
+        <label>{{ form.custom_amenities_text.label_tag }}</label>
+<div style="display:flex; gap:8px;">
+    {{ form.custom_amenities_text }}
+    
+    <button type="button" id="addAmenityBtn" 
+        style="
+            padding:6px 12px;
+            background:#0d6efd; 
+            border:none; 
+            color:white; 
+            border-radius:100px;
+            cursor:pointer;
+            margin-bottom: 20px;
+            transition:0.3s ease;
+        "
+        onmouseover="this.style.background='#0951c9'"
+        onmouseout="this.style.background='#0d6efd'"
+    >
+        Add
+    </button>
+</div>
+</div>
+
+
+        <!-- Display added amenities below -->
+        <ul id="addedAmenitiesList" style="margin-top:10px;"></ul>
+    </div>
+<!-- Form field styles moved to add_property_new.css -->
+
+    <div class="form-field">
+        {{ form.highlights.label_tag }} {{ form.highlights }}
+    </div>
+     <div class="form-field">
+      <label>{{ form.address.label }} <span style="color:red;">*</span></label>
+      {{ form.address }}
+    </div>
+   
+
+<div class="form-field">
+    <label>Select Location on Map: <span style="color:red;">*</span></label>
+    <input type="text" id="search_location" placeholder="Search location..." />
+    <div id="map" style="height:400px; width:100%; margin-top:10px;"></div>
+</div>
+
+<!-- Hidden fields to store selected coordinates and URL -->
+<input type="hidden" name="latitude" id="id_latitude">
+<input type="hidden" name="longitude" id="id_longitude">
+<input type="hidden" name="location" id="id_location">
+<input type="hidden" name="locationUrl" id="id_locationUrl">
+
+<!-- nearby location -------------------------------------------------------------------------->
+<!-- Nearby item styles moved to add_property_new.css -->
+<div class="nearby-box">
+
+  <label class="section-label">Nearby Places <span style="color:red;">*</span></label>
+  <small class="hint">Add at least one nearby place (Mandatory)</small>
+
+  <div id="nearby-container">
+
+    <div class="nearby-item">
+      <input type="text" class="nearby-input" placeholder="e.g. School (1 km)">
+      <span class="remove-x" onclick="removeNearbyField(this)">×</span>
+    </div>
+
+  </div>
+
+  <button style="width: fit-content;" type="button" class="add-btn" onclick="addNearbyField()">+ Add Nearby</button>
+</div>
+
+<input type="hidden" name="nearby_places_text" id="nearby_places_text">
+<!-- Nearby places logic moved to add_property.js -->
+
+
+<div class="form-field deposit-field">
+    {{ form.deposit.label_tag }} {{ form.deposit }}
+</div>
+
+    <div class="form-field">
+        <label>{{ form.price.label }} <span style="color:red;">*</span></label>
+        {{ form.price }}
+    </div>
+
+</div>
+
+
+          <div class="buttons">
+            <button type="button" onclick="prevStep()">&larr; Back</button>
+            <button type="button" class="next" onclick="nextStep()">
+              Next &rarr;
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 4: Media Upload -->
+        <div class="form-step" id="step-4">
+          <h2>Upload Media</h2>
+
+<!-- Media upload styles moved to add_property_new.css -->
+
+          <span id="mediaError" style="color:red; font-size:13px; display:none; margin-bottom:8px;">Please upload both property images and a video.</span>
+
+          <!-- UPLOAD IMAGES -->
+          <div class="prop-media-item" id="imageDropZone">
+            <span class="item-label">Upload Images <span style="color:red;">*</span></span>
+            <span class="drag-hint">Upload up to 5 images (Main image should be first)</span>
+            
+            <div class="prop-upload-area">
+              <label class="prop-main-plus">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <span>Click to Upload or Drag & Drop</span>
+                <input type="file" id="id_image_proxy" multiple accept="image/*">
+              </label>
+              
+              <div class="prop-preview-row" id="imagePreviewRow"></div>
+            </div>
+
+            <!-- Hidden Actual Form Inputs -->
+            <div style="display:none;">
+              {{ form.image }}
+              {{ form.image1 }}
+              {{ form.image2 }}
+              {{ form.image3 }}
+              {{ form.image4 }}
+            </div>
+          </div>
+
+          <!-- UPLOAD VIDEO -->
+          <div class="prop-media-item" id="videoDropZone">
+            <span class="item-label">Property Video <span style="color:red;">*</span></span>
+            <small class="drag-hint">Upload a virtual tour or a walkthrough of the property</small>
+            <div class="video-upload-container">
+              <label class="prop-upload-card video-card" id="label_id_video">
+                <i class="fa-solid fa-clapperboard"></i>
+                <span>Add Video</span>
+                {{ form.video }}
+              </label>
+              <div id="propVideoPreview" class="prop-file-status"></div>
+            </div>
+          </div>
+
+          <!-- UPLOAD DOCUMENT (Owner only) -->
+          {% if request.user.role == 'OWNER' %}
+          <div class="prop-media-item" id="docDropZone">
+            <span class="item-label">Upload Document / Brochure</span>
+            <small class="drag-hint">Drag & drop document here or click the + button</small>
+            <div class="prop-media-row">
+              <label class="prop-upload-btn" title="Upload Document">
+                <i class="fa-solid fa-plus"></i>
+                {{ form.document }}
+              </label>
+              <div id="propDocPreview" class="prop-preview-box"></div>
+            </div>
+          </div>
+          {% endif %}
+
+          <div class="buttons">
+            <button type="button" onclick="prevStep()">&larr; Back</button>
+            <button type="submit" id="submitBtn">
+              <span id="btnText">Post Property &rarr;</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- STATUS MODAL -->
+    <div id="statusModal" class="prop-modal-backdrop">
+      <div class="prop-modal-content">
+        <!-- Loading State -->
+        <div id="modalLoading">
+          <div class="prop-modal-spinner"></div>
+          <div class="prop-modal-title">Posting Property</div>
+          <p class="prop-modal-text">Please wait while we upload your media and secure your listing. This may take a moment...</p>
+        </div>
+        
+        <!-- Success State (Hidden by default) -->
+        <div id="modalSuccess" style="display:none;">
+          <div class="prop-modal-success-icon">
+            <i class="fa-solid fa-check"></i>
+          </div>
+          <div class="prop-modal-title">Success!</div>
+          <p class="prop-modal-text">Your property has been listed successfully. Our team will review it shortly.</p>
+          <button type="button" class="next" style="width:100%; margin-top:20px;" onclick="window.location.href='{% url 'prop:home' %}'">
+            Go to Home
+          </button>
+        </div>
+      </div>
+    </div>
+
+    </div>
+
+    </div>
+
+    <!-- Google Maps Script -->
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB92MLJIMGxSEXfAgLGObcO0OpVV6w2VbY&libraries=places,marker&loading=async&callback=initMap"
+        async
+        defer
+    ></script>
+    <script src="{% static 'js/add_property.js' %}"></script>
+    {% include 'footer.html' %}
+  </body>
+</html>

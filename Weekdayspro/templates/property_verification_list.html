@@ -1,0 +1,223 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+    <title>Property Verification List</title>
+    <style>
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            background: #f5f7fa;
+            padding: 30px;
+            color: #333;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .buttons {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .buttons button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            transition: 0.3s;
+        }
+
+        .btn-verified { background: #10b981; }
+        .btn-not { background: #ef4444; }
+        .btn-illegal { background: #000; }
+
+        .buttons button:hover {
+            opacity: 0.85;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            box-shadow: 0 5px 12px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 50px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        th {
+            background: #007bff;
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        tr:hover {
+            background: #e6f0ff;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .verified { background: #10b981; }
+        .not-verified { background: #ef4444; }
+        .illegal { background: #000; }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+{% include 'header.html' %}
+<br>
+<h2>Property Verification List</h2>
+
+<div class="buttons">
+        <button class="btn-not" onclick="showTable('notVerified')">Not Verified</button>
+
+    <button class="btn-verified" onclick="showTable('verified')">Verified</button>
+    <button class="btn-illegal" onclick="showTable('illegal')">legal-verified</button>
+</div>
+
+<!-- ================= VERIFIED ================= -->
+<div id="verified" class="hidden">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>User</th>
+                <th>Property Name</th>
+                <th>Look</th>
+                <th>Type</th>
+                <th>Location</th>
+                <th>Price</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for property in verified_properties %}
+            <tr>
+                <td>{{ property.id }}</td>
+                <td>{{ property.user.username }}</td>
+                <td>{{ property.projectName }}</td>
+                <td>{{ property.look }}</td>
+                <td>{{ property.selectProperty }}</td>
+                <td>{{ property.location }}</td>
+                <td>₹ {{ property.price }}</td>
+                <td><span class="badge verified">Verified</span></td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8">No verified properties found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- ================= NOT VERIFIED ================= -->
+<div id="notVerified" class="hidden">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>User</th>
+                <th>Property Name</th>
+                <th>Look</th>
+                <th>Type</th>
+                <th>Location</th>
+                <th>Price</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for property in not_verified_properties %}
+            <tr>
+                <td>{{ property.id }}</td>
+                <td>{{ property.user.username }}</td>
+                <td>{{ property.projectName }}</td>
+                <td>{{ property.look }}</td>
+                <td>{{ property.selectProperty }}</td>
+                <td>{{ property.location }}</td>
+                <td>₹ {{ property.price }}</td>
+                <td><span class="badge not-verified">Not Verified</span></td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8">No unverified properties found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- ================= ILLEGAL ================= -->
+<div id="illegal" class="hidden">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>User</th>
+                <th>Property Name</th>
+                <th>Look</th>
+                <th>Type</th>
+                <th>Location</th>
+                <th>Price</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for property in illegal_properties %}
+            <tr>
+                <td>{{ property.id }}</td>
+                <td>{{ property.user.username }}</td>
+                <td>{{ property.projectName }}</td>
+                <td>{{ property.look }}</td>
+                <td>{{ property.selectProperty }}</td>
+                <td>{{ property.location }}</td>
+                <td>₹ {{ property.price }}</td>
+                <td><span class="badge illegal">legal verified</span></td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8">No legal properties found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+function showTable(tableId) {
+    document.getElementById('verified').classList.add('hidden');
+    document.getElementById('notVerified').classList.add('hidden');
+    document.getElementById('illegal').classList.add('hidden');
+
+    document.getElementById(tableId).classList.remove('hidden');
+}
+</script>
+
+</body>
+</html>

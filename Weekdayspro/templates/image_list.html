@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Gallery</title>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #eef2f7;
+            margin: 0;
+        }
+
+        .header {
+            background: #28a745;
+            color: #fff;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h2 {
+            margin: 0;
+        }
+
+        .add-btn {
+            background: #fff;
+            color: #28a745;
+            padding: 8px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .container {
+            padding: 30px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+
+        .card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .content {
+            padding: 15px;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border-radius: 5px;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .edit {
+            background: #007bff;
+        }
+
+        .delete {
+            background: #dc3545;
+        }
+
+        .empty {
+            text-align: center;
+            margin-top: 60px;
+            color: #777;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <h2>🖼 Image Gallery</h2>
+    <a href="{% url 'prop:image_create' %}" class="add-btn">+ Add Image</a>
+</div>
+
+<div class="container">
+
+{% if images %}
+    <div class="grid">
+
+        {% for img in images %}
+        <div class="card" id="card-{{ img.id }}">
+
+            <img src="{{ img.image.url }}">
+
+            <div class="content">
+                <p>{{ img.description|truncatewords:15 }}</p>
+            </div>
+
+            <div class="actions">
+                <a href="{% url 'prop:image_edit' img.id %}" class="btn edit">Edit</a>
+
+                <button class="btn delete" onclick="deleteImage({{ img.id }})">
+                    Delete
+                </button>
+            </div>
+
+        </div>
+        {% endfor %}
+
+    </div>
+{% else %}
+    <div class="empty">
+        <h3>No Images Available</h3>
+        <p>Click "Add Image" to upload your first image.</p>
+    </div>
+{% endif %}
+
+</div>
+
+<script>
+// CSRF TOKEN FIX (IMPORTANT)
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+const csrftoken = getCookie('csrftoken');
+
+function deleteImage(id) {
+
+    Swal.fire({
+        title: "Are you sure?",
+        text: "This image will be deleted permanently!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#dc3545",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+
+        if (result.isConfirmed) {
+
+            $.ajax({
+                url: "/images/delete/" + id + "/",
+                type: "POST",
+                headers: {
+                    "X-CSRFToken": csrftoken
+                },
+                success: function(response) {
+
+                    if (response.success) {
+
+                        $("#card-" + id).fadeOut(300, function () {
+                            $(this).remove();
+                        });
+
+                        Swal.fire("Deleted!", "Image has been removed.", "success");
+                    }
+
+                },
+                error: function() {
+                    Swal.fire("Error!", "Something went wrong.", "error");
+                }
+            });
+
+        }
+    });
+}
+</script>
+
+</body>
+</html>

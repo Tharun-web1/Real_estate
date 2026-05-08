@@ -1,0 +1,274 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>All Requests</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+
+    <style>
+        /* ===== BASIC STYLES ===== */
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f6fb;
+            color: #333;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1200px;
+            margin: 30px auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 35px;
+            color: #4c3eb6;
+            font-size: 26px;
+        }
+
+        /* ===== MODERN BUTTONS ===== */
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 35px;
+        }
+
+        .button {
+            padding: 15px 30px;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #4c3eb6, #7b5cf5);
+            color: #fff;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+
+        .button:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+        }
+
+        .button.active {
+            background: linear-gradient(135deg, #ff7e5f, #feb47b);
+        }
+
+        /* ===== TABLE STYLES ===== */
+        .section {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            min-width: 600px;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        th {
+            background: #4c3eb6;
+            color: white;
+            padding: 12px 15px;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px 15px;
+            font-size: 13px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:nth-child(even) {
+            background: #f7f7ff;
+        }
+
+        tr:hover {
+            background: #e9e6ff;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 25px;
+            color: gray;
+            font-style: italic;
+        }
+
+        /* ===== ANIMATION ===== */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                border-radius: 12px;
+                margin: 10px auto;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .button {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+
+            th, td {
+                font-size: 12px;
+                padding: 10px;
+            }
+        }
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 8px 15px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+{% include 'header.html' %}
+<br>
+<div class="container">
+
+    <h1>All Customer Requests</h1>
+
+    <div class="button-container">
+        <button class="button" onclick="showSection('move', this)">Packers</button>
+        <button class="button" onclick="showSection('renovation', this)">Expert Builders</button>
+        <button class="button" onclick="showSection('loan', this)">Loan</button>
+    </div>
+
+    <!-- MOVE -->
+    <div id="move" class="section">
+        <h3>Packers Requests</h3>
+        {% if move_requests %}
+        <div class="table-wrapper">
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Service</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Date</th>
+                </tr>
+                {% for move in move_requests %}
+                <tr>
+                    <td>{{ move.customer_name }}</td>
+                    <td>{{ move.number }}</td>
+                    <td>{{ move.service_type }}</td>
+                    <td>{{ move.from_location }}</td>
+                    <td>{{ move.to_location }}</td>
+                    <td>{{ move.created_at }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        {% else %}
+        <p class="empty">No Move Requests.</p>
+        {% endif %}
+    </div>
+
+    <!-- RENOVATION -->
+    <div id="renovation" class="section">
+        <h3>Expert Builders Contact Forms</h3>
+        {% if contact_forms %}
+        <div class="table-wrapper">
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Renovation</th>
+                    <th>Location</th>
+                    <th>Date</th>
+                </tr>
+                {% for contact in contact_forms %}
+                <tr>
+                    <td>{{ contact.customer_name }}</td>
+                    <td>{{ contact.number }}</td>
+                    <td>{{ contact.renovation_type }}</td>
+                    <td>{{ contact.location }}</td>
+                    <td>{{ contact.submitted_at }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        {% else %}
+        <p class="empty">No Contact Forms.</p>
+        {% endif %}
+    </div>
+
+    <!-- LOAN -->
+    <div id="loan" class="section">
+        <h3>Loan Applications</h3>
+        {% if loan_applications %}
+        <div class="table-wrapper">
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Loan Amount</th>
+                    <th>Purpose</th>
+                    <th>Date</th>
+                </tr>
+                {% for loan in loan_applications %}
+                <tr>
+                    <td>{{ loan.full_name }}</td>
+                    <td>{{ loan.email }}</td>
+                    <td>{{ loan.phone }}</td>
+                    <td>₹{{ loan.loan_amount }}</td>
+                    <td>{{ loan.loan_purpose }}</td>
+                    <td>{{ loan.submitted_on }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        {% else %}
+        <p class="empty">No Loan Applications.</p>
+        {% endif %}
+    </div>
+
+</div>
+
+<script>
+function showSection(sectionId, element) {
+    let sections = document.querySelectorAll('.section');
+    sections.forEach(section => section.style.display = "none");
+
+    let buttons = document.querySelectorAll('.button');
+    buttons.forEach(btn => btn.classList.remove('active'));
+
+    document.getElementById(sectionId).style.display = "block";
+    element.classList.add('active');
+}
+</script>
+
+</body>
+</html>

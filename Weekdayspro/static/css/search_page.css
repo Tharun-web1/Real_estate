@@ -1,0 +1,102 @@
+/* ------- Page Background ------- */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", sans-serif;
+  background: #f5f6fa;
+}
+
+.search-page-container {
+  margin-top: 80px; /* adjust as needed */
+}
+
+/* Add safe area above mobile footer */
+body {
+  padding-bottom: 120px; /* prevents footer overlap */
+}
+
+/* ------- Center Container ------- */
+
+/* ------- Select Dropdown ------- */
+.search-page-container select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #dcdcdc;
+  font-size: 16px;
+  margin-bottom: 15px;
+  outline: none;
+  background-color: #fff;
+  transition: border 0.3s ease;
+}
+
+.search-page-container select:focus {
+  border-color: #4a90e2;
+}
+
+/* ------- Text Input ------- */
+.search-page-container input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #dcdcdc;
+  font-size: 16px;
+  outline: none;
+  margin-bottom: 15px;
+  transition: border 0.3s ease;
+}
+
+.search-page-container input[type="text"]:focus {
+  border-color: #4a90e2;
+}
+
+/* ------- Search Button ------- */
+.search-page-container .search-btn {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  background: #4a90e2;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.search-page-container .search-btn:hover {
+  background: #357ab8;
+}
+
+/* ------- Mobile Responsive ------- */
+@media (max-width: 480px) {
+  .search-page-container {
+    margin: 30px 15px;
+    padding: 20px;
+  }
+
+  .search-page-container select,
+  .search-page-container input[type="text"],
+  .search-page-container .search-btn {
+    font-size: 15px;
+    padding: 10px;
+  }
+}
+
+.search-page-container {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+.search-page-container input[type="text"] {
+  background: #f8f8f8;
+  border: 1px solid #ccc;
+  padding: 12px;
+  border-radius: 10px;
+  width: 100%;
+  font-size: 16px;
+}

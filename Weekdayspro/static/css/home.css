@@ -1,0 +1,220 @@
+/* ================================================================
+   HOME PAGE — Layout & Responsive Styles
+   All media queries are flat (no nesting).
+   ================================================================ */
+
+/* ── Desktop wrapper offset fix (sidebar = 280px) ─────────── */
+@media (min-width: 1101px) {
+  .main-content-wrapper {
+    margin-left: 280px !important;
+    margin-right: 0 !important;
+    width: calc(100% - 280px) !important;
+  }
+}
+
+/* ── Base: Main content column ─────────────────────────────── */
+.main-content {
+  padding: 24px 28px 48px;
+  max-width: 720px !important;
+  width: auto !important;
+  background: transparent;
+}
+
+/* ── Feed Input Box ────────────────────────────────────────── */
+.feed-input {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* ── Stories ───────────────────────────────────────────────── */
+.stories-container {
+  margin-bottom: 4px;
+}
+
+.stories {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 16px;
+  padding-bottom: 6px;
+  scrollbar-width: none;
+}
+
+.stories::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Section Headers ───────────────────────────────────────── */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 24px 0 12px;
+}
+
+/* ── Scroll containers ─────────────────────────────────────── */
+.premium-scroll,
+.feed-scroll-container,
+.premium-companies-scroll-container,
+.marketing-experts-scroll-container,
+.property-feed-scroll-container,
+.reels-scroll-container,
+.professionals-scroll-container,
+.pro-projects-scroll-container {
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.premium-scroll::-webkit-scrollbar,
+.feed-scroll-container::-webkit-scrollbar,
+.premium-companies-scroll-container::-webkit-scrollbar,
+.marketing-experts-scroll-container::-webkit-scrollbar,
+.property-feed-scroll-container::-webkit-scrollbar,
+.reels-scroll-container::-webkit-scrollbar,
+.professionals-scroll-container::-webkit-scrollbar,
+.pro-projects-scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+
+/* ================================================================
+   LARGE DESKTOP ≥ 1400px
+   ================================================================ */
+@media (min-width: 1400px) {
+  .main-content {
+    max-width: 820px !important;
+    width: auto !important;
+    padding: 28px 40px 60px;
+  }
+
+  .premium-card {
+    min-width: 260px;
+    max-width: 280px;
+  }
+}
+
+
+/* ================================================================
+   LAPTOP 1101px – 1399px
+   ================================================================ */
+@media (min-width: 1101px) and (max-width: 1399px) {
+  .main-content {
+    max-width: 720px !important;
+    width: auto !important;
+    padding: 24px 32px 60px;
+  }
+
+  .feed-input {
+    padding: 18px 24px;
+  }
+
+  .section-header {
+    margin: 28px 0 14px;
+  }
+
+  .premium-card {
+    min-width: 240px;
+    max-width: 260px;
+  }
+
+  .home-reel-card {
+    min-width: 140px;
+    max-width: 155px;
+    height: 250px;
+  }
+}
+
+
+/* ================================================================
+   TABLET  769px – 1100px  (sidebar hidden → full width)
+   ================================================================ */
+@media (max-width: 1100px) {
+  .main-content-wrapper {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+  }
+
+  .main-content {
+    max-width: 100%;
+    padding: 16px 16px 40px;
+  }
+
+  .section-header {
+    margin: 20px 0 10px;
+    padding: 0 4px;
+  }
+
+  .premium-card {
+    min-width: 240px;
+    max-width: 80vw;
+  }
+}
+
+
+/* ================================================================
+   MOBILE ≤ 767px
+   ================================================================ */
+@media (max-width: 767px) {
+  .main-content {
+    max-width: 100%;
+    padding: 12px 12px 36px;
+  }
+
+  .feed-input {
+    padding: 14px;
+    border-radius: 10px;
+  }
+
+  .section-header {
+    margin: 16px 0 8px;
+  }
+
+  .premium-card {
+    min-width: 300px;
+    max-width: 92vw;
+    width: 92vw;
+  }
+
+  .home-reel-card {
+    min-width: 130px;
+    max-width: 140px;
+    height: 230px;
+  }
+}
+
+
+/* ================================================================
+   SMALL MOBILE ≤ 479px
+   ================================================================ */
+@media (max-width: 479px) {
+  .main-content {
+    padding: 8px 10px 32px;
+  }
+
+  .feed-input {
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 14px;
+  }
+
+  .premium-card {
+    min-width: 92vw;
+    max-width: 92vw;
+    width: 92vw;
+  }
+
+  .home-reel-card {
+    min-width: 120px;
+    max-width: 130px;
+    height: 210px;
+  }
+
+  .section-header {
+    margin: 14px 0 6px;
+  }
+}

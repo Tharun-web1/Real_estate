@@ -1,0 +1,183 @@
+﻿{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <title>Filters</title>
+    <style>
+      @media (min-width: 768px) {
+        body {
+          display: none;
+        }
+        .menu-btn
+        {
+          margin-bottom: 100px;
+
+        }
+      }
+      body {
+        font-family: Arial, sans-serif;
+        background: #eef2f7;
+        padding: 20px;
+      }
+      .filter-box {
+        background: #fff;
+        padding: 20px;
+        border-radius: 12px;
+        margin-top: 70px;
+      }
+      .filter-box h2 {
+        margin-bottom: 15px;
+      }
+      label {
+        display: block;
+        margin-top: 10px;
+        font-weight: bold;
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+      }
+      button {
+        margin-top: 20px;
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        background: #007bff;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    {% include "NavBar.html" %}
+    <style>
+      .menu-btn {
+        color: black;
+      }
+      .navbar-mobile {
+        left: 0px;
+      }
+    </style>
+
+    <div class="filter-box">
+      <h2>Apply Filters</h2>
+
+      <form method="GET" id="filterForm">
+        <label>Select Property</label>
+        <select name="prop" id="propSelect" required>
+          <option value="">-- Select Property --</option>
+          {% for value, display in all_properties %}
+          <option value="{{ value }}">{{ display }}</option>
+          {% endfor %}
+        </select>
+
+        <label>Location</label>
+        <input
+          type="text"
+          name="location"
+          id="locationSearch"
+          placeholder="Enter location"
+          autocomplete="off"
+        />
+        <label>Verified</label>
+        <select name="verified">
+          <option value="">Any</option>
+          <option value="1">Verified</option>
+          <option value="0">Not Verified</option>
+        </select>
+
+        <label>Min Price</label>
+        <input type="number" name="min_price" placeholder="Min Price" />
+
+        <label>Max Price</label>
+        <input type="number" name="max_price" placeholder="Max Price" />
+
+        <label>Road Facing</label>
+        <select name="road">
+          <option value="">Any</option>
+          <option>North</option>
+          <option>South</option>
+          <option>East</option>
+          <option>West</option>
+        </select>
+
+        <label>Look</label>
+        <select name="look">
+          <option value="">Any</option>
+          <option>Sell</option>
+          <option>Rent</option>
+        </select>
+
+        <button type="submit">Search</button>
+      </form>
+    </div>
+
+    <script>
+      const form = document.getElementById("filterForm");
+      const propSelect = document.getElementById("propSelect");
+
+      form.addEventListener("submit", function (e) {
+        if (propSelect.value) {
+          // Send to property_list view with prop in URL
+          form.action = `/properties/${propSelect.value}/`;
+        }
+      });
+    </script>
+
+    <script>
+      function initAutocomplete() {
+        const input = document.getElementById("locationSearch");
+
+        const autocomplete = new google.maps.places.Autocomplete(input, {
+          types: ["(cities)"],
+          componentRestrictions: { country: "in" }, // optional
+        });
+
+        autocomplete.addListener("place_changed", function () {
+          const place = autocomplete.getPlace();
+
+          if (!place.address_components) return;
+
+          let city = "";
+
+          place.address_components.forEach((component) => {
+            if (component.types.includes("locality")) {
+              city = component.long_name;
+            }
+            // fallback for some cities
+            if (
+              component.types.includes("administrative_area_level_2") &&
+              !city
+            ) {
+              city = component.long_name;
+            }
+          });
+
+          // âœ… set ONLY city name
+          input.value = city;
+
+          console.log("City only:", city);
+        });
+      }
+    </script>
+
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBqk0zEZL46G-ppnMd5794tXdFb4LFz0oA&libraries=places&callback=initAutocomplete"
+      async
+      defer
+    ></script>
+
+    {% include "footer.html" %}
+  </body>
+</html>

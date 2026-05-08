@@ -1,0 +1,526 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upload Pro Bytes</title>
+<link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: "Inter", sans-serif;
+    background: #f0f4ff;
+    min-height: 100vh;
+    color: #1e293b;
+  }
+
+  /* ── Page wrapper ── */
+  .upload-page {
+    padding: 32px 20px 100px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* ── Page heading ── */
+  .page-heading {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .page-heading .icon-wrap {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 20px rgba(99,102,241,0.35);
+    flex-shrink: 0;
+  }
+
+  .page-heading .icon-wrap i {
+    font-size: 22px;
+    color: #fff;
+  }
+
+  .page-heading h1 {
+    font-size: 22px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2;
+  }
+
+  .page-heading p {
+    font-size: 13px;
+    color: #64748b;
+    margin-top: 2px;
+    font-weight: 400;
+    -webkit-text-fill-color: #64748b;
+  }
+
+  /* ── Upload card ── */
+  .upload-card {
+    background: #ffffff;
+    border-radius: 24px;
+    box-shadow: 0 4px 30px rgba(0,0,0,0.08);
+    overflow: hidden;
+    border: 1px solid rgba(99,102,241,0.1);
+  }
+
+  /* ── Preview zone ── */
+  .preview-zone {
+    position: relative;
+    width: 100%;
+    background: linear-gradient(145deg, #0f0c29, #302b63, #24243e);
+    min-height: 340px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .preview-zone::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(99,102,241,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .preview-zone:hover .upload-prompt {
+    transform: scale(1.03);
+  }
+
+  .preview-zone video,
+  .preview-zone img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    inset: 0;
+  }
+
+  .upload-prompt {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    transition: transform 0.3s ease;
+    z-index: 1;
+    text-align: center;
+    padding: 0 20px;
+  }
+
+  .upload-prompt.hidden { display: none; }
+
+  .upload-icon-ring {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(99,102,241,0.2);
+    border: 2px solid rgba(99,102,241,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: pulse-ring 2.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse-ring {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(99,102,241,0.4); }
+    50% { box-shadow: 0 0 0 16px rgba(99,102,241,0); }
+  }
+
+  .upload-icon-ring i {
+    font-size: 32px;
+    color: #a5b4fc;
+  }
+
+  .upload-prompt h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #e0e7ff;
+  }
+
+  .upload-prompt p {
+    font-size: 12px;
+    color: #94a3b8;
+    line-height: 1.5;
+  }
+
+  .choose-btn {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 26px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 14px rgba(99,102,241,0.4);
+  }
+
+  .choose-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(99,102,241,0.5);
+  }
+
+  /* Change overlay when file loaded */
+  .change-overlay {
+    position: absolute;
+    bottom: 14px;
+    right: 14px;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(8px);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    gap: 6px;
+    z-index: 10;
+    transition: background 0.2s;
+  }
+
+  .change-overlay:hover { background: rgba(99,102,241,0.8); }
+
+  #id_reel { display: none; }
+
+  /* ── Form body ── */
+  .form-body {
+    padding: 28px 28px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* ── Field ── */
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .field label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .field label i {
+    color: #6366f1;
+    font-size: 15px;
+  }
+
+  .field textarea,
+  .field input[type="text"] {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    font-family: "Inter", sans-serif;
+    font-size: 14px;
+    color: #1e293b;
+    background: #f8faff;
+    resize: vertical;
+    min-height: 90px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+
+  .field textarea:focus,
+  .field input[type="text"]:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 4px rgba(99,102,241,0.1);
+    background: #fff;
+  }
+
+  /* ── Custom dropdown ── */
+  .custom-dropdown {
+    position: relative;
+    width: 100%;
+  }
+
+  .dropdown-selected {
+    width: 100%;
+    padding: 13px 16px;
+    border-radius: 12px;
+    border: 1.5px solid #e2e8f0;
+    background: #f8faff;
+    cursor: pointer;
+    font-size: 14px;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    user-select: none;
+  }
+
+  .dropdown-selected:hover,
+  .dropdown-selected.open {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 4px rgba(99,102,241,0.1);
+  }
+
+  .dropdown-selected .chevron {
+    font-size: 16px;
+    color: #94a3b8;
+    transition: transform 0.2s;
+  }
+
+  .dropdown-selected.open .chevron { transform: rotate(180deg); }
+
+  .dropdown-list {
+    position: absolute;
+    width: 100%;
+    background: white;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 14px;
+    margin-top: 6px;
+    display: none;
+    max-height: 220px;
+    overflow-y: auto;
+    z-index: 100;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.12);
+  }
+
+  .dropdown-list.open { display: block; }
+
+  .dropdown-item {
+    padding: 13px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid #f1f5f9;
+    transition: background 0.15s;
+  }
+
+  .dropdown-item:last-child { border-bottom: none; }
+  .dropdown-item:hover { background: #f0f4ff; }
+
+  .line1 { font-weight: 600; font-size: 13px; color: #1e293b; }
+  .line2 { font-size: 11px; color: #64748b; margin-top: 3px; }
+
+  /* ── Submit button ── */
+  .submit-btn {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 6px 24px rgba(99,102,241,0.35);
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 4px;
+  }
+
+  .submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(99,102,241,0.45);
+  }
+
+  .submit-btn:active { transform: translateY(0); }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .upload-page { padding: 20px 14px 100px; }
+    .form-body { padding: 20px 18px; }
+    .preview-zone { min-height: 280px; }
+  }
+</style>
+</head>
+
+<body>
+
+{% include 'NavBar.html' %}
+
+<div class="upload-page">
+
+  <!-- Heading -->
+  <div class="page-heading">
+    <div class="icon-wrap">
+      <i class="bi bi-camera-reels-fill"></i>
+    </div>
+    <div>
+      <h1>Upload Pro Bytes</h1>
+      <p>Share a short video about your property</p>
+    </div>
+  </div>
+
+  <!-- Card -->
+  <div class="upload-card">
+
+    <!-- Preview zone -->
+    <div class="preview-zone" id="preview">
+      <div class="upload-prompt" id="uploadPrompt">
+        <div class="upload-icon-ring">
+          <i class="bi bi-cloud-upload"></i>
+        </div>
+        <h3>Tap to Upload Video</h3>
+        <p>MP4, MOV, WEBM supported<br>Short-form vertical videos work best</p>
+        <label class="choose-btn" for="id_reel">
+          <i class="bi bi-folder2-open"></i>&nbsp; Choose File
+        </label>
+      </div>
+
+      <button type="button" class="change-overlay" id="changeBtn" onclick="document.getElementById('id_reel').click()">
+        <i class="bi bi-pencil-fill"></i> Change
+      </button>
+    </div>
+
+    <!-- Form -->
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <!-- Hidden reel input -->
+      <div style="display:none;">{{ f.reel }}</div>
+
+      <div class="form-body">
+
+        <!-- Caption -->
+        <div class="field">
+          <label><i class="bi bi-chat-quote"></i> Caption</label>
+          {{ f.description }}
+        </div>
+
+        <!-- Property select -->
+        <div class="field">
+          <label><i class="bi bi-building"></i> Link to Property</label>
+          <div class="custom-dropdown" id="dropdown">
+            <div class="dropdown-selected" id="selectedItem">
+              <span>-- Select Property --</span>
+              <i class="bi bi-chevron-down chevron"></i>
+            </div>
+            <div class="dropdown-list" id="dropdownList">
+              {% for p in properties %}
+              <div class="dropdown-item"
+                data-id="{{ p.id }}"
+                data-name="{{ p.projectName }}"
+                data-rera="{% if p.reraApproved %}DTCP Approved{% else %}Not Approved{% endif %}"
+                data-units="{{ p.units }}"
+                data-type="{{ p.type }}"
+                data-extent="{{ p.extent }}"
+                data-facing="{{ p.facing }}">
+                <div class="line1">{{ p.projectName }} — {% if p.reraApproved %}DTCP Approved{% else %}Not Approved{% endif %}</div>
+                <div class="line2">{{ p.units }} Units · {{ p.type }} · {{ p.extent }} Sq.ft · {{ p.facing }}</div>
+              </div>
+              {% empty %}
+              <div class="dropdown-item" style="color:#94a3b8;cursor:default;">No properties found.</div>
+              {% endfor %}
+            </div>
+            <input type="hidden" name="propertyId" id="propertyInput">
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="submit-btn">
+          <i class="bi bi-send-fill"></i> Post Pro Bytes
+        </button>
+
+      </div>
+    </form>
+
+  </div>
+</div>
+
+<script>
+  const input    = document.getElementById("id_reel");
+  const preview  = document.getElementById("preview");
+  const prompt   = document.getElementById("uploadPrompt");
+  const changeBtn = document.getElementById("changeBtn");
+
+  // Preview on file select
+  input.addEventListener("change", () => {
+    const file = input.files[0];
+    if (!file) return;
+
+    // Remove old media
+    preview.querySelectorAll("video, img").forEach(el => el.remove());
+    prompt.classList.add("hidden");
+    changeBtn.style.display = "flex";
+
+    const url = URL.createObjectURL(file);
+    if (file.type.startsWith("video")) {
+      const video = document.createElement("video");
+      video.src = url;
+      video.controls = true;
+      video.autoplay = true;
+      video.muted = true;
+      video.loop = true;
+      video.style.cssText = "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;";
+      preview.prepend(video);
+    } else if (file.type.startsWith("image")) {
+      const img = document.createElement("img");
+      img.src = url;
+      img.style.cssText = "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;";
+      preview.prepend(img);
+    }
+  });
+
+  // Custom dropdown
+  const selectedItem = document.getElementById("selectedItem");
+  const dropdownList = document.getElementById("dropdownList");
+  const propertyInput = document.getElementById("propertyInput");
+
+  selectedItem.addEventListener("click", () => {
+    const isOpen = dropdownList.classList.toggle("open");
+    selectedItem.classList.toggle("open", isOpen);
+  });
+
+  document.querySelectorAll(".dropdown-item").forEach(item => {
+    if (!item.dataset.id) return;
+    item.addEventListener("click", () => {
+      selectedItem.innerHTML = `
+        <span>
+          <div class="line1">${item.dataset.name} — ${item.dataset.rera}</div>
+          <div class="line2">${item.dataset.units} Units · ${item.dataset.type} · ${item.dataset.extent} Sq.ft · ${item.dataset.facing}</div>
+        </span>
+        <i class="bi bi-chevron-down chevron"></i>`;
+      propertyInput.value = item.dataset.id;
+      dropdownList.classList.remove("open");
+      selectedItem.classList.remove("open");
+    });
+  });
+
+  // Close on outside click
+  document.addEventListener("click", (e) => {
+    if (!document.getElementById("dropdown").contains(e.target)) {
+      dropdownList.classList.remove("open");
+      selectedItem.classList.remove("open");
+    }
+  });
+</script>
+
+{% include 'footer.html' %}
+
+</body>
+</html>

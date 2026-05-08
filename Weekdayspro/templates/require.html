@@ -1,0 +1,125 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Submit Your Future Requirements</title>
+<link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+<link rel="stylesheet" href="{% static 'css/require.css' %}">
+
+
+  </head>
+  <body>
+    {% include 'NavBar.html' %}
+
+  
+
+    <section class="req-section">
+      <div class="req-card">
+        <div class="req-head">Submit Your Future Requirements</div>
+
+        {% if messages %} {% for message in messages %}
+        <p class="success-message">{{ message }}</p>
+        {% endfor %} {% endif %}
+
+        <form method="POST" action="">
+          {% csrf_token %}
+          <div>
+            <label>What type of property looking for</label>
+            <input
+              type="text"
+              name="property_type"
+              placeholder="e.g., Apartment, Villa"
+            
+            />
+          </div>
+          <div>
+            <label>Extent</label>
+            <input type="text" name="extent" placeholder="e.g., 1200 sqft" />
+          </div>
+          <div>
+            <label>Type of BHK</label>
+            <input type="text" name="bhk_type" placeholder="e.g., 2 BHK" />
+          </div>
+          <div>
+            <label>Facing</label>
+            <input type="text" name="facing" placeholder="e.g., East, North" />
+          </div>
+          <div>
+            <label>Budget</label>
+            <input type="text" name="budget" placeholder="e.g., ₹50 Lakhs" />
+          </div>
+          <div>
+            <label>Location</label>
+            <input type="text" name="location" placeholder="e.g., Hyderabad" />
+          </div>
+          <div>
+            <label>City</label>
+            <input type="text" name="city" placeholder="e.g., Bengaluru" />
+          </div>
+          <div>
+            <label>State</label>
+            <input type="text" name="state" placeholder="e.g., Karnataka" />
+          </div>
+          <div>
+            <label>Type of Approval</label>
+            <input
+              type="text"
+              name="approval_type"
+              placeholder="e.g., HMDA, DTCP"
+              
+            />
+          </div>
+          <div>
+            <label>Project Name</label>
+            <input
+              type="text"
+              name="project_name"
+              placeholder="e.g., Green Meadows"
+              
+            />
+          </div>
+          <div style="grid-column: span 2">
+            <label>Any Company Name</label>
+            <input
+              type="text"
+              name="company_name"
+              placeholder="e.g., ABC Constructions"
+              
+            />
+          </div>
+          <button type="submit" style="width:100%;">Submit</button>
+        </form>
+      </div>
+
+      <div class="page">
+
+    <!-- RIGHT SIDE -->
+    <div class="service">
+
+        <!-- CARD -->
+        <div class="card">
+            <h3>who should submit enquiry?</h3>
+            <p>We provide complete construction solutions and support.</p>
+            
+             <div class="contact">
+            <button>
+   <a href=""> <i class="bi bi-telephone-fill"></i> Contact</a>
+</button>  <span>for more details</span> 
+    
+                </div>
+        </div>
+
+        <!-- BOTTOM BOXES -->
+        <div class="bottom-boxes">
+            <div class="box">Form</div>
+            <div class="box"> <img src="" alt=""></div>
+        </div>
+
+    </div>
+
+    </section>
+    {% include 'footer.html' %}
+  </body>
+</html>

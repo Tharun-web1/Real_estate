@@ -1,0 +1,109 @@
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+
+    h2 {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #111;
+        font-weight: 700;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+
+        label {
+            font-weight: 600;
+            font-size: 14px;
+            color: #444;
+            margin-bottom: -10px;
+        }
+
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.3s;
+            &:focus {
+                outline: none;
+                border-color: #0095f6;
+            }
+        }
+
+        textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        .upload-box {
+            border: 2px dashed #ddd;
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+
+            &:hover {
+                border-color: #0095f6;
+                background: #f0f9ff;
+            }
+
+            span {
+                font-size: 30px;
+                color: #888;
+            }
+
+            p {
+                margin: 0;
+                font-size: 14px;
+                color: #666;
+            }
+
+            input[type="file"] {
+                display: none;
+            }
+        }
+
+        .preview {
+            margin-top: 10px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            img, video {
+                max-width: 100%;
+                border-radius: 8px;
+            }
+        }
+
+        button[type="submit"] {
+            background: #0095f6;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+
+            &:hover {
+                background: #1877f2;
+            }
+        }
+    }
+}

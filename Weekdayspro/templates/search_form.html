@@ -1,0 +1,135 @@
+﻿{% load static %}
+
+<link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+<style>
+  .search-box form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    background: white;
+    padding: 16px;
+    border-radius: 20px;
+    align-items: center;
+  }
+
+  /* Dropdown & input in same row */
+  .search-box select,
+  .search-box input {
+    flex: 1 1 calc(50% - 6px); /* 2 items in one row */
+    min-width: 0;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+  }
+
+  /* Search button in next row */
+  .search-box .search-btn {
+    flex: 1 1 100%; /* full width */
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    background: #6b6b6b;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  @media (min-width: 768px) {
+    .search-box form {
+      flex-wrap: nowrap; /* ðŸ”¥ force single line */
+    }
+
+    .search-box select {
+      flex: 0 0 100px;
+    }
+
+    .search-box input {
+      flex: 1;
+    }
+
+    .search-box .search-btn {
+      flex: 0 0 140px;
+      margin-top: 0;
+    }
+  }
+  .search-box {
+    background: transparent !important;
+    padding: 0 !important;
+  }
+  
+  /* small--input */
+  @media (max-width: 768px) {
+
+  /* SUPER SMALL dropdown */
+  .search-box select[name="search-cat"] {
+    flex: 0 0 55px;   /* 🔥 VERY SMALL */
+    width: 55px;
+    height: 26px;
+    font-size: 10px;
+    padding: 1px 3px;
+  }
+
+  /* Optional: hide long text nicely */
+  .search-box select {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+</style>
+<form method="POST" action="{% url 'prop:search' %}">
+  {% csrf_token %}
+
+  <select name="search-cat">
+    <option value="Flat">Flats</option>
+    <option value="Villa">Villas</option>
+    <option value="Plot">Plots</option>
+    <option value="Commerciallands">Commercial</option>
+    <option value="Lands">Lands</option>
+    <option value="Disputelands">Disputed Lands</option>
+    <option value="House">Houses</option>
+    <option value="Farm">Farm Lands</option>
+    <option value="Developmentlands">Development Lands</option>
+  </select>
+
+  <input
+    id="citySearch"
+    type="text"
+    name="search-input"
+    placeholder="Enter Location"
+  />
+
+  <button class="search-btn">Search</button>
+</form>
+<script>
+function initAutocomplete() {
+
+  const inputs = document.querySelectorAll("#citySearch");
+
+  inputs.forEach((input) => {
+
+    const autocomplete = new google.maps.places.Autocomplete(input, {
+      types: ["geocode"],
+      componentRestrictions: { country: "in" }
+    });
+
+    autocomplete.addListener("place_changed", function () {
+      const place = autocomplete.getPlace();
+
+      if (!place.formatted_address) return;
+
+      input.value = place.formatted_address;
+
+      console.log("Location:", place.formatted_address);
+    });
+
+  });
+
+  }
+</script>
+
+<script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBqk0zEZL46G-ppnMd5794tXdFb4LFz0oA&libraries=places&callback=initAutocomplete"
+  async
+  defer
+></script>

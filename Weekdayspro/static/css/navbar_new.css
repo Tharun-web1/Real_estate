@@ -1,0 +1,323 @@
+body {
+  text-transform: capitalize;
+  background-color: #F5F7FA;
+}
+
+.action-btn {
+  width: 100%;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  background-color: #10B981;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.action-btn:hover {
+  opacity: 0.8;
+}
+
+.action-btn.cancel-btn {
+  background-color: #E5E7EB;
+  color: #1C1C1C;
+}
+
+.gn-aside {
+  background: white;
+  border-right: 1px solid #E5E7EB;
+  color: #1C1C1C;
+  display: flex;
+  flex-direction: column;
+}
+
+.gn-aside .gn-brand {
+  color: #1C1C1C;
+  border-bottom: 1px solid #E5E7EB;
+  padding: 5px;
+  text-align: center;
+  display: block;
+}
+
+.gn-aside .gn-brand .sidebar-logo {
+  height: 65px;
+  width: 100%;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto;
+  transition: transform 0.3s ease;
+  image-rendering: -webkit-optimize-contrast;
+}
+
+.gn-aside .gn-brand .sidebar-logo:hover {
+  transform: scale(1.02);
+}
+
+.gn-aside .gn-nav-list {
+  list-style: none;
+  padding: 20px 0;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.gn-aside .gn-nav-list .gn-nav-link {
+  color: #6B7280;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 25px;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.gn-aside .gn-nav-list .gn-nav-link:hover,
+.gn-aside .gn-nav-list .gn-nav-link.active {
+  background: #f1f5f9;
+  color: #1C1C1C;
+  border-left: 4px solid #10B981;
+}
+
+.gn-aside .gn-aside-footer {
+  padding: 20px;
+  border-top: 1px solid #E5E7EB;
+  margin-top: auto;
+}
+
+.gn-aside .gn-aside-footer .gn-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.gn-aside .gn-aside-footer .gn-footer-links a {
+  color: #6B7280;
+  font-size: 11px;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.gn-aside .gn-aside-footer .gn-footer-links a:hover {
+  color: #10B981;
+}
+
+.gn-aside .gn-aside-footer .gn-dev-credit {
+  font-size: 10px;
+  color: #6B7280;
+  opacity: 0.8;
+}
+
+.gn-aside .gn-aside-footer .gn-dev-credit a {
+  color: #10B981;
+  text-decoration: none;
+}
+
+.gn-top-header {
+  background: white;
+  border-bottom: 1px solid #E5E7EB;
+  color: #1C1C1C;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.gn-top-header .gn-search-box {
+  background: #f1f5f9;
+  border: 1px solid #E5E7EB;
+  border-radius: 20px;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  transition: all 0.3s;
+}
+
+.gn-top-header .gn-search-box .gn-search-field {
+  border: none;
+  outline: none;
+  background: transparent;
+  padding-left: 15px;
+  width: 100%;
+  font-size: 14px;
+  color: #1C1C1C;
+}
+
+.badge-notify {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #ef4444;
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+  padding: 2px;
+}
+
+.notif-btn-wrapper {
+  position: relative;
+  cursor: pointer;
+  transition: 0.2s;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f5f9;
+  border-radius: 50%;
+  color: #64748b;
+}
+
+.notif-btn-wrapper:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+.sidebar-badge {
+  background: #ef4444;
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-left: auto;
+}
+
+.search-overlay .search-tab.active {
+  background: #ffffff !important;
+  color: #2563eb !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.search-overlay .search-input-group input:focus,
+.search-overlay .search-input-group select:focus {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+.search-overlay .close-search:hover {
+  background: #e2e8f0 !important;
+  color: #1e293b !important;
+}
+
+.search-overlay .search-submit:hover {
+  background: #1d4ed8 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+}
+
+.prop-modal-backdrop.active {
+  display: flex !important;
+  opacity: 1 !important;
+}
+
+.prop-modal-backdrop.active .prop-modal-content {
+  transform: translateY(0) !important;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 1100px) {
+  /* Zero out any top spacing so header sits flush at viewport top */
+  body {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+  }
+
+  .gn-top-header.navbar-header {
+    position: sticky !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-top: 0 !important;
+  }
+
+  .main-content-wrapper {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+
+  .page-content-inner {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+  }
+}
+
+/* ── Desktop: Fix top header so it never drifts horizontally ── */
+@media (min-width: 1101px) {
+
+  /* Convert sticky → fixed so horizontal scroll can't move it */
+  .gn-top-header.navbar-header {
+    position: fixed !important;
+    top: 0 !important;
+    left: 280px !important;
+    right: 0 !important;
+    width: auto !important;
+    margin-left: 0 !important;
+    z-index: 1001;
+  }
+
+  /* Push wrapper down by header height so content isn't hidden behind it */
+  .main-content-wrapper {
+    padding-top: 65px;
+  }
+
+  /* Prevent any horizontal scrollbar that would cause the shift */
+  .main-content-wrapper {
+    overflow-x: hidden;
+  }
+
+  /* ── Constrain main content column width to match reference design ── */
+  .main-content {
+    max-width: 575px !important;
+    width: auto !important;
+  }
+
+  .page-content-inner {
+    padding: 0 !important;
+  }
+
+  /* ── Prevent action buttons wrapping on desktop ── */
+  .feed-input__actions {
+    flex-wrap: nowrap !important;
+    gap: 10px !important;
+  }
+
+  .feed-input__actions button {
+    white-space: nowrap !important;
+    flex-shrink: 0;
+  }
+}

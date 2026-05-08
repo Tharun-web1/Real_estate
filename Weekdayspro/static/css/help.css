@@ -1,0 +1,250 @@
+@charset "UTF-8";
+:root {
+  --primary: #1e1b4b;
+  --accent: #4f46e5;
+  --success: #059669;
+  --text-main: #111827;
+  --text-muted: #4b5563;
+  --bg-light: #f8fafc;
+  --white: #ffffff;
+  --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Outfit", sans-serif;
+  line-height: 1.6;
+  color: var(--text-main);
+  background-color: var(--bg-light);
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Hero Section */
+.help-hero {
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+  color: var(--white);
+  padding: 80px 0 60px;
+  text-align: center;
+}
+
+.help-hero h1 {
+  font-size: 42px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.help-hero p {
+  font-size: 18px;
+  opacity: 0.9;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* Search Bar Placeholder */
+.search-container {
+  margin-top: 40px;
+  position: relative;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.search-container input {
+  width: 100%;
+  padding: 18px 25px;
+  border-radius: 100px;
+  border: none;
+  font-size: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  outline: none;
+}
+
+/* Help Grid */
+.help-sections {
+  padding: 60px 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+.help-card {
+  background: var(--white);
+  padding: 35px;
+  border-radius: 24px;
+  box-shadow: var(--card-shadow);
+  border: 1px solid #f1f5f9;
+  transition: 0.3s;
+}
+
+.help-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--accent);
+}
+
+.help-card i {
+  font-size: 32px;
+  color: var(--accent);
+  margin-bottom: 20px;
+  display: block;
+}
+
+.help-card h3 {
+  font-size: 22px;
+  margin-bottom: 15px;
+  color: var(--primary);
+}
+
+.help-card ul {
+  list-style: none;
+}
+
+.help-card ul li {
+  margin-bottom: 12px;
+  color: var(--text-muted);
+  font-size: 15px;
+  display: flex;
+  gap: 10px;
+}
+
+.help-card ul li::before {
+  content: "→";
+  color: var(--accent);
+  font-weight: bold;
+}
+
+/* FAQ Section */
+.faq-section {
+  padding: 60px 0;
+  background: var(--white);
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.section-title h2 {
+  font-size: 32px;
+  color: var(--primary);
+}
+
+.faq-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.faq-item {
+  margin-bottom: 20px;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 20px;
+}
+
+.faq-item h4 {
+  font-size: 18px;
+  color: var(--primary);
+  margin-bottom: 10px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.faq-item p {
+  color: var(--text-muted);
+  font-size: 15px;
+  display: none;
+  padding-top: 10px;
+}
+
+.faq-item.active p {
+  display: block;
+}
+
+/* Services List */
+.services-box {
+  background: var(--bg-light);
+  padding: 40px;
+  border-radius: 30px;
+  margin: 60px 0;
+}
+
+.services-box h3 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: var(--primary);
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.service-item {
+  background: var(--white);
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+}
+
+/* Support Box */
+.support-box {
+  text-align: center;
+  padding: 60px 40px;
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  color: var(--white);
+  border-radius: 30px;
+  margin-bottom: 80px;
+}
+
+.support-box h2 {
+  font-size: 32px;
+  margin-bottom: 30px;
+}
+
+.support-channels {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.channel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.channel i {
+  font-size: 28px;
+}
+
+.channel span {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .help-hero h1 {
+    font-size: 32px;
+  }
+  .support-channels {
+    gap: 20px;
+    flex-direction: column;
+  }
+}

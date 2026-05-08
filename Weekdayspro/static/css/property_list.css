@@ -1,0 +1,135 @@
+/* ── Sketch-Based Professional Design System ── */
+:root {
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --bg-subtle: #f8fafc;
+  --border-light: #e2e8f0;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+  --radius-lg: 16px;
+  --radius-md: 8px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #f1f5f9;
+  font-family: 'Poppins', -apple-system, sans-serif;
+  color: var(--text-main);
+  line-height: 1.5;
+}
+
+.main-layout {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+/* Property Grid */
+.right-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  margin-top: 60px;
+}
+
+/* ── Property Card (Sketch Matched) ── */
+.property-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1.5px solid #e2e8f0;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.property-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+
+/* Header */
+.sketch-header {
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f1f5f9;
+}
+.user-part { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+.user-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 1.5px solid var(--border-light); }
+.user-details { display: flex; flex-direction: column; }
+.name-row { display: flex; align-items: center; gap: 6px; }
+.user-name { font-size: 14px; font-weight: 600; color: #1e293b; }
+.verified-icon { color: #0ea5e9; font-size: 14px; }
+.stars { display: flex; gap: 2px; margin-top: -2px; }
+.stars i { font-size: 10px; color: #facc15; }
+
+.sketch-message-btn {
+  padding: 6px 16px;
+  background: white;
+  border: 1.5px solid #000;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #000;
+  text-decoration: none;
+  transition: 0.2s;
+}
+.sketch-message-btn:hover { background: #000; color: #fff; }
+
+/* Image */
+.sketch-image-wrapper { width: 100%; aspect-ratio: 16/10; overflow: hidden; background: #f8fafc; }
+.sketch-image-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Content */
+.sketch-content { padding: 16px; flex-grow: 1; }
+.title-approval-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.property-name { font-size: 16px; font-weight: 700; color: #000; }
+.approve-type { font-size: 12px; font-weight: 600; color: #64748b; }
+
+.description-line { font-size: 14px; color: #334155; margin-bottom: 8px; font-weight: 500; }
+.address-line { font-size: 13px; color: #64748b; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+.address-line i { color: #000; }
+
+.price-line { font-size: 18px; font-weight: 700; color: #000; margin-bottom: 12px; }
+
+.nearby-line { border-top: 1px dashed #e2e8f0; padding-top: 12px; }
+.nearby-label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 6px; display: block; }
+.nearby-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.sketch-tag { font-size: 10px; background: #f1f5f9; color: #475569; padding: 3px 10px; border-radius: 4px; border: 1px solid #e2e8f0; }
+
+/* Footer */
+.sketch-footer {
+  padding: 12px 16px;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.sketch-contact-btn {
+  padding: 8px 24px;
+  background: white;
+  border: 1.5px solid #000;
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.sketch-contact-btn:hover { background: #000; color: #fff; }
+.sketch-contact-btn i { margin-right: 6px; }
+
+.footer-icons { display: flex; gap: 24px; align-items: center; }
+.sketch-icon { font-size: 18px; color: #334155; cursor: pointer; transition: 0.2s; }
+.sketch-icon:hover { color: #000; }
+.sketch-icon.active { color: #ef4444; }
+
+/* Responsive */
+@media (max-width: 1100px) { .right-list { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 768px) {
+  .main-layout { padding: 12px; }
+  .right-list { grid-template-columns: 1fr; margin-top: 20px; gap: 20px; }
+  .property-card { border-radius: 12px; }
+}

@@ -1,0 +1,425 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saved Items | GoNestro</title>
+
+    <link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #4c3eb6;
+            --primary-light: #eeecfb;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --bg-body: #f8fafc;
+            --card-bg: #ffffff;
+            --shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+            --radius: 16px;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            font-family: 'Poppins', 'Inter', sans-serif;
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+        }
+
+        .saved-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header-section h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+
+        /* Tabs */
+        .tab-wrapper {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .tab-btn {
+            padding: 12px 28px;
+            border-radius: 50px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(76, 62, 182, 0.3);
+        }
+
+        /* Grid Layout */
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .saved-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid #f1f5f9;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .saved-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 220px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .saved-card:hover .card-image img {
+            transform: scale(1.05);
+        }
+
+        .card-content {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-content h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0 0 10px 0;
+            color: var(--text-main);
+            line-height: 1.4;
+        }
+
+        .card-info {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-info i {
+            color: var(--primary);
+        }
+
+        .card-footer {
+            margin-top: auto;
+            padding-top: 15px;
+            border-top: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .price-tag {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 10px;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: none;
+            background: var(--primary-light);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .icon-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .remove-btn {
+            background: #fff1f2;
+            color: #e11d48;
+        }
+
+        .remove-btn:hover {
+            background: #e11d48;
+            color: white;
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 80px 20px;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .empty-state i {
+            font-size: 60px;
+            color: #cbd5e1;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .empty-state p {
+            font-size: 18px;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 768px) {
+            .items-grid {
+                grid-template-columns: 1fr;
+            }
+            .header-section h1 {
+                font-size: 26px;
+            }
+        }
+    </style>
+
+    <script>
+        // Move functions to head to ensure they are defined before elements are parsed
+        function showTab(tabName) {
+            const propSection = document.getElementById('properties-section');
+            const projSection = document.getElementById('projects-section');
+            const btns = document.querySelectorAll('.tab-btn');
+            
+            if (tabName === 'properties') {
+                if(propSection) propSection.style.display = 'block';
+                if(projSection) projSection.style.display = 'none';
+                if(btns[0]) btns[0].classList.add('active');
+                if(btns[1]) btns[1].classList.remove('active');
+            } else {
+                if(propSection) propSection.style.display = 'none';
+                if(projSection) projSection.style.display = 'block';
+                if(btns[1]) btns[1].classList.add('active');
+                if(btns[0]) btns[0].classList.remove('active');
+            }
+        }
+
+        function removeSave(propertyId, btn) {
+            if (!confirm('Remove this property from your saved items?')) return;
+            
+            fetch(`/save/${propertyId}/`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'removed') {
+                        const card = document.getElementById(`prop-${propertyId}`);
+                        if(card) {
+                            card.style.opacity = '0';
+                            card.style.transform = 'scale(0.9)';
+                            setTimeout(() => {
+                                card.remove();
+                                const grid = document.querySelector('#properties-section .items-grid');
+                                if (grid && grid.querySelectorAll('.saved-card').length === 0) {
+                                    grid.innerHTML = '<div class="empty-state"><i class="bi bi-bookmark-x"></i><p>You haven\'t saved any properties yet.</p></div>';
+                                }
+                            }, 300);
+                        }
+                    }
+                })
+                .catch(err => console.error('Failed to remove item:', err));
+        }
+
+        function removeProjectSave(projectId, btn) {
+            if (!confirm('Remove this project from your saved items?')) return;
+            
+            fetch(`/save-project/${projectId}/`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'removed') {
+                        const card = document.getElementById(`proj-${projectId}`);
+                        if(card) {
+                            card.style.opacity = '0';
+                            card.style.transform = 'scale(0.9)';
+                            setTimeout(() => {
+                                card.remove();
+                                const grid = document.querySelector('#projects-section .items-grid');
+                                if (grid && grid.querySelectorAll('.saved-card').length === 0) {
+                                    grid.innerHTML = '<div class="empty-state"><i class="bi bi-building-dash"></i><p>No projects saved in your collection.</p></div>';
+                                }
+                            }, 300);
+                        }
+                    }
+                })
+                .catch(err => console.error('Failed to remove project:', err));
+        }
+    </script>
+</head>
+
+<body>
+    {% include "NavBar.html" %}
+
+    <div id="refreshMessage" style="position: fixed; top: 0; width: 100%; text-align: center; padding: 10px; display: none; z-index: 9999; background: var(--primary); color: white; font-weight: 600;">
+        Refreshing...
+    </div>
+
+    <div class="saved-container">
+        <div class="header-section">
+            <h1>My Collection</h1>
+            <p style="color: var(--text-muted)">Manage your saved properties and projects in one place.</p>
+        </div>
+
+        <div class="tab-wrapper">
+            <button class="tab-btn active" onclick="showTab('properties')">Properties</button>
+            <button class="tab-btn" onclick="showTab('projects')">Projects</button>
+        </div>
+
+        <!-- ================= PROPERTIES ================= -->
+        <div id="properties-section" class="tab-section">
+            <div class="items-grid">
+                {% if saved_properties %}
+                    {% for saved in saved_properties %}
+                    <div class="saved-card" id="prop-{{ saved.property.id }}">
+                        <div class="card-image">
+                            <a href="{% url 'prop:property_detail' saved.property.id %}">
+                                <img src="{% if saved.property.image %}{{ saved.property.image.url }}{% else %}{% static 'default.jpg' %}{% endif %}" alt="Property">
+                            </a>
+                        </div>
+                        <div class="card-content">
+                            <h3>{{ saved.property.user.username }}'s {{ saved.property.selectProperty|default:"Property" }}</h3>
+                            
+                            <div class="card-info">
+                                <i class="bi bi-geo-alt"></i>
+                                <span>{{ saved.property.address|default:"Location not provided"|truncatechars:35 }}</span>
+                            </div>
+                            
+                            <div class="card-info">
+                                <i class="bi bi-tag"></i>
+                                <span>{{ saved.property.selectProperty|default:"Real Estate" }}</span>
+                            </div>
+
+                            <div class="card-footer">
+                                <div class="price-tag">
+                                    {% if saved.property.price %}
+                                        ₹{{ saved.property.price }}
+                                    {% else %}
+                                        Contact for Price
+                                    {% endif %}
+                                </div>
+                                <div class="action-btns">
+                                    <a href="tel:{{ saved.property.user.phone }}" class="icon-btn" title="Call">
+                                        <i class="bi bi-telephone"></i>
+                                    </a>
+                                    <button class="icon-btn remove-btn" onclick="removeSave({{ saved.property.id }}, this)" title="Remove">
+                                        <i class="bi bi-bookmark-dash-fill"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <i class="bi bi-bookmark-x"></i>
+                        <p>You haven't saved any properties yet.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- ================= PROJECTS ================= -->
+        <div id="projects-section" class="tab-section" style="display:none;">
+            <div class="items-grid">
+                {% if saved_projects %}
+                    {% for saved in saved_projects %}
+                    <div class="saved-card" id="proj-{{ saved.project.id }}">
+                        <div class="card-image">
+                            <a href="{% url 'prop:project_detail' saved.project.id %}">
+                                <img src="{% if saved.project.image %}{{ saved.project.image.url }}{% else %}{% static 'default.jpg' %}{% endif %}" alt="Project">
+                            </a>
+                        </div>
+                        <div class="card-content">
+                            <h3>{{ saved.project.project_name }}</h3>
+                            
+                            <div class="card-info">
+                                <i class="bi bi-geo-alt"></i>
+                                <span>{{ saved.project.project_address|default:"Location not provided"|truncatechars:35 }}</span>
+                            </div>
+                            
+                            <div class="card-info">
+                                <i class="bi bi-building"></i>
+                                <span>{{ saved.project.type_of_project|default:"New Project" }}</span>
+                            </div>
+
+                            <div class="card-footer">
+                                <div class="price-tag">
+                                    {% if saved.project.pricing %}
+                                        ₹{{ saved.project.pricing }}
+                                    {% else %}
+                                        Call for Pricing
+                                    {% endif %}
+                                </div>
+                                <div class="action-btns">
+                                    <button class="icon-btn remove-btn" onclick="removeProjectSave({{ saved.project.id }}, this)" title="Remove">
+                                        <i class="bi bi-bookmark-dash-fill"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <i class="bi bi-building-dash"></i>
+                        <p>No projects saved in your collection.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% include 'footer.html' %}
+</body>
+</html>

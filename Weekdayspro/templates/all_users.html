@@ -1,0 +1,444 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+<link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+    <meta charset="UTF-8">
+    <title>All Users</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+<link rel="stylesheet" href="{% static 'css/all_users.css' %}">
+ 
+</head>
+
+<body>
+
+{% include 'NavBar.html' %}
+
+
+<div class="container1">
+
+    <!-- USER LIST -->
+    <div style="width: 100%;">
+
+ {% if category == 'company' and company_normal or category == 'company_normal' and company_normal %}
+    <h2>  Recommended Builders</h2>
+    <div class="grid">
+
+        {% for u in company_normal %}
+               <div class="card">
+                 <!-- Wallpaper -->
+                 {% if u.company_wallpaper_path %}
+                   <div class="card-wallpaper">
+                     <img src="{{ u.company_wallpaper_path.url }}" alt="Wallpaper">
+                   </div>
+                 {% else %}
+                   <div class="card-wallpaper"></div>
+                 {% endif %}
+
+                 <a href="{% url 'prop:company_profile_with_id' u.id %}">
+                   <div class="card-header">
+                     {% if u.company_logo_path %}
+                       <img src="{{ u.company_logo_path.url }}" class="profile-img" alt="{{ u.username }}">
+                     {% else %}
+                       <div class="avatar-fallback"><i class="bi bi-building"></i></div>
+                     {% endif %}
+                     <div class="card-identity">
+                       <div class="name-row">
+                         <span class="card-name">{{ u.username|truncatechars:18 }}</span>
+                         <span class="verified-badge"><i class="bi bi-check"></i></span>
+                       </div>
+                       <div class="stars-row">
+                         <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star"></i><i class="bi bi-star"></i>
+                       </div>
+                     </div>
+                   </div>
+                   <div class="card-subinfo"> 
+                     <div class="card-location"><i class="bi bi-geo-alt-fill"></i>{{ u.location|truncatechars:28 }}</div>
+                   </div>
+                   <hr class="card-divider">
+                   <div class="stats-grid">
+                     <div class="stat-cell"><i class="bi bi-briefcase-fill"></i><span class="stat-label">Established</span><span class="stat-value">{{ u.experience }} Yrs</span></div>
+                     <div class="stat-cell"><i class="bi bi-building"></i><span class="stat-label">Specialized In</span><span class="stat-value">{{ u.category|truncatechars:10 }}</span></div>
+                     <div class="stat-cell"><i class="bi bi-kanban"></i><span class="stat-label">Projects</span><span class="stat-value">{{ u.ongoing_projects|default:0 }}</span></div>
+                   </div>
+                   <div class="expert-bio">{{ u.description|default:'No description available'|truncatechars:60 }}</div>
+                 </a>
+                 <div class="contact-actions">
+                   <a href="{% if user.is_authenticated %}tel:{{ u.phone }}{% else %}{% url 'prop:login' %}{% endif %}" class="contact-btn-main" {% if user.is_authenticated %}onclick="profileLead(event, {{ u.id }})"{% endif %}><i class="bi bi-telephone-fill"></i></a>
+                   <button class="icon-btn" title="Share" onclick="shareProfile({{ u.id }})"><i class="bi bi-share-fill"></i></button>
+                   <a href="{% if user.is_authenticated %}{% url 'prop:start_chat_with_user' u.id %}{% else %}{% url 'prop:login' %}{% endif %}" class="icon-btn" title="Chat"><i class="bi bi-chat-dots-fill"></i></a>
+                 </div>
+               </div>
+               {% endfor %}
+    </div>
+    {% endif %}
+
+
+    {% if category == 'company' and company_pro or category == 'company_pro' and company_pro %}
+    <h2>  Featured Builders</h2>
+    <div class="grid">
+
+        {% for u in company_pro %}
+               <div class="card">
+                 <!-- Wallpaper -->
+                 {% if u.company_wallpaper_path %}
+                   <div class="card-wallpaper">
+                     <img src="{{ u.company_wallpaper_path.url }}" alt="Wallpaper">
+                   </div>
+                 {% else %}
+                   <div class="card-wallpaper"></div>
+                 {% endif %}
+
+                 <a href="{% url 'prop:company_profile_with_id' u.id %}">
+                   <div class="card-header">
+                     {% if u.company_logo_path %}
+                       <img src="{{ u.company_logo_path.url }}" class="profile-img" alt="{{ u.username }}">
+                     {% else %}
+                       <div class="avatar-fallback"><i class="bi bi-building"></i></div>
+                     {% endif %}
+                     <div class="card-identity">
+                       <div class="name-row">
+                         <span class="card-name">{{ u.username|truncatechars:18 }}</span>
+                         <span class="verified-badge"><i class="bi bi-patch-check-fill"></i></span>
+                       </div>
+                       <div class="stars-row">
+                         <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star"></i>
+                       </div>
+                     </div>
+                   </div>
+                   <div class="card-subinfo"> 
+                     <div class="card-location"><i class="bi bi-geo-alt-fill"></i>{{ u.location|truncatechars:28 }}</div>
+                   </div>
+                   <hr class="card-divider">
+                   <div class="stats-grid">
+                     <div class="stat-cell"><i class="bi bi-briefcase-fill"></i><span class="stat-label">Established</span><span class="stat-value">{{ u.experience }} Yrs</span></div>
+                     <div class="stat-cell"><i class="bi bi-building"></i><span class="stat-label">Specialized In</span><span class="stat-value">{{ u.category|truncatechars:10 }}</span></div>
+                     <div class="stat-cell"><i class="bi bi-kanban"></i><span class="stat-label">Projects</span><span class="stat-value">{{ u.ongoing_projects|default:0 }}</span></div>
+                   </div>
+                   <div class="expert-bio">{{ u.description|default:'No description available'|truncatechars:60 }}</div>
+                 </a>
+                 <div class="contact-actions">
+                   <a href="{% if user.is_authenticated %}tel:{{ u.phone }}{% else %}{% url 'prop:login' %}{% endif %}" class="contact-btn-main" {% if user.is_authenticated %}onclick="profileLead(event, {{ u.id }})"{% endif %}><i class="bi bi-telephone-fill"></i></a>
+                   <button class="icon-btn" title="Share" onclick="shareProfile({{ u.id }})"><i class="bi bi-share-fill"></i></button>
+                   <a href="{% if user.is_authenticated %}{% url 'prop:start_chat_with_user' u.id %}{% else %}{% url 'prop:login' %}{% endif %}" class="icon-btn" title="Chat"><i class="bi bi-chat-dots-fill"></i></a>
+                 </div>
+               </div>
+               {% endfor %}
+    </div>
+    {% endif %}
+
+{% if category == 'company' and company_premium or category == 'company_premium' and company_premium %}
+<h2>  Premium Builders</h2>
+<div class="grid">
+
+    {% for u in company_premium %}
+               <div class="card">
+                 <!-- Wallpaper -->
+                 {% if u.company_wallpaper_path %}
+                   <div class="card-wallpaper">
+                     <img src="{{ u.company_wallpaper_path.url }}" alt="Wallpaper">
+                   </div>
+                 {% else %}
+                   <div class="card-wallpaper"></div>
+                 {% endif %}
+
+                 <a href="{% url 'prop:company_profile_with_id' u.id %}">
+                   <div class="card-header">
+                     {% if u.company_logo_path %}
+                       <img src="{{ u.company_logo_path.url }}" class="profile-img" alt="{{ u.username }}">
+                     {% else %}
+                       <div class="avatar-fallback"><i class="bi bi-building"></i></div>
+                     {% endif %}
+                     <div class="card-identity">
+                       <div class="name-row">
+                         <span class="card-name">{{ u.username|truncatechars:18 }}</span>
+                         <span class="verified-badge"><i class="bi bi-patch-check-fill"></i></span>
+                       </div>
+                       <div class="stars-row">
+                         <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                       </div>
+                     </div>
+                   </div>
+                   <div class="card-subinfo"> 
+                     <div class="card-location"><i class="bi bi-geo-alt-fill"></i>{{ u.location|truncatechars:28 }}</div>
+                   </div>
+                   <hr class="card-divider">
+                   <div class="stats-grid">
+                     <div class="stat-cell"><i class="bi bi-briefcase-fill"></i><span class="stat-label">Established</span><span class="stat-value">{{ u.experience }} Yrs</span></div>
+                     <div class="stat-cell"><i class="bi bi-building"></i><span class="stat-label">Specialized In</span><span class="stat-value">{{ u.category|truncatechars:10 }}</span></div>
+                     <div class="stat-cell"><i class="bi bi-kanban"></i><span class="stat-label">Projects</span><span class="stat-value">{{ u.ongoing_projects|default:0 }}</span></div>
+                   </div>
+                   <div class="expert-bio">{{ u.description|default:'No description available'|truncatechars:60 }}</div>
+                 </a>
+                 <div class="contact-actions">
+                   <a href="{% if user.is_authenticated %}tel:{{ u.phone }}{% else %}{% url 'prop:login' %}{% endif %}" class="contact-btn-main" {% if user.is_authenticated %}onclick="profileLead(event, {{ u.id }})"{% endif %}><i class="bi bi-telephone-fill"></i></a>
+                   <button class="icon-btn" title="Share" onclick="shareProfile({{ u.id }})"><i class="bi bi-share-fill"></i></button>
+                   <a href="{% if user.is_authenticated %}{% url 'prop:start_chat_with_user' u.id %}{% else %}{% url 'prop:login' %}{% endif %}" class="icon-btn" title="Chat"><i class="bi bi-chat-dots-fill"></i></a>
+                 </div>
+               </div>
+               {% endfor %}
+</div>
+{% endif %}
+
+
+            {% if category == 'marketer' and marketer_export or category == 'marketer_export' and marketer_export %}
+            <h2>  Recommended Agents</h2>
+            <div class="grid">
+                {% for u in marketer_export %}
+               <div class="card">
+                 <a href="{% url 'prop:user_detail' u.id %}">
+                   <!-- Header: avatar + name + verified + stars -->
+                   <div class="card-header">
+                     {% if u.profile_image_path %}
+                       <img src="{{ u.profile_image_path.url }}" class="profile-img" alt="{{ u.username }}">
+                     {% else %}
+                       <div class="avatar-fallback"><i class="bi bi-person-fill"></i></div>
+                     {% endif %}
+                     <div class="card-identity">
+                       <div class="name-row">
+                         <span class="card-name">{{ u.username|truncatechars:18 }}</span>
+                         <span class="verified-badge"><i class="bi bi-patch-check-fill"></i></span>
+                       </div>
+                       <div class="stars-row">
+                         <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star"></i><i class="bi bi-star"></i>
+                       </div>
+                     </div>
+                   </div>
+                   <!-- @username + location -->
+                   <div class="card-subinfo"> 
+                     <div class="card-location"><i class="bi bi-geo-alt-fill"></i>{{ u.location|truncatechars:28 }}</div>
+                   </div>
+                   <hr class="card-divider">
+                   <!-- 3-col stats -->
+                   <div class="stats-grid">
+                     <div class="stat-cell">
+                       <i class="bi bi-briefcase-fill"></i>
+                       <span class="stat-label">Experience</span>
+                       <span class="stat-value">{{ u.experience }} Yrs</span>
+                     </div>
+                     <div class="stat-cell">
+                       <i class="bi bi-building"></i>
+                       <span class="stat-label">Expert In</span>
+                       <span class="stat-value">{{ u.marketer_category|truncatechars:10 }}</span>
+                     </div>
+                     <div class="stat-cell">
+                       <i class="bi bi-person-check-fill"></i>
+                       <span class="stat-label">Customers</span>
+                       <span class="stat-value">{{ u.deals|default:0 }}</span>
+                     </div>
+                   </div>
+                    <div class="expert-bio">{{ u.description|default:"No description available"|truncatechars:60 }}</div>
+                 </a>
+                 <!-- Actions -->
+                 <div class="contact-actions">
+                   <a href="{% if user.is_authenticated %}tel:{{ u.phone }}{% else %}{% url 'prop:login' %}{% endif %}"
+                      class="contact-btn-main"
+                      {% if user.is_authenticated %}onclick="profileLead(event, {{ u.id }})"{% endif %}>
+                     <i class="bi bi-telephone-fill"></i>
+                   </a>
+                   <button class="icon-btn" title="Share" onclick="shareProfile({{ u.id }})">
+                     <i class="bi bi-share-fill"></i>
+                   </button>
+                   <a href="{% if user.is_authenticated %}{% url 'prop:start_chat_with_user' u.id %}{% else %}{% url 'prop:login' %}{% endif %}"
+                      class="icon-btn" title="Chat">
+                     <i class="bi bi-chat-dots-fill"></i>
+                   </a>
+                 </div>
+               </div>
+               {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if category == 'marketer' and marketer_export_pro or category == 'marketer_pro' and marketer_export_pro %}
+            <h2>  Featured Agents</h2>
+            <div class="grid">
+                {% for u in marketer_export_pro %}
+               <div class="card">
+                 <a href="{% url 'prop:user_detail' u.id %}">
+                   <div class="card-header">
+                     {% if u.profile_image_path %}
+                       <img src="{{ u.profile_image_path.url }}" class="profile-img" alt="{{ u.username }}">
+                     {% else %}
+                       <div class="avatar-fallback"><i class="bi bi-person-fill"></i></div>
+                     {% endif %}
+                     <div class="card-identity">
+                       <div class="name-row">
+                         <span class="card-name">{{ u.username|truncatechars:18 }}</span>
+                         <span class="verified-badge"><i class="bi bi-patch-check-fill"></i></span>
+                       </div>
+                       <div class="stars-row">
+                         <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star"></i>
+                       </div>
+                     </div>
+                   </div>
+                   <div class="card-subinfo"> 
+                     <div class="card-location"><i class="bi bi-geo-alt-fill"></i>{{ u.location|truncatechars:28 }}</div>
+                   </div>
+                   <hr class="card-divider">
+                   <div class="stats-grid">
+                     <div class="stat-cell"><i class="bi bi-briefcase-fill"></i><span class="stat-label">Experience</span><span class="stat-value">{{ u.experience }} Yrs</span></div>
+                     <div class="stat-cell"><i class="bi bi-building"></i><span class="stat-label">Expert In</span><span class="stat-value">{{ u.marketer_category|truncatechars:10 }}</span></div>
+                     <div class="stat-cell"><i class="bi bi-person-check-fill"></i><span class="stat-label">Customers</span><span class="stat-value">{{ u.deals|default:0 }}</span></div>
+                   </div>
+                   <!-- stats-row-removed -->
+
+                   <div class="expert-bio">{{ u.description|default:"No description available"|truncatechars:60 }}</div>
+                 </a>
+                 <div class="contact-actions">
+                   <a href="{% if user.is_authenticated %}tel:{{ u.phone }}{% else %}{% url 'prop:login' %}{% endif %}" class="contact-btn-main" {% if user.is_authenticated %}onclick="profileLead(event, {{ u.id }})"{% endif %}><i class="bi bi-telephone-fill"></i></a>
+                   <button class="icon-btn" title="Share" onclick="shareProfile({{ u.id }})"><i class="bi bi-share-fill"></i></button>
+                   <a href="{% if user.is_authenticated %}{% url 'prop:start_chat_with_user' u.id %}{% else %}{% url 'prop:login' %}{% endif %}" class="icon-btn" title="Chat"><i class="bi bi-chat-dots-fill"></i></a>
+                 </div>
+               </div>
+               {% endfor %}
+            </div>
+            {% endif %}
+
+
+            {% if category == 'marketer' and marketer_export_premium or category == 'marketer_premium' and marketer_export_premium %}
+            <h2> Premium Agents</h2>
+            <div class="grid">
+                {% for u in marketer_export_premium %}
+               <div class="card">
+                 <a href="{% url 'prop:user_detail' u.id %}">
+                   <div class="card-header">
+                     {% if u.profile_image_path %}
+                       <img src="{{ u.profile_image_path.url }}" class="profile-img" alt="{{ u.username }}">
+                     {% else %}
+                       <div class="avatar-fallback"><i class="bi bi-person-fill"></i></div>
+                     {% endif %}
+                     <div class="card-identity">
+                       <div class="name-row">
+                         <span class="card-name">{{ u.username|truncatechars:18 }}</span>
+                         <span class="verified-badge"><i class="bi bi-patch-check-fill"></i></span>
+                       </div>
+                       <div class="stars-row">
+                         <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                         <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                         <i class="bi bi-star-fill"></i>
+                       </div>
+                     </div>
+                   </div>
+                   <div class="card-subinfo"> 
+                     <div class="card-location"><i class="bi bi-geo-alt-fill"></i>{{ u.location|truncatechars:28 }}</div>
+                   </div>
+                   <hr class="card-divider">
+                   <div class="stats-grid">
+                     <div class="stat-cell"><i class="bi bi-briefcase-fill"></i><span class="stat-label">Experience</span><span class="stat-value">{{ u.experience }} Yrs</span></div>
+                     <div class="stat-cell"><i class="bi bi-building"></i><span class="stat-label">Expert In</span><span class="stat-value">{{ u.marketer_category|truncatechars:10 }}</span></div>
+                     <div class="stat-cell"><i class="bi bi-person-check-fill"></i><span class="stat-label">Customers</span><span class="stat-value">{{ u.deals|default:0 }}</span></div>
+                   </div>
+                   <!-- stats-row-removed -->
+
+                   <div class="expert-bio">{{ u.description|default:"No description available"|truncatechars:60 }}</div>
+                 </a>
+                 <div class="contact-actions">
+                   <a href="{% if user.is_authenticated %}tel:{{ u.phone }}{% else %}{% url 'prop:login' %}{% endif %}" class="contact-btn-main" {% if user.is_authenticated %}onclick="profileLead(event, {{ u.id }})"{% endif %}><i class="bi bi-telephone-fill"></i></a>
+                   <button class="icon-btn" title="Share" onclick="shareProfile({{ u.id }})"><i class="bi bi-share-fill"></i></button>
+                   <a href="{% if user.is_authenticated %}{% url 'prop:start_chat_with_user' u.id %}{% else %}{% url 'prop:login' %}{% endif %}" class="icon-btn" title="Chat"><i class="bi bi-chat-dots-fill"></i></a>
+                 </div>
+               </div>
+               {% endfor %}
+            </div>
+            {% endif %}
+
+
+
+            {% if category == 'professional' and professional_users %}
+            <h2>All Construction Professionals</h2>
+            <div class="grid">
+                {% for u in professional_users %}
+               <div class="card">
+                 <a href="{% url 'prop:user_detail' u.id %}">
+                   <div class="card-header">
+                     {% if u.profile_image_path %}
+                       <img src="{{ u.profile_image_path.url }}" class="profile-img" alt="{{ u.username }}">
+                     {% else %}
+                       <div class="avatar-fallback"><i class="bi bi-person-fill"></i></div>
+                     {% endif %}
+                     <div class="card-identity">
+                       <div class="name-row">
+                         <span class="card-name">{{ u.username|truncatechars:18 }}</span>
+                         <span class="verified-badge"><i class="bi bi-patch-check-fill"></i></span>
+                       </div>
+                    
+                     </div>
+                   </div>
+                   <div class="card-subinfo"> 
+                     <div class="card-location"><i class="bi bi-geo-alt-fill"></i>{{ u.location|truncatechars:28 }}</div>
+                   </div>
+                   <hr class="card-divider">
+                   <div class="stats-grid">
+                     <div class="stat-cell"><i class="bi bi-briefcase-fill"></i><span class="stat-label">Experience</span><span class="stat-value">{{ u.experience }} Yrs</span></div>
+                     <div class="stat-cell"><i class="bi bi-tools"></i><span class="stat-label">Specialty</span><span class="stat-value">{{ u.category|truncatechars:10 }}</span></div>
+                     <div class="stat-cell"><i class="bi bi-person-check-fill"></i><span class="stat-label">Customers</span><span class="stat-value">{{ u.deals|default:0 }}</span></div>
+                   </div>
+                   <!-- stats-row-removed -->
+
+                   <div class="expert-bio">{{ u.description|default:"No description available"|truncatechars:60 }}</div>
+                 </a>
+                 <div class="contact-actions">
+                   <a href="{% if user.is_authenticated %}tel:{{ u.phone }}{% else %}{% url 'prop:login' %}{% endif %}" class="contact-btn-main" {% if user.is_authenticated %}onclick="profileLead(event, {{ u.id }})"{% endif %}><i class="bi bi-telephone-fill"></i></a>
+                   <button class="icon-btn" title="Share" onclick="shareProfile({{ u.id }})"><i class="bi bi-share-fill"></i></button>
+                   <a href="{% if user.is_authenticated %}{% url 'prop:start_chat_with_user' u.id %}{% else %}{% url 'prop:login' %}{% endif %}" class="icon-btn" title="Chat"><i class="bi bi-chat-dots-fill"></i></a>
+                 </div>
+               </div>
+               {% endfor %}
+            </div>
+
+            
+            {% endif %}
+
+        {# ── Empty state: shown when no section rendered any results ── #}
+        {% if category == 'company' %}
+            {% if not company_normal and not company_pro and not company_premium %}
+            <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:80px 20px; text-align:center;">
+              <div style="width:90px; height:90px; background:#f1f5f9; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:24px;">
+                <i class="bi bi-building-slash" style="font-size:40px; color:#94a3b8;"></i>
+              </div>
+              <h3 style="font-size:22px; font-weight:700; color:#1e293b; margin:0 0 10px;">No Builders Found</h3>
+              <p style="font-size:15px; color:#64748b; max-width:360px; margin:0;">We couldn't find any builders matching your search. Try adjusting your filters or search terms.</p>
+            </div>
+            {% endif %}
+        {% elif category == 'marketer' %}
+            {% if not marketer_export and not marketer_export_pro and not marketer_export_premium %}
+            <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:80px 20px; text-align:center;">
+              <div style="width:90px; height:90px; background:#f1f5f9; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:24px;">
+                <i class="bi bi-person-x" style="font-size:40px; color:#94a3b8;"></i>
+              </div>
+              <h3 style="font-size:22px; font-weight:700; color:#1e293b; margin:0 0 10px;">No Agents Found</h3>
+              <p style="font-size:15px; color:#64748b; max-width:360px; margin:0;">We couldn't find any agents matching your search. Try adjusting your filters or search terms.</p>
+            </div>
+            {% endif %}
+        {% elif category == 'professional' %}
+            {% if not professional_users %}
+            <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:80px 20px; text-align:center;">
+              <div style="width:90px; height:90px; background:#f1f5f9; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:24px;">
+                <i class="bi bi-tools" style="font-size:40px; color:#94a3b8;"></i>
+              </div>
+              <h3 style="font-size:22px; font-weight:700; color:#1e293b; margin:0 0 10px;">No Professionals Found</h3>
+              <p style="font-size:15px; color:#64748b; max-width:360px; margin:0;">We couldn't find any professionals matching your search. Try adjusting your filters or search terms.</p>
+            </div>
+            {% endif %}
+        {% endif %}
+
+    </div>
+</div>
+
+ 
+
+<script src="{% static 'js/all_users.js' %}"></script>
+<script src="{% static 'js/Leads.js' %}"></script>
+<script
+  async
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBqk0zEZL46G-ppnMd5794tXdFb4LFz0oA&libraries=places&loading=async&callback=onGoogleMapsLoaded"
+></script>
+
+{% include 'footer.html' %}
+
+</body>
+</html>

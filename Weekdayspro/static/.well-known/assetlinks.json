@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "co.median.android.oddjazd",
+      "sha256_cert_fingerprints": [
+        "6E:4F:4B:28:E2:3D:28:91:7C:37:39:2B:19:CC:A5:2A:99:6C:45:F5:E2:64:6D:02:86:4D:2F:43:61:32:6D:31"
+      ]
+    }
+  }
+]

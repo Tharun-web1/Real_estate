@@ -1,0 +1,133 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refund & Cancellation Policy | GoNestro</title>
+    <link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'css/refund_policy.css' %}">
+</head>
+<body>
+
+    {% include 'NavBar.html' %}
+
+    <div class="policy-header">
+        <div class="container">
+            <h1>Refund & Cancellation Policy</h1>
+            <p>Effective Date: April 23, 2026</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="content-card">
+            
+            <!-- REFUND POLICY -->
+            <div class="policy-section">
+                <h2><i class="bi bi-cash-stack"></i> Refund Policy</h2>
+                <p>At GoNestro, we strive to provide high-quality real estate services and a smooth user experience. This Refund Policy explains the conditions under which refunds may be granted for payments made on our platform.</p>
+                <p>By using GoNestro and making payments, you agree to this Refund Policy.</p>
+
+                <h3>1. General Policy</h3>
+                <ul>
+                    <li>Payments made for premium listings, promotions, subscriptions, or service fees are generally non-refundable.</li>
+                    <li>Refunds are only considered in specific cases outlined below.</li>
+                    <li>All refund requests are subject to review and approval by GoNestro.</li>
+                </ul>
+
+                <h3>2. Eligible Refund Scenarios</h3>
+                <p>You may be eligible for a refund if:</p>
+                <ul>
+                    <li>A technical error resulted in duplicate or failed transactions.</li>
+                    <li>You were charged incorrectly due to a system issue.</li>
+                    <li>The paid service was not delivered as promised due to a fault from GoNestro.</li>
+                    <li>Payment was made but the service was not activated within a reasonable time.</li>
+                </ul>
+
+                <h3>3. Non-Refundable Cases</h3>
+                <p>Refunds will not be provided in the following situations:</p>
+                <ul>
+                    <li>Change of mind after purchasing a service.</li>
+                    <li>Lack of results (e.g., not receiving leads or inquiries).</li>
+                    <li>User error in selecting services or plans.</li>
+                    <li>Delays caused by third-party service providers.</li>
+                    <li>Removal or suspension of listings due to policy violations.</li>
+                </ul>
+
+                <h3>4. Refund Request Process</h3>
+                <p>To request a refund, please follow these steps:</p>
+                <ul>
+                    <li>Email us at <strong>support@gonestro.com</strong></li>
+                    <li>Include your registered details, transaction ID, and reason for request.</li>
+                    <li>Submit your request within <strong>7 days</strong> of the transaction.</li>
+                </ul>
+                <p>Our team will review and respond within 5–10 business days.</p>
+
+                <h3>5. Refund Processing</h3>
+                <ul>
+                    <li>Approved refunds will be processed to the original payment method.</li>
+                    <li>Processing time may take 7–15 business days, depending on your bank or payment provider.</li>
+                </ul>
+            </div>
+
+            <!-- CANCELLATION POLICY -->
+            <div class="policy-section">
+                <h2><i class="bi bi-x-circle"></i> Cancellation Policy</h2>
+                <p>This Cancellation Policy outlines how users can cancel services or subscriptions on GoNestro.</p>
+
+                <h3>1. Service Cancellation</h3>
+                <p>Users may cancel certain services based on the type of service purchased.</p>
+                
+                <p><strong>a) Listings & Promotions</strong></p>
+                <ul>
+                    <li>Once a property listing or promotion is activated, it cannot be cancelled.</li>
+                    <li>Users may choose to remove or deactivate listings, but no refund will be issued.</li>
+                </ul>
+
+                <p><strong>b) Subscription Plans (if applicable)</strong></p>
+                <ul>
+                    <li>Users can cancel subscriptions anytime.</li>
+                    <li>Cancellation will stop future billing, but current plan benefits will continue until expiry.</li>
+                    <li>No partial refunds for unused duration.</li>
+                </ul>
+
+                <h3>2. Cancellation by GoNestro</h3>
+                <p>GoNestro reserves the right to cancel or suspend services if:</p>
+                <ul>
+                    <li>Users violate Terms & Conditions.</li>
+                    <li>Fraudulent or misleading activities are detected.</li>
+                    <li>Required information or verification is not provided.</li>
+                </ul>
+                <p>No refund will be issued in such cases.</p>
+
+                <h3>3. Third-Party Services Cancellation</h3>
+                <ul>
+                    <li>Cancellation policies for services provided by third parties (legal, construction, etc.) may vary.</li>
+                    <li>GoNestro is not responsible for third-party cancellation terms or refunds.</li>
+                    <li>Users are advised to review third-party policies before booking.</li>
+                </ul>
+            </div>
+
+            <!-- CONTACT -->
+            <div class="contact-box">
+                <h4>Contact Us for Support</h4>
+                <div class="contact-info">
+                    <p><i class="bi bi-envelope-fill"></i> support@gonestro.com</p>
+                    <p><i class="bi bi-telephone-fill"></i> +91-XXXXXXXXXX</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 60px; text-align: center; border-top: 1px solid #f1f5f9; padding-top: 40px;">
+                <p style="font-weight: 600; color: var(--primary);">GoNestro Commitment</p>
+                <p style="color: var(--text-muted); margin-top: 10px;">We aim to maintain fair, transparent, and user-friendly policies while delivering reliable real estate services.</p>
+                <p style="margin-top: 20px; font-weight: 700; color: var(--accent);">GoNestro – Find. Connect. Move.</p>
+            </div>
+        </div>
+    </div>
+
+    {% include 'footer.html' %}
+
+</body>
+</html>

@@ -1,0 +1,126 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        {% if category == "normal" %} Normal Projects {% elif category == "pro" %} Pro Projects {% elif category == "premium" %} Premium Projects {% else %} All Projects {% endif %} | GoNestro
+    </title>
+    
+    <link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS (Compiled from SCSS) -->
+    <link rel="stylesheet" href="{% static 'css/all_projects.css' %}">
+
+</head>
+
+<body>
+    {% include 'NavBar.html' %}
+
+    <!-- Pull to Refresh Message -->
+    <div id="refreshMessage" style="position: fixed; top: 0; width: 100%; text-align: center; padding: 10px; display: none; z-index: 9999; background: var(--primary-color); color: white; font-weight: 600;">
+        Refreshing...
+    </div>
+
+    <div class="container">
+    <div class="container full-width">
+
+        <!-- MAIN CONTENT -->
+        <div class="projects-wrapper">
+            <h2>
+                {% if category == "normal" %} Company Normal Projects
+                {% elif category == "pro" %} Company Pro Projects
+                {% elif category == "premium" %} Company Premium Projects
+                {% else %} All Projects {% endif %}
+            </h2>
+
+            <div class="project-grid">
+                {% for p in projects %}
+                <div class="project-card">
+                    <!-- COMPANY HEADER -->
+                    <div class="company-row">
+                        <a href="{% url 'prop:company_profile_with_id' p.user.id %}">
+                            <img src="{% if p.user.company_logo_path %}{{ p.user.company_logo_path.url }}{% else %}{% static 'images/default-avatar.png' %}{% endif %}" class="company-logo" alt="Logo">
+                        </a>
+                        <a href="{% url 'prop:company_profile_with_id' p.user.id %}" class="company-name">
+                            {{ p.user.company_name|default:p.user.username }}
+                        </a>
+                        <a href="{% if user.is_authenticated %}{% url 'prop:start_chat_with_user' p.user.id %}?pre_message=Hi, I'm interested in your project {{ p.project_name }}.{% else %}{% url 'prop:login' %}{% endif %}" class="chat-btn" title="Chat">
+                            <i class="bi bi-chat-dots-fill"></i>
+                        </a>
+                    </div>
+
+                    <!-- PROJECT IMAGE -->
+                    <div class="image-wrapper">
+                        <a href="{% url 'prop:project_detail' p.id %}">
+                            <img src="{% if p.image %}{{ p.image.url }}{% else %}{% static 'default.jpg' %}{% endif %}" class="project-image" alt="{{ p.project_name }}">
+                        </a>
+                        <div class="price-tag">₹ {{ p.pricing }}</div>
+                    </div>
+
+                    <!-- PROJECT INFO -->
+                    <div class="project-info">
+                        <h5>{{ p.project_name }}</h5>
+                        <div class="project-meta">
+                            <div class="meta-item">
+                                <i class="bi bi-geo-alt-fill"></i>
+                                <span>{{ p.project_address }}</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-building"></i>
+                                <span>{{ p.type_of_project }} • {{ p.get_position_display }}</span>
+                            </div>
+                        </div>
+
+                        {% if p.nearby_locations %}
+                        <div class="nearby-wrapper">
+                            <span class="nearby-title">Nearby Places:</span>
+                            <div class="nearby-container">
+                                {% for place in p.nearby_locations %}
+                                <span class="nearby-box">{{ place }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- ACTIONS -->
+                    <div class="project-actions">
+                        <a href="{% url 'prop:project_detail' p.id %}" class="view-details-btn">View Details</a>
+                        
+                        <button class="icon-btn" onclick="shareProject('{{ p.project_name|escapejs }}', '{{ p.project_address|escapejs }}', '{{ p.pricing }}', '{% url 'prop:project_detail' p.id %}')">
+                            <i class="bi bi-share-fill"></i>
+                        </button>
+
+                        <button class="icon-btn save-btn" onclick="{% if user.is_authenticated %}toggleProjectSave(event, {{ p.id }}, this){% else %}redirectToLogin(){% endif %}">
+                            <i class="bi {% if p.id in saved_project_ids %}bi-bookmark-fill{% else %}bi-bookmark{% endif %}"></i>
+                        </button>
+                    </div>
+                </div>
+                {% empty %}
+                <div style="grid-column: 1/-1; text-align: center; padding: 50px; color: var(--text-muted);">
+                    <i class="bi bi-building-exclamation" style="font-size: 48px; opacity: 0.5;"></i>
+                    <p style="margin-top: 15px;">No projects found matching your criteria.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    {% include 'footer.html' %}
+
+    <!-- Template Variables for JS -->
+    <script>
+        const loginUrl = "{% url 'prop:login' %}";
+    </script>
+
+    <!-- Custom JS -->
+    <script src="{% static 'js/all_projects.js' %}"></script>
+
+    <!-- Google Maps API (Loaded last to ensure callback function is defined) -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBqk0zEZL46G-ppnMd5794tXdFb4LFz0oA&libraries=places&callback=onGoogleMapsLoaded" async defer></script>
+</body>
+</html>

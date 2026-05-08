@@ -1,0 +1,245 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Franchise Applications</title>
+
+<link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+<style>
+
+/* ===== GLOBAL ===== */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',system-ui,Arial;
+}
+
+body{
+    min-height:100vh;
+    background:linear-gradient(120deg,#eef2ff,#dbeafe,#f0f9ff);
+    padding:40px 15px;
+    color:#1f2937;
+}
+
+/* ===== CONTAINER ===== */
+.container{
+    max-width:1200px;
+    margin:auto;
+}
+
+/* ===== HEADER ===== */
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+}
+
+.title{
+    font-size:32px;
+    font-weight:700;
+    background:linear-gradient(90deg,#2563eb,#06b6d4);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+/* ===== GLASS CARD ===== */
+.card{
+    background:rgba(255,255,255,0.65);
+    backdrop-filter:blur(12px);
+    border-radius:18px;
+    padding:25px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+    border:1px solid rgba(255,255,255,0.3);
+    overflow:hidden;
+}
+
+/* ===== TABLE ===== */
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+thead{
+    background:linear-gradient(90deg,#2563eb,#3b82f6);
+    color:white;
+}
+
+th{
+    padding:14px;
+    font-size:13px;
+    letter-spacing:.5px;
+    text-transform:uppercase;
+}
+
+td{
+    padding:14px;
+    font-size:14px;
+}
+
+tbody tr{
+    transition:.25s;
+}
+
+tbody tr:nth-child(even){
+    background:rgba(248,250,252,.7);
+}
+
+tbody tr:hover{
+    background:#e0f2fe;
+    transform:scale(1.01);
+}
+
+/* ===== EMPTY TEXT ===== */
+.no-data{
+    text-align:center;
+    padding:25px;
+    color:#6b7280;
+    font-style:italic;
+}
+
+/* ===== BUTTON ===== */
+.button-wrapper{
+    text-align:center;
+    margin-top:35px;
+}
+
+.btn{
+    position:relative;
+    padding:15px 34px;
+    border:none;
+    border-radius:50px;
+    font-size:16px;
+    font-weight:600;
+    color:white;
+    cursor:pointer;
+    background:linear-gradient(135deg,#3b82f6,#1e40af);
+    box-shadow:0 10px 25px rgba(59,130,246,.4);
+    transition:.35s;
+    overflow:hidden;
+}
+
+.btn::before{
+    content:"";
+    position:absolute;
+    width:60px;
+    height:200%;
+    background:rgba(255,255,255,.35);
+    transform:rotate(25deg);
+    top:-50%;
+    left:-80px;
+    transition:.6s;
+}
+
+.btn:hover::before{
+    left:120%;
+}
+
+.btn:hover{
+    transform:translateY(-4px) scale(1.05);
+    box-shadow:0 15px 35px rgba(59,130,246,.6);
+}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:900px){
+
+    table,thead,tbody,tr,td,th{
+        display:block;
+    }
+
+    thead{
+        display:none;
+    }
+
+    tr{
+        margin-bottom:15px;
+        background:white;
+        border-radius:12px;
+        padding:10px;
+        box-shadow:0 5px 15px rgba(0,0,0,.08);
+    }
+
+    td{
+        padding:10px 10px 10px 50%;
+        position:relative;
+        text-align:right;
+    }
+
+    td::before{
+        position:absolute;
+        left:15px;
+        width:45%;
+        font-weight:600;
+        text-align:left;
+        color:#374151;
+    }
+
+    td:nth-child(1)::before{content:"Full Name";}
+    td:nth-child(2)::before{content:"Email";}
+    td:nth-child(3)::before{content:"Contact";}
+    td:nth-child(4)::before{content:"Location";}
+    td:nth-child(5)::before{content:"Experience";}
+    td:nth-child(6)::before{content:"Reason";}
+}
+
+</style>
+</head>
+
+<body>
+{% include 'header.html' %}
+<br>
+<div class="container">
+
+    <div class="header">
+        <h1 class="title">  Franchise Applications</h1>
+    </div>
+
+    <div class="card">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Contact</th>
+                    <th>Location</th>
+                    <th>Experience</th>
+                    <th>Reason</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for f in franch %}
+                <tr>
+                    <td>{{ f.full_name }}</td>
+                    <td>{{ f.email }}</td>
+                    <td>{{ f.contact }}</td>
+                    <td>{{ f.location }}</td>
+                    <td>{{ f.experience }}</td>
+                    <td>{{ f.reason }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="no-data">
+                        No franchise applications found.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="button-wrapper">
+        <a href="{% url 'prop:franchise_register' %}">
+            <button class="btn">🚀 Post for Franchise</button>
+        </a>
+    </div>
+
+</div>
+
+</body>
+</html>

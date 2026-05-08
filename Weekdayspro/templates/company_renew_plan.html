@@ -1,0 +1,440 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Update Profile / Renew Plan</title>
+<link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+/* ========================= */
+/* PREMIUM MODERN DESIGN */
+/* ========================= */
+
+.upgrade-page {
+    font-family: 'Poppins', sans-serif;
+    min-height: 100vh;
+    padding: 60px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    background: radial-gradient(circle at top left, #dbeafe, #f8fafc 40%, #ffffff 80%);
+}
+
+.upgrade-box {
+    width: 100%;
+    max-width: 920px;
+    padding: 55px 45px;
+    border-radius: 28px;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 
+        0 10px 40px rgba(0,0,0,0.08),
+        0 2px 10px rgba(0,0,0,0.05);
+    animation: fadeUp 0.7s ease;
+}
+
+.upgrade-heading {
+    font-size: 32px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 45px;
+    background: linear-gradient(90deg, #2563eb, #1e40af);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.upgrade-box label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #1e293b;
+}
+
+.upgrade-box select,
+.upgrade-box input[type="text"],
+.upgrade-box input[type="email"],
+.upgrade-box input[type="password"] {
+    width: 100%;
+    padding: 14px 18px;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    background: #f9fafb;
+    font-size: 15px;
+    margin-bottom: 28px;
+    transition: all 0.3s ease;
+}
+
+.upgrade-box select:focus,
+.upgrade-box input:focus {
+    border-color: #2563eb;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(37,99,235,0.15);
+    outline: none;
+}
+
+.upgrade-section {
+    margin-top: 25px;
+    padding: 15px 0;
+    display: none;
+}
+
+.upgrade-checkgroup {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 35px;
+}
+
+.upgrade-checkgroup label {
+    background: #f1f5f9;
+    padding: 10px 16px;
+    border-radius: 30px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.upgrade-checkgroup label:hover {
+    background: #e0f2fe;
+    border-color: #93c5fd;
+}
+
+.upgrade-plans {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 35px;
+    flex-wrap: wrap;
+}
+
+.upgrade-card {
+    flex: 1 1 240px;
+    padding: 30px;
+    border-radius: 22px;
+    background: linear-gradient(145deg, #ffffff, #f3f4f6);
+    text-align: center;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.35s ease;
+}
+
+.upgrade-card:hover {
+    
+    box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+}
+
+.upgrade-active {
+    border: 2px solid #2563eb;
+    background: linear-gradient(145deg, #eff6ff, #dbeafe);
+    box-shadow: 0 20px 45px rgba(37,99,235,0.25);
+}
+
+.upgrade-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #1e293b;
+}
+
+.upgrade-price {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2563eb;
+}
+
+.upgrade-button {
+    width: 100%;
+    padding: 18px;
+    border-radius: 18px;
+    border: none;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    background: linear-gradient(135deg, #2563eb, #1e3a8a);
+    color: white;
+    transition: 0.3s ease;
+}
+
+.upgrade-button:hover {
+  
+    box-shadow: 0 15px 35px rgba(37,99,235,0.35);
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media(max-width: 768px){
+    .upgrade-box {
+        padding: 35px 25px;
+    }
+
+    .upgrade-plans {
+        flex-direction: column;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+{% include 'NavBar.html' %}
+
+<div class="upgrade-page">
+<div class="upgrade-box">
+
+    <h2 class="upgrade-heading">Update Profile / Renew Plan</h2>
+
+    <form method="POST" action="{% url 'prop:update_plans' %}">
+        {% csrf_token %}
+
+        <label>Select Role</label>
+        <select id="roleSelect" name="role" required>
+            <option value="">Select Role</option>
+            <option value="PROFESSIONAL">Construction Professional</option>
+            <option value="OWNER">Owner</option>
+            <option value="MARKETER">Marketing Agency</option>
+        </select>
+
+
+
+        <!-- Owner Section -->
+<div id="ownerSection" class="upgrade-section">
+
+    <h3>Select Owner Plan</h3>
+
+    <div class="upgrade-plans">
+        <div class="upgrade-card" onclick="selectOwnerPlan('OWNER', this)">
+            <div class="upgrade-title">Owner plan</div>
+            <div class="upgrade-price">₹9,999 / month</div>
+        </div>
+    </div>
+
+    <input type="hidden" name="owner_plan_type" id="ownerPlanInput">
+
+    <label>Duration</label>
+    <select name="owner_duration">
+        <option value="">Select Duration</option>
+        <option value="1">1 Month</option>
+        <option value="3">3 Months</option>
+        <option value="6">6 Months</option>
+        <option value="12">12 Months</option>
+    </select>
+
+</div>
+
+        <!-- Professional Section -->
+        <div id="professionalSection" class="upgrade-section">
+            <label>Select Category</label>
+            <select name="category">
+                <option value="Plumber">Plumber</option> 
+                <option value="Painter">Painter</option> 
+                <option value="Electrician">Electrician</option>
+                 <option value="Constructor">Constructor</option>
+                 <option value="Centring">Centring</option>
+                  <option value="Interior Designer">Interior Designer</option> 
+                 <option value="Architecture">Architecture</option> 
+                 <option value="Civil Engineer">Civil Engineer</option>
+                  <option value="Tiles Works">Tiles Works</option>
+                   <option value="Marble Works">Marble Works</option>
+                   <option value="Granite Works">Granite Works</option> 
+                   <option value="Wood Works">Wood Works</option> 
+                   <option value="Glass Works">Glass Works</option> 
+                   <option value="Steel Railing Works">Steel Railing Works</option>
+                    <option value="Carpenter">Carpenter</option>
+                     <option value="Doozer Works">Doozer Works</option> 
+                    <option value="JCB Works">JCB Works</option>
+                 <option value="Borewells">Borewells</option>
+                  <option value="Material Supplier">Material Supplier</option>
+            </select>
+
+            <br><br><br>
+
+
+
+            <h3>Select Professional Plan</h3>
+            <br>
+
+<div class="upgrade-plans">
+    <div class="upgrade-card" onclick="selectProfessionalPlan('PROFESSIONAL_SINGLE', this)">
+        <div class="upgrade-title">Professional Plan</div>
+        <div class="upgrade-price">₹4,999 / month</div>
+    </div>
+</div>
+
+<input type="hidden" name="professional_plan_type" id="professionalPlanInput">
+
+<label>Duration</label>
+<select name="professional_duration">
+    <option value="">Select Duration</option>
+    <option value="1">1 Month</option>
+    <option value="3">3 Months</option>
+    <option value="6">6 Months</option>
+    <option value="12">12 Months</option>
+</select>
+        </div>
+
+        <!-- Marketer Section -->
+        <div id="marketerSection" class="upgrade-section">
+
+            <label>Select Marketing Categories</label>
+
+            <div class="upgrade-checkgroup">
+                <label><input type="checkbox" name="marketer_category" value="Plot"> Plot</label>
+                <label><input type="checkbox" name="marketer_category" value="House"> House</label>
+                <label><input type="checkbox" name="marketer_category" value="Flat"> Flat</label>
+                <label><input type="checkbox" name="marketer_category" value="Villa"> Villa</label>
+                 <label><input type="checkbox" name="marketer_category" value="Farm"> Farm</label>
+                 <label><input type="checkbox" name="marketer_category" value="Lands"> Lands</label>
+                 <label><input type="checkbox" name="marketer_category" value="Devolopment">Development</label>
+
+
+
+            </div>
+
+            <h3>Select Plan (Optional)</h3>
+            <br>
+
+            <div class="upgrade-plans">
+                <div class="upgrade-card" onclick="selectPlan('MARKETER_EXPORT', this)">
+                    <div class="upgrade-title">Export</div>
+                    <div class="upgrade-price">₹9,999 / month</div>
+                </div>
+
+                <div class="upgrade-card" onclick="selectPlan('MARKETER_EXPORT_PRO', this)">
+                    <div class="upgrade-title">Export PRO</div>
+                    <div class="upgrade-price">₹14,999 / month</div>
+                </div>
+                
+                <div class="upgrade-card" onclick="selectPlan('MARKETER_EXPORT_PREMIUM', this)">
+                    <div class="upgrade-title">Export PRIMIUM</div>
+                    <div class="upgrade-price">₹19,999 / month</div>
+                </div>
+                
+                
+            </div>
+
+            <input type="hidden" name="plan_type" id="planInput">
+
+            <label>Duration (Optional)</label>
+            <select name="duration">
+                <option value="">Select Duration</option>
+                <option value="1">1 Month</option>
+                <option value="3">3 Months</option>
+                <option value="6">6 Months</option>
+                <option value="12">12 Months</option>
+            </select>
+
+        </div>
+
+        <button type="submit" class="upgrade-button">Save Changes</button>
+
+    </form>
+
+</div>
+</div>
+
+{% include 'footer.html' %}
+
+
+    <script>
+const roleSelect = document.getElementById("roleSelect");
+const professionalSection = document.getElementById("professionalSection");
+const marketerSection = document.getElementById("marketerSection");
+const ownerSection = document.getElementById("ownerSection");
+
+function updateSections() {
+
+    // Hide all sections
+    professionalSection.style.display = "none";
+    marketerSection.style.display = "none";
+    ownerSection.style.display = "none";
+
+    // Remove active state from all cards
+    document.querySelectorAll(".upgrade-card").forEach(card => {
+        card.classList.remove("upgrade-active");
+    });
+
+    // Clear hidden inputs
+    const planInput = document.getElementById("planInput");
+    const professionalPlanInput = document.getElementById("professionalPlanInput");
+    const ownerPlanInput = document.getElementById("ownerPlanInput");
+
+    if (planInput) planInput.value = "";
+    if (professionalPlanInput) professionalPlanInput.value = "";
+    if (ownerPlanInput) ownerPlanInput.value = "";
+
+    // Show selected section
+    if (roleSelect.value === "PROFESSIONAL") {
+        professionalSection.style.display = "block";
+    }
+
+    if (roleSelect.value === "MARKETER") {
+        marketerSection.style.display = "block";
+    }
+
+    if (roleSelect.value === "OWNER") {
+        ownerSection.style.display = "block";
+    }
+}
+
+roleSelect.addEventListener("change", updateSections);
+document.addEventListener("DOMContentLoaded", updateSections);
+
+
+/* ------------------------
+   MARKETER PLAN
+------------------------ */
+
+function selectPlan(plan, element) {
+
+    document.getElementById("planInput").value = plan;
+
+    const marketerCards = document.querySelectorAll("#marketerSection .upgrade-card");
+    marketerCards.forEach(card => card.classList.remove("upgrade-active"));
+
+    element.classList.add("upgrade-active");
+}
+
+
+/* ------------------------
+   PROFESSIONAL PLAN
+------------------------ */
+function selectProfessionalPlan(plan, element) {
+
+    document.getElementById("professionalPlanInput").value = plan;
+
+    const proCards = document.querySelectorAll("#professionalSection .upgrade-card");
+    proCards.forEach(card => card.classList.remove("upgrade-active"));
+
+    element.classList.add("upgrade-active");
+}
+
+
+/* ------------------------
+   OWNER PLAN
+------------------------ */
+function selectOwnerPlan(plan, element) {
+
+    document.getElementById("ownerPlanInput").value = plan;
+
+    const ownerCards = document.querySelectorAll("#ownerSection .upgrade-card");
+    ownerCards.forEach(card => card.classList.remove("upgrade-active"));
+
+    element.classList.add("upgrade-active");
+}
+</script>
+</body>
+</html>

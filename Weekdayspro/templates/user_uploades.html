@@ -1,0 +1,930 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+<link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Uploaded Properties</title>
+
+    <style>
+      /* --- ORIGINAL STYLES --- */
+      body {
+        font-family: "Poppins", sans-serif;
+        background: #f2f4f8;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin: 80px auto 40px;
+        max-width: 1200px;
+        gap: 20px;
+      }
+      .card {
+        width: 360px;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+        overflow: hidden;
+        transition: transform 0.2s;
+        position: relative;
+        padding-bottom: 15px;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+      }
+      .card img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+      }
+.details{
+  padding:12px 16px;
+}
+
+.details h3{
+  margin:0 0 6px 0;
+  font-size:17px;
+  font-weight:600;
+  color:#333;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.details p{
+  margin:4px 0;
+  font-size:15px;
+  color:#444;
+  line-height:1.4;
+}
+
+.details .price{
+  font-size:18px;
+  font-weight:700;
+  color:#000;
+  margin-top:6px;
+}
+
+.details .nearby{
+  display:inline-block;
+  margin-top:6px;
+  background:#f3f3f3;
+  padding:6px 12px;
+  border-radius:8px;
+  font-size:14px;
+  font-weight:500;
+}
+
+      .btn-group {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        padding: 5px 5px;
+        gap: 10px;
+        font-size: 14px;
+      }
+
+      .btn {
+        padding: 8px 12px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        color: #000;
+        font-weight: 600;
+        flex: 1;
+        text-align: center;
+        border: 2px solid black;
+        transition: background 0.2s;
+        background: #fff;
+      }
+
+      .btn:hover {
+        background-color: #007bff;
+        color: #fff;
+      }
+
+      .delete-btn {
+      }
+      .sold-btn {
+      }
+      .lead-btn {
+      }
+
+      .sold-badge {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        background: #ff4d4d;
+        color: #fff;
+        padding: 5px 12px;
+        font-weight: bold;
+        border-radius: 6px;
+      }
+
+      /* --------- FIXED BUTTON STYLE --------- */
+      .sold-fixed,
+      .sold-fixed:hover {
+        background: #fff !important;
+        color: #000 !important;
+        border: 2px solid black !important;
+        cursor: not-allowed !important;
+        opacity: 0.6;
+      }
+
+      /* MODAL */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        overflow-y: auto;
+        animation: fadeIn 0.3s ease;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .modal-content {
+        background-color: #fff;
+        margin: 70px auto;
+        padding: 25px;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 450px;
+        position: relative;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        animation: slideDown 0.3s ease;
+      }
+
+      @keyframes slideDown {
+        from {
+          transform: translateY(-50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .close-btn {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        font-size: 22px;
+        font-weight: bold;
+        color: #333;
+        cursor: pointer;
+      }
+      .modal h2 {
+        text-align: center;
+        color: #007bff;
+        margin-top: 0;
+        font-size: 22px;
+      }
+      .lead-list {
+        margin-top: 20px;
+        max-height: 350px;
+        overflow-y: auto;
+      }
+      .lead-item {
+        border: 1px solid #007bff;
+        border-radius: 10px;
+        padding: 12px 15px;
+        margin-bottom: 12px;
+        background-color: #f9faff;
+        transition: background 0.2s;
+      }
+      .lead-item:hover {
+        background-color: #e6f0ff;
+      }
+      .lead-item p {
+        margin: 4px 0;
+        font-size: 15px;
+        color: #333;
+      }
+      .lead-item b {
+        width: 60px;
+        display: inline-block;
+        color: #007bff;
+      }
+
+      /* MOBILE */
+      @media (max-width: 768px) {
+        .card {
+          width: 90%;
+        }
+
+        .btn-group {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          gap: 5px;
+          flex-wrap: nowrap;
+        }
+
+        .btn {
+          flex: 1;
+          font-size: 14px;
+          padding: 7px 10px;
+          white-space: nowrap;
+        }
+      }
+      /* ===== Nearby Places ===== */
+.nearby-wrapper {
+  overflow-x: auto;
+  margin-top: 8px;
+}
+
+.nearby-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+.nearby-wrapper {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.nearby-container {
+  display: flex;
+  gap: 8px;
+  flex-wrap: nowrap;
+  width: max-content;
+}
+
+.nearby-box {
+  padding: 5px 12px;
+  font-size: 12px;
+  background: #f1f3f6;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  white-space: nowrap;
+  color: #333;
+}
+
+.nearby-empty {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 5px 10px;
+  font-size: 12px;
+  background: #eee;
+  border-radius: 8px;
+  color: #666;
+}
+    </style>
+  </head>
+  <body>
+    {% include 'NavBar.html' %}
+
+    <div class="container">
+      {% for user in D %}
+      <div class="card">
+        {% if user.is_notSold %}
+        <div class="sold-badge">SOLD</div>
+        {% endif %} {% if user.image %}
+        <img src="{{ user.image.url }}" alt="uploaded_img" />
+        {% else %}
+        <img src="/static/no-image.png" alt="No Image" />
+        {% endif %}
+
+<div class="details">
+
+<a href="{% url 'prop:property_detail' user.id %}" style="color: inherit; text-decoration: none">
+
+<h3 style="display:flex; justify-content:space-between;">
+  {{ user.projectName }}
+  <span style="color:#2a6ef2;">{{ user.approvalType }}</span>
+</h3>
+
+<p>
+  {{ user.extent }} {{ user.units }} |
+  {{ user.facing }} Facing |
+  {{ user.selectProperty }} |
+  For {{ user.look }}
+</p>
+
+<p>@ {{ user.address }}</p>
+
+<p style="font-weight:bold; font-size:16px;">
+  ₹ {{ user.price }}
+</p>
+
+<!-- Nearby Places -->
+{% if user.nearby_places %}
+<div class="nearby-wrapper">
+  <div class="nearby-container">
+      <strong style="font-size:12px;">Nearby Places:</strong>
+
+    {% for place in user.nearby_places %}
+      <span class="nearby-box">{{ place }}</span>
+    {% endfor %}
+  </div>
+</div>
+{% else %}
+<span class="nearby-box nearby-empty">No Nearby Places</span>
+{% endif %}
+
+</a>
+
+</div>
+       
+        <div class="btn-group">
+          <button
+            class="btn edit-btn"
+            onclick="loadPropertyForEdit({{ user.id }})"
+          >
+            Edit
+          </button>
+
+          <button
+            class="btn delete-btn"
+            onclick="deleteProperty({{ user.id }})"
+          >
+            Delete
+          </button>
+        </div>
+
+        <div class="btn-group">
+          <a
+            class="btn lead-btn"
+            href="/property-leads/{{ user.id }}/"
+            style="background-color: transparent;transparent; color: black"
+            >Lead</a
+          >
+
+          {% if user.is_notSold %}
+          <button
+            id="sold-btn-{{ user.id }}"
+            class="btn sold-btn sold-fixed"
+            disabled
+          >
+            Already Sold
+          </button>
+          {% else %}
+          <button
+            id="sold-btn-{{ user.id }}"
+            class="btn sold-btn"
+            onclick="makeSold({{ user.id }})"
+          >
+            Sold Out
+          </button>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- LEAD MODAL -->
+    <div id="leadModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeLeadModal()">&times;</span>
+        <h2>Lead Details</h2>
+        <div id="leadModalBody" class="lead-list"></div>
+      </div>
+    </div>
+
+    <!-- EDIT PROPERTY MODAL -->
+
+    <style>
+      /* ---------- EDIT MODAL STYLES (NO BOOTSTRAP) ---------- */
+
+      #editModal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.55);
+        z-index: 2000;
+        overflow-y: auto;
+      }
+
+      #editModal .modal-content {
+        background: #fff;
+        width: 90%;
+        max-width: 750px;
+        margin: 60px auto;
+        padding: 25px 30px;
+        border-radius: 16px;
+        position: relative;
+        box-shadow: 0px 10px 35px rgba(0, 0, 0, 0.25);
+        animation: slideDown 0.3s ease;
+      }
+
+      /* Close button */
+      #editModal .close-btn {
+        position: absolute;
+        top: 12px;
+        right: 18px;
+        font-size: 28px;
+        font-weight: bold;
+        color: #333;
+        cursor: pointer;
+      }
+
+      /* Modal title */
+      #editModal h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #007bff;
+        font-size: 22px;
+      }
+
+      /* Form Grid */
+      #editForm {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+      }
+
+      /* Make large fields span across both columns */
+      #editForm .full {
+        grid-column: span 2;
+      }
+
+      /* Labels */
+      #editForm label {
+        font-size: 14px;
+        font-weight: 600;
+        color: #444;
+        margin-bottom: 6px;
+        display: block;
+      }
+
+      /* Inputs */
+      #editForm input[type="text"],
+      #editForm input[type="number"],
+      #editForm input[type="file"],
+      #editForm input[type="email"],
+      #editForm select {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid #d6d6d6;
+        background: #fafafa;
+        font-size: 15px;
+        outline: none;
+        transition: 0.2s;
+      }
+
+      /* Focus state */
+      #editForm input:focus,
+      #editForm select:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 4px rgba(0, 123, 255, 0.4);
+      }
+
+      /* Checkbox */
+      #edit_reraApproved {
+        width: 18px;
+        height: 18px;
+      }
+
+      /* Save Button */
+      #editForm .btn {
+        grid-column: span 2;
+        padding: 12px;
+        border-radius: 10px;
+        background: #007bff;
+        color: white;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        transition: 0.3s;
+      }
+
+      #editForm .btn:hover {
+        background: #0056d2;
+        transform: translateY(-2px);
+      }
+
+      /* Mobile View */
+      @media (max-width: 600px) {
+        #editForm {
+          grid-template-columns: 1fr;
+        }
+        #editForm .btn {
+          grid-column: span 1;
+        }
+      }
+
+      /* Animation */
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+<div id="editModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeEditModal()">&times;</span>
+    <h2>Edit Property</h2>
+
+    <form id="editForm">
+      <input type="hidden" id="edit_id" name="id" />
+
+      <!-- LOOKING -->
+      <div class="full">
+        <label>Looking:</label>
+        <input type="text" id="edit_look" name="look" placeholder="Buy / Sell / Rent" />
+      </div>
+
+      <!-- TYPE -->
+      <div class="full">
+        <label>Type:</label>
+        <input type="text" id="edit_type" name="selectProperty" placeholder="Apartment / Villa / Plot" />
+      </div>
+
+      <!-- PROJECT NAME -->
+      <div class="full">
+        <label>Project Name:</label>
+        <input type="text" id="edit_project" name="projectName" placeholder="Enter project name" />
+      </div>
+
+      <!-- IMAGE -->
+      <div class="full">
+        <label>Image (optional):</label>
+        <input type="file" id="edit_image" name="image" accept="image/*" />
+      </div>
+
+      <!-- EXTENT -->
+      <div>
+        <label>Extent:</label>
+        <input type="text" id="edit_extent" name="extent" placeholder="e.g. 1200" />
+      </div>
+
+      <!-- FACING -->
+      <div>
+        <label>Facing:</label>
+        <input type="text" id="edit_facing" name="facing" placeholder="East / West / North" />
+      </div>
+
+      <!-- ROAD SIZE -->
+      <div>
+        <label>Road Size:</label>
+        <input type="text" id="edit_roadSize" name="roadSize" placeholder="e.g. 30 ft" />
+      </div>
+
+      <!-- UNITS -->
+      <div>
+        <label>Units:</label>
+        <input type="text" id="edit_units" name="units" placeholder="sq.ft / sq.yards" />
+      </div>
+
+      <!-- DIMENSIONS -->
+      <div>
+        <label>Dimensions:</label>
+        <input type="text" id="edit_dimensions" name="dimensions" placeholder="e.g. 30x40" />
+      </div>
+
+      <!-- FLOORS -->
+      <div>
+        <label>Number of Floors:</label>
+        <input type="number" id="edit_numberOfFloors" name="numberOfFloors" placeholder="e.g. 2" />
+      </div>
+
+      <!-- BHK -->
+      <div>
+        <label>Number of BHK:</label>
+        <input type="number" id="edit_numberOfBHK" name="numberOfBHK" placeholder="e.g. 2, 3" />
+      </div>
+
+      <!-- BUILT UP AREA -->
+      <div>
+        <label>Built Up Area:</label>
+        <input type="number" id="edit_builtUpArea" name="builtUpArea" placeholder="Built-up area" />
+      </div>
+
+      <!-- OPEN AREA -->
+      <div>
+        <label>Open Area:</label>
+        <input type="number" id="edit_openArea" name="openArea" placeholder="Open area" />
+      </div>
+
+      <!-- PRICE -->
+      <div class="full">
+        <label>Price:</label>
+        <input type="number" id="edit_price" name="price" placeholder="Enter price (₹)" />
+      </div>
+
+      <!-- LOCATION -->
+      <div class="full">
+        <label>Location:</label>
+        <input type="text" id="edit_location" name="location" placeholder="Enter full address / location" />
+      </div>
+<!-- NEARBY PLACES -->
+<div class="full">
+  <label>Nearby Places:</label>
+
+  <div id="edit-nearby-container">
+    <!-- dynamic inputs will come here -->
+  </div>
+
+  <button type="button" onclick="addEditNearbyField()" class="btn" style="margin-top:8px;">
+    + Add Nearby
+  </button>
+</div>
+
+<input type="hidden" id="edit_nearby_places" name="nearby_places">
+      <!-- RERA -->
+      <div class="full">
+        <label>RERA Approved:</label><br />
+        <input type="checkbox" id="edit_reraApproved" name="reraApproved" />
+      </div>
+
+      <!-- SUBMIT BUTTON -->
+      <button type="button" class="btn" onclick="updateProperty()">
+        Save Changes
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+// ==========================
+// ✅ NEARBY PLACES
+// ==========================
+function addEditNearbyField(value = "") {
+    const container = document.getElementById("edit-nearby-container");
+
+    const div = document.createElement("div");
+    div.style.position = "relative";
+    div.style.marginBottom = "8px";
+
+    div.innerHTML = `
+        <input type="text" class="edit-nearby-input" value="${value}" 
+        placeholder="e.g. School (1 km)" 
+        style="width:100%; padding:8px;">
+        
+        <span onclick="this.parentElement.remove(); syncEditNearby()" 
+        style="position:absolute; right:10px; top:5px; cursor:pointer; font-size:20px;">×</span>
+    `;
+
+    container.appendChild(div);
+}
+
+function syncEditNearby() {
+    const inputs = document.querySelectorAll(".edit-nearby-input");
+    const values = [];
+
+    inputs.forEach(inp => {
+        if (inp.value.trim()) {
+            values.push(inp.value.trim());
+        }
+    });
+
+    document.getElementById("edit_nearby_places").value = JSON.stringify(values);
+}
+
+// Live update
+document.addEventListener("input", function(e) {
+    if (e.target.classList.contains("edit-nearby-input")) {
+        syncEditNearby();
+    }
+});
+
+// ==========================
+// ✅ CSRF
+// ==========================
+function getCookie(name) {
+    let cookieValue = null;
+    document.cookie.split(";").forEach((cookie) => {
+        cookie = cookie.trim();
+        if (cookie.startsWith(name + "=")) {
+            cookieValue = cookie.substring(name.length + 1);
+        }
+    });
+    return cookieValue;
+}
+
+// ==========================
+// ✅ DELETE PROPERTY
+// ==========================
+let propertyToDelete = null;
+
+function deleteProperty(id) {
+    propertyToDelete = id;
+    document.getElementById("deleteModal").style.display = "block";
+}
+
+function closeDeleteModal() {
+    document.getElementById("deleteModal").style.display = "none";
+    propertyToDelete = null;
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    document.getElementById("confirmDeleteBtn").addEventListener("click", function () {
+        if (!propertyToDelete) return;
+
+        fetch(`/delete/${propertyToDelete}/`, {
+            method: "POST",
+            headers: { "X-CSRFToken": getCookie("csrftoken") },
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === "success") {
+                const card = document
+                    .getElementById(`sold-btn-${propertyToDelete}`)
+                    .closest(".card");
+
+                if (card) card.remove();
+            }
+
+            propertyToDelete = null;
+            closeDeleteModal();
+        })
+        .catch(err => console.error(err));
+    });
+
+});
+
+// Close delete modal outside click
+window.addEventListener("click", function(event) {
+    const modal = document.getElementById("deleteModal");
+    if (event.target === modal) modal.style.display = "none";
+});
+
+// ==========================
+// ✅ MARK AS SOLD
+// ==========================
+function makeSold(id) {
+    fetch(`/sold/${id}/`, {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": getCookie("csrftoken"),
+            "Content-Type": "application/json",
+        },
+    })
+    .then(res => res.json())
+    .then(data => {
+        let btn = document.getElementById(`sold-btn-${id}`);
+        let card = btn.closest(".card");
+
+        if (data.status === "success" || data.status === "already_sold") {
+            btn.innerText = "Already Sold";
+            btn.disabled = true;
+            btn.classList.add("sold-fixed");
+
+            if (!card.querySelector(".sold-badge")) {
+                let badge = document.createElement("div");
+                badge.className = "sold-badge";
+                badge.innerText = "SOLD";
+                card.appendChild(badge);
+            }
+        }
+    });
+}
+
+// ==========================
+// ✅ LOAD PROPERTY (EDIT)
+// ==========================
+function loadPropertyForEdit(id) {
+    const getPropertyUrl = "{% url 'prop:get_property' 0 %}".replace("0", id);
+
+    fetch(getPropertyUrl)
+    .then(res => res.json())
+    .then(res => {
+        if (res.status === "success") {
+            const data = res.data;
+
+            // Basic
+            document.getElementById("edit_id").value = id;
+            document.getElementById("edit_look").value = data.look || "";
+            document.getElementById("edit_type").value = data.selectProperty || "";
+            document.getElementById("edit_project").value = data.projectName || "";
+
+            // Extra
+            document.getElementById("edit_extent").value = data.extent || "";
+            document.getElementById("edit_facing").value = data.facing || "";
+            document.getElementById("edit_roadSize").value = data.roadSize || "";
+            document.getElementById("edit_units").value = data.units || "";
+            document.getElementById("edit_dimensions").value = data.dimensions || "";
+            document.getElementById("edit_numberOfFloors").value = data.numberOfFloors || "";
+            document.getElementById("edit_numberOfBHK").value = data.numberOfBHK || "";
+            document.getElementById("edit_builtUpArea").value = data.builtUpArea || "";
+            document.getElementById("edit_openArea").value = data.openArea || "";
+            document.getElementById("edit_price").value = data.price || "";
+            document.getElementById("edit_location").value = data.location || "";
+
+            // Checkbox
+            document.getElementById("edit_reraApproved").checked = data.reraApproved;
+
+            // Nearby places
+            const container = document.getElementById("edit-nearby-container");
+            container.innerHTML = "";
+
+            if (data.nearby_places && data.nearby_places.length > 0) {
+                data.nearby_places.forEach(place => {
+                    addEditNearbyField(place);
+                });
+            } else {
+                addEditNearbyField();
+            }
+
+            syncEditNearby();
+
+            document.getElementById("editModal").style.display = "block";
+        }
+    });
+}
+
+// ==========================
+// ✅ UPDATE PROPERTY
+// ==========================
+function updateProperty() {
+    const id = document.getElementById("edit_id").value;
+    const formData = new FormData();
+
+    formData.append("look", document.getElementById("edit_look").value);
+    formData.append("selectProperty", document.getElementById("edit_type").value);
+    formData.append("projectName", document.getElementById("edit_project").value);
+
+    formData.append("extent", document.getElementById("edit_extent").value);
+    formData.append("facing", document.getElementById("edit_facing").value);
+    formData.append("roadSize", document.getElementById("edit_roadSize").value);
+    formData.append("units", document.getElementById("edit_units").value);
+    formData.append("dimensions", document.getElementById("edit_dimensions").value);
+    formData.append("numberOfFloors", document.getElementById("edit_numberOfFloors").value);
+    formData.append("numberOfBHK", document.getElementById("edit_numberOfBHK").value);
+    formData.append("builtUpArea", document.getElementById("edit_builtUpArea").value);
+    formData.append("openArea", document.getElementById("edit_openArea").value);
+    formData.append("price", document.getElementById("edit_price").value);
+    formData.append("location", document.getElementById("edit_location").value);
+
+    // ✅ IMPORTANT (Nearby Places)
+    formData.append(
+        "nearby_places",
+        document.getElementById("edit_nearby_places").value
+    );
+
+    formData.append(
+        "reraApproved",
+        document.getElementById("edit_reraApproved").checked ? "on" : "off"
+    );
+
+    let img = document.getElementById("edit_image").files[0];
+    if (img) formData.append("image", img);
+
+    fetch(`/edit_property/${id}/`, {
+        method: "POST",
+        headers: { "X-CSRFToken": getCookie("csrftoken") },
+        body: formData,
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === "success") {
+            alert("Property updated successfully!");
+            window.location.reload();
+        } else {
+            alert("Update failed!");
+        }
+    });
+}
+
+// ==========================
+// ✅ MODAL CLOSE
+// ==========================
+function closeEditModal() {
+    document.getElementById("editModal").style.display = "none";
+}
+
+function closeLeadModal() {
+    document.getElementById("leadModal").style.display = "none";
+}
+</script>
+    {% include 'footer.html' %}
+        <!-- DELETE CONFIRMATION -->
+<div id="deleteModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeDeleteModal()">&times;</span>
+    <h2>Confirm Delete</h2>
+    <p style="text-align:center; margin:15px 0;">Are you sure you want to delete this property?</p>
+    <div style="display:flex; justify-content:space-around; margin-top:20px;">
+      <button class="btn" style="background:#dc3545; color:#fff;" id="confirmDeleteBtn">Yes, Delete</button>
+      <button class="btn" style="background:#6c757d; color:#fff;" onclick="closeDeleteModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+  </body>
+</html>

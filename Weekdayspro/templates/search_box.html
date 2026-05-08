@@ -1,0 +1,21 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      
+<link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Search page specific CSS -->
+    <link rel="stylesheet" href="{% static 'css/search_page.css' %}" />
+    <title>Search Properties</title>
+  </head>
+  <body>
+    {% include 'NavBar.html' %}
+    <div class="search-page-container" style="margin-top: 230px">
+      <h3>Search the Property</h3>
+      {% include "search_form.html" %}
+    </div>
+  </body>
+</html>

@@ -1,0 +1,211 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f1f3f6;
+    margin: 0;
+    padding: 0;
+   
+   
+}
+
+/* ---------- MAIN CONTAINER ---------- */
+.container {
+    background-color: #ffffff;
+    margin: 40px 0;
+    padding: 40px 50px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+     margin-top: 100px;
+}
+
+/* HEADINGS */
+h2 {
+    text-align: center;
+    font-weight: 600;
+    color: rgb(4, 4, 69);
+    margin-bottom: 25px;
+}
+
+/* LABELS & INPUTS */
+label {
+    display: block;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 6px;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    outline: none;
+    transition: 0.2s;
+    margin-bottom: 15px;
+}
+
+input:focus, select:focus {
+    border-color: #007bff;
+    background-color: #fff;
+    box-shadow: 0 0 3px rgba(0,123,255,0.3);
+}
+
+/* RADIO & CHECKBOX GROUPS */
+.radio-group, .checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.radio-group input,
+.checkbox-group input {
+    width: auto;
+    transform: scale(1.2);
+    margin-right: 5px;
+}
+
+/* BUTTONS */
+.button-group {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 25px;
+    flex-wrap: wrap;
+}
+
+button {
+    flex: 1;
+    max-width: 220px;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-apply {
+    background-color: #28a745;
+}
+
+.btn-apply:hover {
+    background-color: #218838;
+}
+
+.btn-emi {
+    background-color: #007bff;
+}
+
+.btn-emi:hover {
+    background-color: #0069d9;
+}
+
+/* ===== EMI POPUP STYLES ===== */
+.emi-popup {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.emi-content {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 25px;
+    width: 90%;
+    max-width: 350px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {opacity: 0; transform: translateY(-10px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+
+.emi-content h3 {
+    text-align: center;
+    margin-top: 0;
+}
+
+.emi-content label {
+    font-weight: bold;
+}
+
+.emi-content input {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.emi-content .result {
+    font-size: 18px;
+    font-weight: bold;
+    color: #007bff;
+    text-align: center;
+    margin: 10px 0;
+}
+
+.close-btn, .calc-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 48%;
+    padding: 10px;
+    font-weight: 600;
+}
+
+.close-btn:hover, .calc-btn:hover {
+    background-color: blue;
+}
+
+.call {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+/* ===== RESPONSIVE FIXES ===== */
+@media (max-width: 600px) {
+    .container {
+        padding: 25px 20px;
+    }
+
+    .button-group {
+        flex-direction: column;
+    }
+
+    button {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .radio-group, .checkbox-group {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .emi-content {
+        width: 90%;
+        padding: 20px;
+    }
+
+    .close-btn, .calc-btn {
+        width: 100%;
+    }
+}

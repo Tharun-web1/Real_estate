@@ -1,0 +1,170 @@
+.marketing-experts-scroll-container {
+    position: relative;
+    padding: 0 40px;
+    margin: 40px 0;
+    @media (max-width: 768px) { padding: 0 10px; }
+}
+
+.marketing-experts-scroll {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    padding: 20px 5px;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+}
+
+.expert-card {
+    min-width: 320px;
+    max-width: 340px;
+    background: var(--pro-card);
+    border-radius: 16px;
+    border: 1px solid var(--pro-border);
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    flex-shrink: 0;
+    font-family: 'Inter', sans-serif;
+    @media (max-width: 768px) { min-width: 80%; max-width: 80%; }
+
+    /* 1. Header Row */
+    .expert-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+        
+        .profile-pic {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--pro-success);
+        }
+        
+        .expert-info {
+            flex: 1;
+            .name {
+                font-size: 15px;
+                font-weight: 700;
+                color: var(--pro-text-primary);
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                i { color: var(--pro-success); font-size: 14px; }
+            }
+            .title {
+                font-size: 11px;
+                color: var(--pro-text-secondary);
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+        }
+    }
+
+    /* 2. Area Serves (Pills) */
+    .area-serves {
+        margin-bottom: 15px;
+        .label { font-size: 12px; font-weight: 700; color: var(--pro-text-primary); margin-bottom: 6px; display: block; }
+        .pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            .pill {
+                padding: 3px 10px;
+                background: var(--pro-bg);
+                border-radius: 6px;
+                font-size: 11px;
+                font-weight: 600;
+                color: var(--pro-text-secondary);
+            }
+        }
+    }
+
+    /* 3. Stats Grid */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        background: var(--pro-bg);
+        padding: 12px;
+        border-radius: 12px;
+        margin-bottom: 15px;
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            .icon {
+                width: 30px;
+                height: 30px;
+                background: var(--pro-card);
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--pro-text-primary);
+                font-size: 14px;
+            }
+            .details {
+                .val { font-size: 13px; font-weight: 700; color: var(--pro-text-primary); display: block; }
+                .lbl { font-size: 10px; color: var(--pro-text-secondary); font-weight: 600; }
+            }
+        }
+    }
+
+    /* 4. Description */
+    .expert-desc {
+        font-size: 12px;
+        color: var(--pro-text-secondary);
+        line-height: 1.5;
+        margin-bottom: 20px;
+        height: 36px;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+
+    /* 5. Actions Footer */
+    .expert-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        
+        .call-btn {
+            flex: 1;
+            padding: 10px;
+            background: var(--pro-text-primary);
+            color: white;
+            border-radius: 25px;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: opacity 0.2s;
+            &:hover { opacity: 0.9; }
+        }
+        
+        .icon-action {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--pro-border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--pro-text-primary);
+            font-size: 16px;
+            transition: all 0.2s;
+            &:hover { background: var(--pro-bg); border-color: var(--pro-text-primary); }
+        }
+    }
+}

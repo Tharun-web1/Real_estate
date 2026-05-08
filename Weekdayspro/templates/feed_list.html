@@ -1,0 +1,251 @@
+{% load static %}
+{% load time_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>News Feed - All Updates</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <!-- Core Styles -->
+    <link rel="stylesheet" href="{% static 'css/home.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=2">
+    <style>
+        :root {
+            --card-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --accent: #4f46e5;
+            --accent-hover: #4338ca;
+        }
+
+        body {
+            background-color: #f8fafc;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .news-header {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .news-header h1 {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            padding: 0 20px 80px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 1200px) {
+            .news-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .news-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .news-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .news-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #f1f5f9;
+            cursor: pointer; /* Make it clear it's clickable */
+        }
+
+        .news-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .card-media {
+            height: 200px;
+            background: #e2e8f0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-media img, .card-media video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-heading {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-description {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            max-height: 90px; /* 4 lines * 22.4px */
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 0;
+        }
+
+        .see-more-overlay {
+            display: none;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(to right, rgba(255,255,255,0), #fff 40%, #fff 100%);
+            padding-left: 60px;
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            line-height: 1.6;
+        }
+
+        .news-card.has-more .see-more-overlay {
+            display: block;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 12px;
+            font-size: 16px;
+        }
+
+        .post-actions a {
+            text-decoration: none;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+
+        .post-actions a:hover {
+            opacity: 1;
+        }
+
+        .card-footer {
+            display: none; /* No longer needed */
+        }
+
+        .create-btn-fixed {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--accent);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
+            z-index: 1000;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .create-btn-fixed:hover {
+            background: var(--accent-hover);
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 600px) {
+            .create-btn-fixed {
+                padding: 12px 20px;
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+{% include 'NavBar.html' %}
+
+<main>
+    <div class="news-header">
+        <h1>Real Estate News</h1>
+    </div>
+
+    <div class="news-grid">
+        {% for post in posts %}
+        <div class="news-card {% if post.news_content|length > 160 %}has-more{% endif %}" onclick="window.location='{% url 'prop:feed_detail' post.pk %}'">
+            <div class="card-media">
+                {% if post.media_type == 'image' and post.image %}
+                    <img src="{{ post.image.url }}" alt="{{ post.heading }}">
+                {% elif post.media_type == 'video' and post.video %}
+                    <video src="{{ post.video.url }}" muted loop onmouseover="this.play().catch(()=>{})" onmouseout="this.pause()"></video>
+                {% else %}
+                    <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #94a3b8;">
+                        <i class="bi bi-newspaper" style="font-size: 40px;"></i>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="card-content">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <h3 class="card-heading">{{ post.heading|default:"Untitled News" }}</h3>
+                    {% if post.user == user %}
+                    <div class="post-actions" onclick="event.stopPropagation()">
+                        <a href="{% url 'prop:feed_edit' post.pk %}" title="Edit"><i class="bi bi-pencil-square" style="color: var(--accent);"></i></a>
+                        <a href="{% url 'prop:feed_delete' post.pk %}" title="Delete" onclick="return confirm('Delete this news post?')"><i class="bi bi-trash3" style="color: #ef4444;"></i></a>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-description">
+                    {{ post.news_content }}
+                    <span class="see-more-overlay">... See more</span>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div style="grid-column: 1/-1; text-align: center; padding: 100px 0;">
+            <i class="bi bi-inbox" style="font-size: 60px; color: #cbd5e1;"></i>
+            <p style="margin-top: 20px; color: #64748b; font-size: 18px;">No news updates yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <a href="{% url 'prop:feed_create' %}" class="create-btn-fixed">
+        <i class="bi bi-plus-lg"></i> Create
+    </a>
+</main>
+
+{% include 'footer.html' %}
+
+</body>
+</html>
