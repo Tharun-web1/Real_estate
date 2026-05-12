@@ -1,4 +1,4 @@
-﻿{% load static %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -346,52 +346,81 @@
 </div>
 </div>
 
-{% include 'footer.html' %}
-
-
     <script>
-const roleSelect = document.getElementById("roleSelect");
-const professionalSection = document.getElementById("professionalSection");
-const marketerSection = document.getElementById("marketerSection");
-const ownerSection = document.getElementById("ownerSection");
+document.addEventListener("DOMContentLoaded", function() {
+    console.log("Renewal script initializing...");
+    
+    const roleSelect = document.getElementById("roleSelect");
+    const professionalSection = document.getElementById("professionalSection");
+    const marketerSection = document.getElementById("marketerSection");
+    const ownerSection = document.getElementById("ownerSection");
 
-function updateSections() {
-
-    // Hide all sections
-    professionalSection.style.display = "none";
-    marketerSection.style.display = "none";
-    ownerSection.style.display = "none";
-
-    // Remove active state from all cards
-    document.querySelectorAll(".upgrade-card").forEach(card => {
-        card.classList.remove("upgrade-active");
+    console.log("Elements found:", {
+        roleSelect: !!roleSelect,
+        professionalSection: !!professionalSection,
+        marketerSection: !!marketerSection,
+        ownerSection: !!ownerSection
     });
 
-    // Clear hidden inputs
-    const planInput = document.getElementById("planInput");
-    const professionalPlanInput = document.getElementById("professionalPlanInput");
-    const ownerPlanInput = document.getElementById("ownerPlanInput");
+    function updateSections() {
+        console.log("Updating sections for role:", roleSelect ? roleSelect.value : "none");
+        
+        if (!roleSelect || !professionalSection || !marketerSection || !ownerSection) {
+            console.error("Missing required elements for section update");
+            return;
+        }
 
-    if (planInput) planInput.value = "";
-    if (professionalPlanInput) professionalPlanInput.value = "";
-    if (ownerPlanInput) ownerPlanInput.value = "";
+        // Hide all sections
+        professionalSection.style.display = "none";
+        marketerSection.style.display = "none";
+        ownerSection.style.display = "none";
 
-    // Show selected section
-    if (roleSelect.value === "PROFESSIONAL") {
-        professionalSection.style.display = "block";
+        // Remove active state from all cards
+        document.querySelectorAll(".upgrade-card").forEach(card => {
+            card.classList.remove("upgrade-active");
+        });
+
+        // Show selected section
+        const selectedRole = roleSelect.value;
+        if (selectedRole === "PROFESSIONAL") {
+            console.log("Showing PROFESSIONAL section");
+            professionalSection.style.display = "block";
+        } else if (selectedRole === "MARKETER") {
+            console.log("Showing MARKETER section");
+            marketerSection.style.display = "block";
+        } else if (selectedRole === "OWNER") {
+            console.log("Showing OWNER section");
+            ownerSection.style.display = "block";
+        } else {
+            console.log("No matching role section found for:", selectedRole);
+        }
     }
 
-    if (roleSelect.value === "MARKETER") {
-        marketerSection.style.display = "block";
+    if (roleSelect) {
+        roleSelect.addEventListener("change", updateSections);
+        
+        const userRole = "{{ user.role }}";
+        console.log("Backend-provided user role:", userRole);
+        
+        if (userRole) {
+            let matched = false;
+            for (let i = 0; i < roleSelect.options.length; i++) {
+                if (roleSelect.options[i].value === userRole) {
+                    roleSelect.selectedIndex = i;
+                    console.log("Successfully auto-selected role:", userRole);
+                    matched = true;
+                    break;
+                }
+            }
+            if (!matched) {
+                console.warn("User role '" + userRole + "' not found in dropdown options.");
+            }
+        }
+        updateSections();
+    } else {
+        console.error("roleSelect element not found!");
     }
-
-    if (roleSelect.value === "OWNER") {
-        ownerSection.style.display = "block";
-    }
-}
-
-roleSelect.addEventListener("change", updateSections);
-document.addEventListener("DOMContentLoaded", updateSections);
+});
 
 
 /* ------------------------
@@ -436,5 +465,8 @@ function selectOwnerPlan(plan, element) {
     element.classList.add("upgrade-active");
 }
 </script>
+
+
+{% include 'footer.html' %}
 </body>
 </html>

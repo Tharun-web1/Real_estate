@@ -1,4 +1,4 @@
-﻿{% load static %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -146,6 +146,30 @@ body{
   .header{padding:20px;}
 }
 
+.notif-btn{
+  padding:15px;
+  border-radius:12px;
+  border:none;
+  color:white;
+  font-weight:700;
+  font-size:13px;
+  cursor:pointer;
+  transition:all .3s ease;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+
+.notif-btn:hover{
+  transform:scale(1.03);
+  box-shadow:0 10px 20px rgba(0,0,0,0.3);
+}
+
+.notif-btn i{
+  font-size:16px;
+}
+
 </style>
 </head>
 <body>
@@ -158,6 +182,43 @@ body{
 
 <!-- MAIN CONTENT -->
 <div class="wrapper">
+
+  {% if messages %}
+  <div style="margin-bottom: 30px;">
+    {% for message in messages %}
+    <div style="padding: 15px 20px; border-radius: 12px; margin-bottom: 10px; background: {% if message.tags == 'success' %}#065f46{% else %}#991b1b{% endif %}; color: white; font-size: 14px; border-left: 5px solid {% if message.tags == 'success' %}#10b981{% else %}#ef4444{% endif %};">
+      <i class="fa-solid {% if message.tags == 'success' %}fa-circle-check{% else %}fa-triangle-exclamation{% endif %}" style="margin-right: 10px;"></i>
+      {{ message }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- MANUAL NOTIFICATIONS -->
+  <div class="section-title">Manual Notifications</div>
+  <div class="card" style="grid-column: 1 / -1; margin-bottom: 40px; border: 1px solid rgba(99, 102, 241, 0.3); background: linear-gradient(145deg, #1e293b, #111827);">
+    <div class="card-icon" style="color: #6366f1;"><i class="fa-solid fa-paper-plane"></i></div>
+    <h3 style="color: #6366f1;">Broadcast Messages</h3>
+    <p style="font-size: 12px; color: var(--muted); margin-bottom: 20px;">Send manual notifications to users based on their roles.</p>
+    
+    <form id="notificationForm" method="POST" action="{% url 'prop:send_manual_notification' %}">
+      {% csrf_token %}
+      <input type="hidden" name="target_role" id="targetRoleInput">
+      
+      <div style="display: flex; gap: 15px; margin-bottom: 25px; flex-wrap: wrap;">
+        <input type="text" name="message" id="notifMessage" placeholder="Enter notification message here..." 
+               style="flex: 1; min-width: 300px; padding: 15px 20px; border-radius: 14px; background: #0f172a; border: 1px solid rgba(255,255,255,0.1); color: white; outline: none; font-size: 14px; transition: border-color 0.3s;">
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px;">
+        <button type="button" onclick="sendNotif('OWNER')" class="notif-btn" style="background: #3b82f6;"><i class="fa-solid fa-user-tie"></i> Send to Owners</button>
+        <button type="button" onclick="sendNotif('MARKETER')" class="notif-btn" style="background: #10b981;"><i class="fa-solid fa-bullhorn"></i> Send to Agents</button>
+        <button type="button" onclick="sendNotif('COMPANY')" class="notif-btn" style="background: #f59e0b;"><i class="fa-solid fa-trowel-bricks"></i> Send to Builders</button>
+        <button type="button" onclick="sendNotif('PROFESSIONAL')" class="notif-btn" style="background: #6366f1;"><i class="fa-solid fa-helmet-safety"></i> Send to Professionals</button>
+        <button type="button" onclick="sendNotif('ALL')" class="notif-btn" style="background: #ef4444;"><i class="fa-solid fa-users"></i> Send to All</button>
+      </div>
+    </form>
+  </div>
 
   <!-- CARDS -->
   <div class="grid">
@@ -256,6 +317,27 @@ body{
 </div>
 
 <script>
+
+/* Notification Logic */
+function sendNotif(role){
+  const message = document.getElementById('notifMessage').value;
+  if(!message){
+    alert('Please enter a message first.');
+    return;
+  }
+  
+  let roleName = role;
+  if(role === 'OWNER') roleName = 'Owners';
+  if(role === 'MARKETER') roleName = 'Agents';
+  if(role === 'COMPANY') roleName = 'Builders';
+  if(role === 'PROFESSIONAL') roleName = 'Professionals';
+  if(role === 'ALL') roleName = 'ALL users';
+  
+  if(confirm(`Send this broadcast message to ${roleName}?`)){
+    document.getElementById('targetRoleInput').value = role;
+    document.getElementById('notificationForm').submit();
+  }
+}
 
 /* Counter Animation */
 document.querySelectorAll('.counter').forEach(counter=>{

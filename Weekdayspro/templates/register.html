@@ -643,6 +643,18 @@
       const hashStep = parseInt(window.location.hash.replace("#step", ""));
       const savedStep = parseInt(localStorage.getItem("reg_step"));
       
+      // Auto-prefill referral code from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const refCode = urlParams.get('ref');
+      if (refCode) {
+        const refInput = document.querySelector("input[name='referred_by_code']");
+        if (refInput) {
+          refInput.value = refCode;
+          // Optionally make it readonly if it came from a link
+          // refInput.readOnly = true;
+        }
+      }
+
       let startStep = hashStep || savedStep || 1;
       
       if (isAuthenticated) {

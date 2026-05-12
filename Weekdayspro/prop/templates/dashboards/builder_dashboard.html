@@ -1,0 +1,106 @@
+{% extends 'dashboards/base_dashboard.html' %}
+{% load static %}
+
+{% block title %}Builder Dashboard | GoNestro{% endblock %}
+
+{% block content %}
+<!-- Premium Header -->
+<header class="dash-header dash-header-builder fade-in">
+    <div class="dash-header-content">
+        <div class="dash-header-icon">
+            🏗️
+        </div>
+        <div class="dash-header-text">
+            <h1>Welcome, {{ request.user.company_name|default:request.user.username }}!</h1>
+            <p>Builder Profile • Orchestrate your projects with precision.</p>
+        </div>
+    </div>
+</header>
+
+<!-- Stats Grid -->
+<div class="stats-grid">
+    <div class="glass-card stat-item fade-in" style="animation-delay: 0.1s;">
+        <span class="stat-label">Active Projects</span>
+        <span class="stat-value">{{ projects_count }}</span>
+        <div style="margin-top: 10px; font-size: 13px; color: #10b981; font-weight: 700;">
+            <i class="bi bi-arrow-up-right"></i> 2 new this quarter
+        </div>
+    </div>
+
+    <div class="glass-card stat-item fade-in" style="animation-delay: 0.2s;">
+        <span class="stat-label">Unit Inventory</span>
+        <div style="display: flex; align-items: baseline; gap: 8px;">
+            <span class="stat-value">{{ request.user.ongoing_projects|default:0 }}</span>
+            <span style="color: #64748b; font-size: 13px; font-weight: 700;">Units</span>
+        </div>
+        <p style="margin: 10px 0 0; font-size: 12px; color: #94a3b8; font-weight: 600;">85% Sold out</p>
+    </div>
+
+    <div class="glass-card stat-item fade-in" style="animation-delay: 0.3s;">
+        <span class="stat-label">Investor Leads</span>
+        <span class="stat-value">28</span>
+        <p style="margin: 8px 0 0; font-size: 11px; color: #64748b;">High intent enquiries</p>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<section class="fade-in" style="animation-delay: 0.4s;">
+    <h2 class="section-title"><i class="bi bi-briefcase-fill" style="color: #64748b;"></i> Project Management</h2>
+    <div class="quick-actions-container">
+        <a href="{% url 'prop:add_project' %}" class="action-btn action-btn-primary">
+            <i class="bi bi-building-plus"></i> New Project Launch
+        </a>
+        <a href="{% url 'prop:projects_views_list' %}" class="action-btn action-btn-secondary">
+            <i class="bi bi-toggles2"></i> Inventory Manager
+        </a>
+        <a href="{% url 'prop:company_profile' %}" class="action-btn action-btn-secondary">
+            <i class="bi bi-gear-fill"></i> Enterprise Settings
+        </a>
+    </div>
+
+    {% if not user.is_subscription_active %}
+    <div class="notice-box fade-in">
+        <i class="bi bi-exclamation-triangle-fill" style="font-size: 18px;"></i>
+        <span>
+            <strong>Company Notice:</strong> Your enterprise subscription is currently inactive. Renew now to ensure your projects remain visible to potential investors and buyers. 
+            <a href="{% url 'prop:marketing_renew_plan' %}" style="color: #be123c; font-weight: 800; text-decoration: underline; margin-left: 5px;">Renew Subscription →</a>
+        </span>
+    </div>
+    {% endif %}
+</section>
+
+<!-- Main Content -->
+<div class="content-grid">
+    <div class="glass-card fade-in" style="animation-delay: 0.5s;">
+        <h3 class="section-title" style="font-size: 18px;">
+            <i class="bi bi-shield-lock-fill" style="color: #64748b;"></i> Compliance Center
+        </h3>
+        <ul class="dash-list">
+            <li class="dash-list-item">
+                <a href="#"><i class="bi bi-file-earmark-check"></i> RERA Submission Checklist 2024</a>
+            </li>
+            <li class="dash-list-item">
+                <a href="#"><i class="bi bi-bank"></i> Project Financing Guide</a>
+            </li>
+            <li class="dash-list-item">
+                <a href="#"><i class="bi bi-people"></i> Managing Sub-contractors</a>
+            </li>
+            <li class="dash-list-item">
+                <a href="#"><i class="bi bi-broadcast"></i> Project Marketing Strategies</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="glass-card fade-in" style="animation-delay: 0.6s;">
+        <h3 class="section-title" style="font-size: 18px;">
+            <i class="bi bi-building-up" style="color: #4f46e5;"></i> Construction Trends
+        </h3>
+        <div style="background: #f1f5f9; padding: 20px; border-radius: 16px; border: 1px solid #e2e8f0;">
+            <p style="font-size: 14px; color: #475569; line-height: 1.6; margin: 0;">
+                <strong>Sustainable Housing</strong> demand is up by 35% among first-time buyers. Consider integrating eco-friendly amenities into your next project.
+            </p>
+            <a href="#" style="display: inline-block; margin-top: 15px; color: #1e293b; font-weight: 700; text-decoration: none; font-size: 13px;">Read Full Report →</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

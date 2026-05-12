@@ -1,0 +1,140 @@
+{% extends 'dashboards/base_dashboard.html' %}
+{% load static %}
+
+{% block title %}Agent Dashboard | GoNestro{% endblock %}
+
+{% block content %}
+<!-- Premium Header -->
+<header class="dash-header dash-header-agent fade-in">
+    <div class="dash-header-content">
+        <div class="dash-header-icon">
+            👋
+        </div>
+        <div class="dash-header-text">
+            <h1>Welcome, {{ request.user.username }}!</h1>
+            <p>Agent Intelligence Profile • Ready to grow your network.</p>
+        </div>
+    </div>
+</header>
+
+<!-- Stats Grid -->
+<div class="stats-grid">
+    <div class="glass-card stat-item fade-in" style="animation-delay: 0.1s;">
+        <span class="stat-label">Network Reach</span>
+        <div style="display: flex; align-items: baseline; gap: 8px;">
+            <span class="stat-value">{{ leads_count }}</span>
+            <span style="color: #10b981; font-size: 13px; font-weight: 700;">+12% ↑</span>
+        </div>
+        <div style="height: 4px; width: 100%; background: #f1f5f9; border-radius: 2px; margin-top: 15px;">
+            <div style="height: 100%; width: 65%; background: #4f46e5; border-radius: 2px;"></div>
+        </div>
+    </div>
+
+    <div class="glass-card stat-item fade-in" style="animation-delay: 0.2s;">
+        <span class="stat-label">Reward Balance</span>
+        <span class="stat-value">450 <span style="font-size: 16px; color: #64748b;">PTS</span></span>
+        <p style="margin: 10px 0 0; font-size: 12px; color: #94a3b8; font-weight: 600;">Next milestone at 500 PTS</p>
+    </div>
+
+    <div class="glass-card stat-item fade-in" style="animation-delay: 0.3s;">
+        <span class="stat-label">Your Referral Link</span>
+        <div style="background: #f8fafc; border: 1px dashed #c7d2fe; padding: 12px; border-radius: 12px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+            <code style="color: #4f46e5; font-weight: 700; font-size: 14px;">{{ request.user.user_referral_code }}</code>
+            <i class="bi bi-files" style="cursor: pointer; color: #94a3b8;"></i>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<section class="fade-in" style="animation-delay: 0.4s;">
+    <h2 class="section-title"><i class="bi bi-lightning-charge-fill" style="color: #f59e0b;"></i> Quick Actions</h2>
+    <div class="quick-actions-container">
+        <a href="{% url 'prop:all_projects' %}?category=premium" class="action-btn action-btn-primary">
+            <i class="bi bi-gem"></i> Premium Properties
+        </a>
+        <a href="{% url 'prop:referral' %}" class="action-btn action-btn-secondary">
+            <i class="bi bi-megaphone"></i> Share Platform
+        </a>
+        <a href="{% url 'prop:leads_page' %}" class="action-btn action-btn-secondary">
+            <i class="bi bi-person-lines-fill"></i> Lead Manager
+        </a>
+    </div>
+    
+    {% if not user.is_subscription_active %}
+    <div class="notice-box fade-in">
+        <i class="bi bi-exclamation-triangle-fill" style="font-size: 18px;"></i>
+        <span>
+            <strong>Action Required:</strong> Your subscription plan is currently inactive. Renew now to maintain your profile visibility and access to premium leads. 
+            <a href="{% url 'prop:marketing_renew_plan' %}" style="color: #be123c; font-weight: 800; text-decoration: underline; margin-left: 5px;">Renew Subscription →</a>
+        </span>
+    </div>
+    {% endif %}
+</section>
+
+<!-- Main Content -->
+<div class="content-grid">
+    <div class="glass-card fade-in" style="animation-delay: 0.5s;">
+        <h3 class="section-title" style="font-size: 18px;">
+            <i class="bi bi-journal-richtext" style="color: #6366f1;"></i> Marketing Resources
+        </h3>
+        <ul class="dash-list">
+            <li class="dash-list-item">
+                <a href="#"><i class="bi bi-file-earmark-pdf"></i> Luxury Villa Pitch Deck 2024</a>
+            </li>
+            <li class="dash-list-item">
+                <a href="#"><i class="bi bi-graph-up-arrow"></i> Q2 Real Estate Market Trends</a>
+            </li>
+            <li class="dash-list-item">
+                <a href="#"><i class="bi bi-shield-check"></i> Agent Compliance Guidelines</a>
+            </li>
+            <li class="dash-list-item">
+                <a href="{% url 'prop:reelUpload' %}"><i class="bi bi-camera-video"></i> Video Marketing (Post Pro Bytes)</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="glass-card fade-in" style="animation-delay: 0.6s;">
+        <h3 class="section-title" style="font-size: 18px;">
+            <i class="bi bi-bell-fill" style="color: #ef4444;"></i> Platform Updates
+        </h3>
+        <div style="background: #f8fafc; padding: 20px; border-radius: 16px; border: 1px solid #f1f5f9; position: relative;">
+            <span style="position: absolute; top: -10px; right: 20px; background: #ef4444; color: white; padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 800;">NEW</span>
+            <p style="font-size: 14px; color: #475569; line-height: 1.6; margin: 0;">
+                We've just launched <strong>AI-Powered Lead Insights</strong>. You can now see which projects your clients are most interested in.
+            </p>
+            <a href="#" style="display: inline-block; margin-top: 15px; color: #4f46e5; font-weight: 700; text-decoration: none; font-size: 13px;">Explore Feature →</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function shareReferral() {
+        const code = '{{ request.user.user_referral_code }}';
+        const url = window.location.origin + '/register/?ref=' + code;
+        const text = 'Join GoNestro using my referral code: ' + code;
+        
+        if (navigator.share) {
+            navigator.share({
+                title: 'GoNestro Referral',
+                text: text,
+                url: url
+            }).catch(console.error);
+        } else {
+            navigator.clipboard.writeText(url).then(() => {
+                alert('Referral link copied to clipboard!');
+            });
+        }
+    }
+
+    // Add click listener to the files icon
+    document.addEventListener('DOMContentLoaded', function() {
+        const shareIcon = document.querySelector('.bi-files');
+        if (shareIcon) {
+            shareIcon.addEventListener('click', shareReferral);
+            shareIcon.title = "Copy/Share Referral Link";
+        }
+    });
+</script>
+{% endblock %}

@@ -1,4 +1,4 @@
-﻿{% load static %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -48,6 +48,32 @@
             .action-buttons-mobile>* {
                 flex: 1 1 100% !important;
             }
+        }
+
+        /* ── Loading state ── */
+        .submit-btn-loading {
+            opacity: 0.8;
+            pointer-events: none;
+        }
+
+        .spinner-small {
+            display: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid #fff;
+            border-radius: 50%;
+            animation: spin-small 0.8s linear infinite;
+        }
+
+        @keyframes spin-small {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .submit-btn-loading .spinner-small {
+            display: inline-block;
         }
     </style>
 </head>
@@ -184,6 +210,16 @@
                     <i class="bi bi-gift-fill"></i> Refer
                 </button>
             </div>
+
+            {% if is_owner and not data.is_subscription_active %}
+            <div class="fade-in" style="margin-top: 20px; padding: 15px 20px; background: #fff1f2; border: 1px solid #fecdd3; border-radius: 14px; color: #be123c; font-size: 14px; display: flex; align-items: center; gap: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+                <i class="bi bi-exclamation-triangle-fill" style="font-size: 18px;"></i>
+                <span>
+                    <strong>Action Required:</strong> Your subscription plan is currently inactive. Renew now to maintain your profile visibility and access to premium leads. 
+                    <a href="{% url 'prop:marketing_renew_plan' %}" style="color: #be123c; font-weight: 800; text-decoration: underline; margin-left: 5px;">Renew Subscription →</a>
+                </span>
+            </div>
+            {% endif %}
         </div>
 
         <!-- TABS -->
@@ -541,9 +577,11 @@
                         <input type="file" name="reel" accept="video/*" style="display: none;"
                             onchange="document.getElementById('reel-file-name').textContent = this.files[0] ? this.files[0].name : 'Click to select video file'">
                     </label>
-                    <button type="submit"
-                        style="width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 600; font-size: 14px; cursor: pointer; font-family: inherit;">Upload
-                        Reel</button>
+                    <button type="submit" id="reelSubmitBtn"
+                        style="width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 600; font-size: 14px; cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <div class="spinner-small"></div>
+                        <span id="btnText">Upload Reel</span>
+                    </button>
                 </form>
             </div>
             {% endif %}
@@ -593,16 +631,17 @@
 
         function referOthers() {
             const referralCode = '{{ data.user_referral_code }}';
+            const url = window.location.origin + '/register/?ref=' + referralCode;
             const msg = `Connect with top Real Estate Agents on Weekdays! Use my referral code: ${referralCode} to explore premium property listings.`;
             if (navigator.share) {
                 navigator.share({
                     title: 'Refer a Friend',
                     text: msg,
-                    url: window.location.origin
+                    url: url
                 });
             } else {
-                navigator.clipboard.writeText(msg);
-                alert('Invitation message copied to clipboard!');
+                navigator.clipboard.writeText(url);
+                alert('Referral link copied!');
             }
         }
 
@@ -727,6 +766,19 @@
         }
             });
         });
+
+        // Quick Reel Uploading effect
+        const reelForm = document.querySelector('form[action*="marketer_profile"]');
+        if (reelForm) {
+            reelForm.addEventListener('submit', function() {
+                const btn = document.getElementById('reelSubmitBtn');
+                const text = document.getElementById('btnText');
+                if (btn && text) {
+                    btn.classList.add('submit-btn-loading');
+                    text.textContent = 'Uploading...';
+                }
+            });
+        }
     </script>
 
     {% include 'footer.html' %}

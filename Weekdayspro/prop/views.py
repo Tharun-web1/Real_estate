@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from .services import NotificationService
 from django.contrib import messages
 from django.db.models import Count, Q
 from django.db.models.functions import TruncDate
@@ -253,13 +254,24 @@ def login_user(request):
             # 🔥 BLOCK normal login if Google-only user
             if user_obj and not user_obj.has_usable_password():
                 messages.error(request, "Please login using Google.")
-                return redirect("account_login")
-
+                return redirect("account_login")            
+            
             user = authenticate(request, username=username, password=password)
 
             if user is not None:
                 login(request, user)
                 messages.success(request, f"You are now logged in as {username}.")
+                
+                # Redirect based on role
+                if user.role == Role.MARKETER:
+                    return redirect("prop:agent_dashboard")
+                elif user.role == Role.OWNER:
+                    return redirect("prop:owner_dashboard")
+                elif user.role == Role.PROFESSIONAL:
+                    return redirect("prop:professional_dashboard")
+                elif user.role == Role.COMPANY:
+                    return redirect("prop:builder_dashboard")
+                
                 return redirect("prop:home")
             else:
                 messages.error(request, "Invalid username or password.")
@@ -502,6 +514,10 @@ def home(request):
     if not premium_projects.exists():
         premium_projects = AddProject.objects.all().order_by('-id')[:40]
 
+    # Fallback for Recommended Projects section
+    if not normal_projects.exists():
+        normal_projects = AddProject.objects.all().order_by('?')[:40]
+
     all_properties = AddPropertyModel.objects.exclude(user__role='OWNER', is_verified=False).order_by('-id')[:40]
     feed_posts = NewsPost.objects.all().order_by('-created_at')[:40]
     reels = Reels.objects.exclude(reel='').exclude(reel__isnull=True).order_by('-id')[:40]
@@ -641,6 +657,13 @@ def home(request):
     stories_json = json.dumps(stories_list)
     user_stories_json = json.dumps(user_stories) if user_stories else "null"
 
+    # ============================
+    # SAVED PROJECTS IDS
+    # ============================
+    saved_project_ids = []
+    if request.user.is_authenticated:
+        saved_project_ids = list(SavedProject.objects.filter(user=request.user).values_list('project_id', flat=True))
+
     return render(request, "home.html", {
         "desktop_slides": desktop_slides,
         "mobile_slides": mobile_slides, 
@@ -650,6 +673,7 @@ def home(request):
         "user_stories_json": user_stories_json,
         "current_user_id": request.user.id if request.user.is_authenticated else None,
         "homepage_loops": homepage_loops,
+        "saved_project_ids": saved_project_ids,
     })
 
 
@@ -726,6 +750,11 @@ def user_detail(request, user_id):
     if request.user != user:
         user.click = (user.click or 0) + 1
         user.save()
+        
+        # Trigger notification for Agents/Builders/Pros
+        if user.role in ['MARKETER', 'COMPANY', 'PROFESSIONAL']:
+            tpl = NotificationService.get_template_content('LEAD_VIEW_PROFILE', {'user': user})
+            NotificationService.send_to_all(user, tpl['subject'], tpl['body'])
 
     reels = Reels.objects.filter(user=user).exclude(reel='').exclude(reel__isnull=True)
     qs = AddPropertyModel.objects.filter(user=user)
@@ -1435,6 +1464,39 @@ def marketer_profile_view(request, user_id=None):
     expiry_date = profile_user.marketer_subscription_end_date
     reels = Reels.objects.filter(user=profile_user).order_by('-id')
     feed_posts = NewsPost.objects.filter(user=profile_user).order_by('-created_at')
+
+    # Handle inline posts (owner only)
+    if request.method == 'POST' and is_owner:
+        post_type = request.POST.get('post_type', '')
+
+        if post_type == 'feed':
+            heading = request.POST.get('heading', '').strip()
+            news_content = request.POST.get('news_content', '').strip()
+            media_file = request.FILES.get('media_file')
+            if heading or news_content:
+                post = NewsPost(user=request.user, heading=heading, news_content=news_content)
+                if media_file:
+                    if media_file.content_type.startswith('image'):
+                        post.media_type = 'image'
+                        post.image = media_file
+                    elif media_file.content_type.startswith('video'):
+                        post.media_type = 'video'
+                        post.video = media_file
+                else:
+                    post.media_type = 'text'
+                post.save()
+                messages.success(request, 'Feed posted successfully!')
+            return redirect(request.path + '?tab=feed')
+
+        elif post_type == 'reel':
+            reel_file = request.FILES.get('reel')
+            description = request.POST.get('description', '').strip()
+            if reel_file:
+                reel = Reels(user=request.user, reel=reel_file, description=description or 'Reel')
+                reel.save()
+                messages.success(request, 'Reel uploaded successfully!')
+            return redirect(request.path + '?tab=bytes')
+
     active_tab = request.GET.get('tab', 'dashboard')
 
     context = {
@@ -1686,11 +1748,16 @@ def property_detail(request, id):
             raise Http404("Property is pending verification.")
 
     if request.user.is_authenticated:
-        PropertyInteraction.objects.get_or_create(
+        created = PropertyInteraction.objects.get_or_create(
             user=request.user,
             property=data,
             interaction_type='view'
         )
+        
+        # Trigger notification for Agents/Builders/Pros
+        if data.user != request.user and data.user.role in ['MARKETER', 'COMPANY', 'PROFESSIONAL']:
+            tpl = NotificationService.get_template_content('LEAD_VIEW_PROP')
+            NotificationService.send_to_all(data.user, tpl['subject'], tpl['body'])
 
     return render(request, "property_detail.html", {"item": data})
 
@@ -1715,6 +1782,10 @@ def edit_profile(request):
         form = UserProfileForm(request.POST, request.FILES, instance=user)
         if form.is_valid():
             form.save()  # <-- updates the database
+            
+            # Trigger notification for visitors
+            NotificationService.notify_visitors(user, 'EDIT_ALERT')
+            
             return redirect('prop:profile')  # redirect back to profile page
     form = UserProfileForm(instance=user)
     return render(request, 'edit_profile.html', {'form': form})
@@ -1972,6 +2043,38 @@ def company_profile_view(request, user_id=None):
         messages.success(request, "Profile Updated Successfully!")
         return redirect("prop:company_profile")
 
+    # Handle inline posts (owner only)
+    if request.method == "POST" and is_owner:
+        post_type = request.POST.get('post_type', '')
+
+        if post_type == 'feed':
+            heading = request.POST.get('heading', '').strip()
+            news_content = request.POST.get('news_content', '').strip()
+            media_file = request.FILES.get('media_file')
+            if heading or news_content:
+                post = NewsPost(user=request.user, heading=heading, news_content=news_content)
+                if media_file:
+                    if media_file.content_type.startswith('image'):
+                        post.media_type = 'image'
+                        post.image = media_file
+                    elif media_file.content_type.startswith('video'):
+                        post.media_type = 'video'
+                        post.video = media_file
+                else:
+                    post.media_type = 'text'
+                post.save()
+                messages.success(request, 'Feed posted successfully!')
+            return redirect(request.path + '?tab=feed')
+
+        elif post_type == 'reel':
+            reel_file = request.FILES.get('reel')
+            description = request.POST.get('description', '').strip()
+            if reel_file:
+                reel = Reels(user=request.user, reel=reel_file, description=description or 'Reel')
+                reel.save()
+                messages.success(request, 'Reel uploaded successfully!')
+            return redirect(request.path + '?tab=bytes')
+
     # Increase profile views only for visitors
     if request.user != profile_user:
         profile_user.click = (profile_user.click or 0) + 1
@@ -2107,6 +2210,9 @@ def edit_project(request, id):
             project.document = request.FILES.get("document")
 
         project.save()
+        
+        # Trigger notification for visitors
+        NotificationService.notify_visitors(project, 'EDIT_ALERT')
 
         return redirect("prop:company_profile")  # redirect back to list
 
@@ -2373,6 +2479,10 @@ def verify_property(request):
         # Mark property verified
         prop.is_verified = True
         prop.save()
+        
+        # Trigger "Tech completed, check details"
+        tpl = NotificationService.get_template_content('VERIFY_TECH_DONE')
+        NotificationService.send_to_all(prop.user, tpl['subject'], tpl['body'])
 
         return redirect("prop:franchise_profile")
 
@@ -2778,6 +2888,9 @@ def edit_property(request, id):
             prop.image = request.FILES["image"]
 
         prop.save()
+        
+        # Trigger notification for visitors
+        NotificationService.notify_visitors(prop, 'EDIT_ALERT')
 
         return JsonResponse({"status": "success"})
 
@@ -3594,6 +3707,43 @@ def property_stats(request):
 
     return django_render(request, "property_stats.html", context)
 
+@staff_member_required
+def send_manual_notification(request):
+    if request.method == "POST":
+        message_text = request.POST.get("message")
+        target_role = request.POST.get("target_role")
+        
+        if not message_text:
+            messages.error(request, "Please enter a notification message.")
+            return redirect("prop:property_stats")
+            
+        # Base queryset excluding superusers
+        users_qs = User.objects.filter(is_superuser=False)
+        
+        # Filter by role if specified and not "ALL"
+        if target_role and target_role != "ALL":
+            users_qs = users_qs.filter(role=target_role)
+            
+        notifications = []
+        for user in users_qs:
+            notifications.append(
+                Notification(
+                    user=user,
+                    notification_type='system',
+                    title="Admin Message",
+                    message=message_text,
+                    link="#"
+                )
+            )
+        
+        if notifications:
+            Notification.objects.bulk_create(notifications)
+            messages.success(request, f"Notification broadcasted to {len(notifications)} users.")
+        else:
+            messages.warning(request, "No users found in the selected category.")
+            
+    return redirect("prop:property_stats")
+
     # admin views
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.admin.views.decorators import staff_member_required
@@ -4302,6 +4452,11 @@ def check_property_details(request, property_id):
             prop.is_verifiedproperty = True
             prop.is_verified = True
             prop.save()
+            
+            # Trigger "Legal verification started/done"
+            tpl = NotificationService.get_template_content('VERIFY_LEGAL_START')
+            NotificationService.send_to_all(prop.user, tpl['subject'], tpl['body'])
+            
             messages.success(request, f"Property '{prop.projectName}' has been successfully verified!")
             return redirect('prop:profile')
             
@@ -4358,3 +4513,43 @@ def mark_story_seen(request, post_id):
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
     return JsonResponse({"error": "Invalid method"}, status=405)
+
+@login_required
+def agent_dashboard(request):
+    # Stats for Agents (Marketers)
+    leads_count = ProfileLeadsModel.objects.filter(leadTo=request.user).count()
+    context = {
+        'leads_count': leads_count,
+        'title': 'Agent Dashboard'
+    }
+    return render(request, 'dashboards/agent_dashboard.html', context)
+
+@login_required
+def owner_dashboard(request):
+    # Stats for Owners
+    properties_count = AddPropertyModel.objects.filter(user=request.user).count()
+    total_views = sum(p.click for p in AddPropertyModel.objects.filter(user=request.user))
+    context = {
+        'properties_count': properties_count,
+        'total_views': total_views,
+        'title': 'Owner Dashboard'
+    }
+    return render(request, 'dashboards/owner_dashboard.html', context)
+
+@login_required
+def professional_dashboard(request):
+    # Stats for Professionals
+    context = {
+        'title': 'Professional Dashboard'
+    }
+    return render(request, 'dashboards/professional_dashboard.html', context)
+
+@login_required
+def builder_dashboard(request):
+    # Stats for Builders (Companies)
+    projects_count = AddProject.objects.filter(user=request.user).count()
+    context = {
+        'projects_count': projects_count,
+        'title': 'Builder Dashboard'
+    }
+    return render(request, 'dashboards/builder_dashboard.html', context)

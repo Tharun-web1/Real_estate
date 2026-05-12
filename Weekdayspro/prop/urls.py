@@ -16,7 +16,7 @@ app_name = 'prop'
 
 urlpatterns = [
     path('.well-known/assetlinks.json', assetlinks),
-    path("login/register", views.register_user, name="register"),
+    path("register/", views.register_user, name="register"),
     path("register/step1/", views.register_step1_ajax, name="register_step1_ajax"),
     path("register/step2/", views.register_step2_ajax, name="register_step2_ajax"),
     path("register/subscribe/", views.register_subscribe, name="register_subscribe"),
@@ -175,6 +175,7 @@ path('properties-verification/', views.property_verification_list, name='propert
 path("futureRequirement/",views.FutureRequire,name="futureRequirement"),
 path("franchise-list/", views.franchies_list, name="franchise_list"),
 path("property/stats/", views.property_stats, name="property_stats"),
+path("send-manual-notification/", views.send_manual_notification, name="send_manual_notification"),
 path('marketing/renew/', views.marketing_renew_plans, name='marketing_renew_plan'),  
 path("property/check-details/<int:property_id>/", views.check_property_details, name="check_property_details"),
 
@@ -220,6 +221,12 @@ path('poll/create/', views.poll_create, name='poll_create'),
 path('poll/vote/<int:pk>/', views.poll_vote, name='poll_vote'),
 path('poll/delete/<int:pk>/', views.poll_delete, name='poll_delete'),
 path('notifications/', views.notifications_list, name='notifications_list'),
-path('mark-notifications-read/', views.mark_all_notifications_read, name='mark_notifications_read'),
-path('settings/', views.settings_view, name='settings'),
+    path('mark-notifications-read/', views.mark_all_notifications_read, name='mark_notifications_read'),
+    path('settings/', views.settings_view, name='settings'),
+
+    # Dashboards
+    path('dashboard/agent/', views.agent_dashboard, name='agent_dashboard'),
+    path('dashboard/owner/', views.owner_dashboard, name='owner_dashboard'),
+    path('dashboard/professional/', views.professional_dashboard, name='professional_dashboard'),
+    path('dashboard/builder/', views.builder_dashboard, name='builder_dashboard'),
 ]

@@ -65,15 +65,14 @@
                         <span class="pill">{{ p.get_position_display }}</span>
                     </div>
 
-                    <div class="nearby-section">
-                        <span class="nearby-title">Nearby Places:</span>
-                        <div class="nearby-pills">
-                            {% for place in p.nearby_locations %}
-                                <span class="nearby-pill">{{ place }}</span>
-                            {% empty %}
-                                <span class="nearby-pill">No Nearby Places</span>
-                            {% endfor %}
-                        </div>
+                    <div class="feature-pills">
+                        {% if p.nearby_locations %}
+                            <span class="f-pill"><i class="bi bi-pin-map"></i> Nearby</span>
+                        {% endif %}
+                        <span class="f-pill"><i class="bi bi-images"></i> Photos</span>
+                        {% if p.video %}
+                            <span class="f-pill"><i class="bi bi-play-circle"></i> Video</span>
+                        {% endif %}
                     </div>
 
                     <a href="{% url 'prop:project_detail' p.id %}" class="view-btn">View Details</a>
@@ -81,12 +80,12 @@
 
                 <!-- 4. Footer Actions -->
                 <div class="card-footer">
-                    <a href="tel:{{ p.user.phone_number }}" class="action"><i class="bi bi-telephone-fill"></i> Call</a>
+                    <a href="tel:{{ p.user.phone_number }}" class="action"><i class="bi bi-telephone"></i> Call</a>
                     <div class="action" onclick="shareProject('{{ p.project_name|escapejs }}', '{{ p.project_address|escapejs }}', '{{ p.pricing }}', '{% url 'prop:project_detail' p.id %}')">
-                        <i class="bi bi-share-fill"></i> Share
+                        <i class="bi bi-share"></i> Share
                     </div>
-                    <div class="action" {% if user.is_authenticated %}onclick="toggleProjectSave(event, {{ p.id }}, this)"{% else %}onclick="redirectToLogin()"{% endif %}>
-                        <i class="bi bi-bookmark-fill"></i> Save
+                    <div class="action save {% if p.id in saved_project_ids %}active{% endif %}" {% if user.is_authenticated %}onclick="toggleProjectSave(event, {{ p.id }}, this)"{% else %}onclick="redirectToLogin()"{% endif %}>
+                        <i class="bi {% if p.id in saved_project_ids %}bi-bookmark-fill{% else %}bi-bookmark{% endif %}"></i> Save
                     </div>
                 </div>
             </div>

@@ -1,14 +1,17 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-	
-<link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
     <link rel="stylesheet" href="{% static 'css/home.css' %}" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/main.css' %}?v=2">
     <link rel="stylesheet" href="{% static 'css/stories.css' %}">
     <link rel="stylesheet" href="{% static 'css/construction_professionals.css' %}">
@@ -16,151 +19,316 @@
 </head>
 {% include 'NavBar.html' %}
 
-    <!-- Main Content -->
-    <main class="main-content">
-        
-        <!-- Stories -->
-        <h2 class="section-title">Updates</h2>
-        <div class="stories-container">
-            <div class="stories" id="stories-track">
-                <!-- Your Story (Add/View) -->
-                <div class="stories__item">
-                    <div class="stories__img-wrap {% if user_stories %}active-story{% else %}your-story{% endif %}" 
-                         {% if user_stories %}onclick="openYourStory()"{% endif %}>
-                        
-                        {% if user.is_authenticated %}
-                            {% if user.role == "COMPANY" and user.company_logo_path %}
-                                <img src="{{ user.company_logo_path.url }}" alt="Your Story" onerror="this.src='{% static 'default.jpg' %}'">
-                            {% elif user.profile_image_path %}
-                                <img src="{{ user.profile_image_path.url }}" alt="Your Story" onerror="this.src='{% static 'default.jpg' %}'">
-                            {% else %}
-                                <img src="{% static 'default.jpg' %}" alt="Your Story">
-                            {% endif %}
-                        {% else %}
-                            <img src="{% static 'default.jpg' %}" alt="Your Story">
-                        {% endif %}
-                        
-                        <a href="{% url 'prop:news_create' %}" class="add-story-plus" title="Add New Story">+</a>
-                    </div>
-                    <div class="stories__name">Your story</div>
-                </div>
+<!-- Main Content -->
+<main class="main-content">
 
-                {% for story_group in stories_list %}
-                <div class="stories__item" onclick="openStoryViewer({{ forloop.counter0 }})">
-                    <div class="stories__img-wrap {% if story_group.all_seen %}seen-story{% else %}active-story{% endif %}">
-                        {% if story_group.user.company_logo_path %}
-                            <img src="{{ story_group.user.company_logo_path }}" alt="{{ story_group.user.company_name|default:story_group.user.username }}" onerror="this.src='{% static 'default.jpg' %}'">
-                        {% elif story_group.user.profile_image_path %}
-                            <img src="{{ story_group.user.profile_image_path }}" alt="{{ story_group.user.username }}" onerror="this.src='{% static 'default.jpg' %}'">
-                        {% else %}
-                            <img src="{% static 'default.jpg' %}" alt="Profile">
-                        {% endif %}
-                    </div>
-                    <div class="stories__name">{{ story_group.user.company_name|default:story_group.user.username|truncatechars:10 }}</div>
-                </div>
-                {% endfor %}
+    <!-- Mobile-Only Hero Section -->
+    <div class="mobile-only home-mobile-hero"
+        style="flex-direction: column; padding: 20px 15px; gap: 20px; border-bottom: 1px solid #f1f5f9;">
+
+        <!-- Logo & Tagline -->
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <div style="background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0;">
+                <img src="{% static 'images/logo12.jpeg' %}" alt="Logo" style="height: 35px; border-radius: 4px;">
+            </div>
+            <div style="font-size: 15px; font-weight: 700; color: #1e293b; line-height: 1.3;">
+                Real Estate complete Ecosystem.<br>
+                <span style="color: #64748b; font-weight: 500; font-size: 13px;">Find. Connect. move.</span>
             </div>
         </div>
 
-        <!-- Story Viewer Modal -->
-        <div id="story-viewer" class="story-viewer">
-            <div class="story-viewer__content">
-                <div class="story-viewer__header">
-                    <div class="story-viewer__progress-container" id="story-progress-container">
-                        <!-- Progress bars will be injected here -->
+        <!-- AI Search Bar (Functional & Refined) -->
+        <form action="/properties/All/" method="GET"
+            style="display: flex; gap: 8px; margin: 0; width: 100%; align-items: center;">
+            <button type="button"
+                style="background: #1e293b; color: white; border: none; padding: 0 15px; border-radius: 25px; font-size: 12px; font-weight: 700; white-space: nowrap; height: 42px; flex-shrink: 0;">
+                AI mode
+            </button>
+            <div
+                style="flex: 1; display: flex; align-items: center; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 25px; padding: 0 12px; height: 42px; overflow: hidden; min-width: 0;">
+                <div style="position: relative; display: flex; align-items: center; flex-shrink: 0;">
+                    <select name="type_of_project"
+                        style="font-size: 13px; color: #64748b; border: none; background: transparent; outline: none; padding-left: 2px; cursor: pointer; height: 100%; appearance: none; -webkit-appearance: none; padding-right: 15px; font-weight: 500;">
+                        <option value="Flat">Flats</option>
+                        <option value="House">Houses</option>
+                        <option value="Villa">Villas</option>
+                        <option value="Plot">Plots</option>
+                        <option value="Lands">Lands</option>
+                        <option value="Farm">Farm</option>
+                    </select>
+                    <i class="bi bi-chevron-down"
+                        style="position: absolute; right: 0; font-size: 10px; color: #94a3b8; pointer-events: none;"></i>
+                </div>
+                <div style="height: 18px; width: 1px; background: #e2e8f0; margin: 0 10px; flex-shrink: 0;"></div>
+                <input type="text" name="location" placeholder="Enter Location"
+                    style="flex: 1; border: none; background: transparent; outline: none; font-size: 13px; color: #1e293b; min-width: 0; width: 100%; padding: 0;">
+                <button type="submit"
+                    style="border: none; background: transparent; padding: 0 2px 0 8px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center;">
+                    <i class="bi bi-search" style="color: #64748b; font-size: 16px;"></i>
+                </button>
+            </div>
+        </form>
+
+        <!-- Main Tabs -->
+        <div class="mobile-scroll-container"
+            style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; -ms-overflow-style: none;">
+            <style>
+                .mobile-scroll-container::-webkit-scrollbar {
+                    display: none;
+                }
+
+                .m-hero-tab {
+                    padding: 10px 18px;
+                    border-radius: 25px;
+                    font-size: 13px;
+                    font-weight: 700;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    white-space: nowrap;
+                    border: 1px solid #e2e8f0;
+                    background: #f8fafc;
+                    color: #64748b;
+                    transition: 0.2s;
+                }
+
+                .m-hero-tab.active {
+                    background: #0d6efd;
+                    color: white;
+                    border-color: #0d6efd;
+                    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.2);
+                }
+            </style>
+            <a href="/properties/All/" class="m-hero-tab active" style="text-decoration: none;"><i
+                    class="bi bi-house"></i> Properties</a>
+            <a href="{% url 'prop:all_projects' %}" class="m-hero-tab" style="text-decoration: none;"><i
+                    class="bi bi-building"></i> Projects</a>
+            <a href="{% url 'prop:all_users' %}?category=marketer" class="m-hero-tab" style="text-decoration: none;"><i
+                    class="bi bi-people"></i> Agents</a>
+            <a href="{% url 'prop:all_users' %}?category=company" class="m-hero-tab" style="text-decoration: none;"><i
+                    class="bi bi-person-workspace"></i> Builders</a>
+        </div>
+
+        <!-- Subcategories Circles -->
+        <div class="mobile-scroll-container"
+            style="display: flex; gap: 20px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; -ms-overflow-style: none;">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; flex-shrink: 0;"
+                onclick="window.location.href='/properties/All/?type_of_project=Plot'">
+                <div
+                    style="width: 58px; height: 58px; border-radius: 50%; background: #eff6ff; display: flex; align-items: center; justify-content: center; border: 1px solid #dbeafe;">
+                    <i class="bi bi-map" style="font-size: 22px; color: #2563eb;"></i>
+                </div>
+                <span style="font-size: 11px; font-weight: 600; color: #1e293b;">Plots</span>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; flex-shrink: 0;"
+                onclick="window.location.href='/properties/All/?type_of_project=Villa'">
+                <div
+                    style="width: 58px; height: 58px; border-radius: 50%; background: #ecfdf5; display: flex; align-items: center; justify-content: center; border: 1px solid #d1fae5;">
+                    <i class="bi bi-house-door" style="font-size: 22px; color: #059669;"></i>
+                </div>
+                <span style="font-size: 11px; font-weight: 600; color: #1e293b;">Villas</span>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; flex-shrink: 0;"
+                onclick="window.location.href='/properties/All/?type_of_project=Lands'">
+                <div
+                    style="width: 58px; height: 58px; border-radius: 50%; background: #fff7ed; display: flex; align-items: center; justify-content: center; border: 1px solid #ffedd5;">
+                    <i class="bi bi-globe" style="font-size: 22px; color: #d97706;"></i>
+                </div>
+                <span style="font-size: 11px; font-weight: 600; color: #1e293b;">Lands</span>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; flex-shrink: 0;"
+                onclick="window.location.href='/properties/All/?type_of_project=House'">
+                <div
+                    style="width: 58px; height: 58px; border-radius: 50%; background: #fef2f2; display: flex; align-items: center; justify-content: center; border: 1px solid #fee2e2;">
+                    <i class="bi bi-house-check" style="font-size: 22px; color: #dc2626;"></i>
+                </div>
+                <span style="font-size: 11px; font-weight: 600; color: #1e293b;">Houses</span>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; flex-shrink: 0;"
+                onclick="window.location.href='/properties/All/?type_of_project=Flat'">
+                <div
+                    style="width: 58px; height: 58px; border-radius: 50%; background: #f5f3ff; display: flex; align-items: center; justify-content: center; border: 1px solid #ede9fe;">
+                    <i class="bi bi-building" style="font-size: 22px; color: #7c3aed;"></i>
+                </div>
+                <span style="font-size: 11px; font-weight: 600; color: #1e293b;">Flats</span>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; flex-shrink: 0;"
+                onclick="window.location.href='/properties/All/?type_of_project=Farm'">
+                <div
+                    style="width: 58px; height: 58px; border-radius: 50%; background: #f0fdf4; display: flex; align-items: center; justify-content: center; border: 1px solid #dcfce7;">
+                    <i class="bi bi-tree" style="font-size: 22px; color: #16a34a;"></i>
+                </div>
+                <span style="font-size: 11px; font-weight: 600; color: #1e293b;">Farm Flats</span>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; flex-shrink: 0;"
+                onclick="window.location.href='/properties/All/?type_of_project=Developmentlands'">
+                <div
+                    style="width: 58px; height: 58px; border-radius: 50%; background: #f8fafc; display: flex; align-items: center; justify-content: center; border: 1px solid #e2e8f0;">
+                    <i class="bi bi-tools" style="font-size: 22px; color: #64748b;"></i>
+                </div>
+                <span style="font-size: 11px; font-weight: 600; color: #1e293b;">Development</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stories -->
+    <h2 class="section-title">Updates</h2>
+    <div class="stories-container">
+        <div class="stories" id="stories-track">
+            <!-- Your Story (Add/View) -->
+            <div class="stories__item">
+                <div class="stories__img-wrap {% if user_stories %}active-story{% else %}your-story{% endif %}" {% if user_stories %}onclick="openYourStory()" {% endif %}>
+
+                    {% if user.is_authenticated %}
+                    {% if user.role == "COMPANY" and user.company_logo_path %}
+                    <img src="{{ user.company_logo_path.url }}" alt="Your Story"
+                        onerror="this.src='{% static 'default.jpg' %}'">
+                    {% elif user.profile_image_path %}
+                    <img src="{{ user.profile_image_path.url }}" alt="Your Story"
+                        onerror="this.src='{% static 'default.jpg' %}'">
+                    {% else %}
+                    <img src="{% static 'default.jpg' %}" alt="Your Story">
+                    {% endif %}
+                    {% else %}
+                    <img src="{% static 'default.jpg' %}" alt="Your Story">
+                    {% endif %}
+
+                    <a href="{% url 'prop:news_create' %}" class="add-story-plus" title="Add New Story">+</a>
+                </div>
+                <div class="stories__name">Your story</div>
+            </div>
+
+            {% for story_group in stories_list %}
+            <div class="stories__item" onclick="openStoryViewer({{ forloop.counter0 }})">
+                <div class="stories__img-wrap {% if story_group.all_seen %}seen-story{% else %}active-story{% endif %}">
+                    {% if story_group.user.company_logo_path %}
+                    <img src="{{ story_group.user.company_logo_path }}"
+                        alt="{{ story_group.user.company_name|default:story_group.user.username }}"
+                        onerror="this.src='{% static 'default.jpg' %}'">
+                    {% elif story_group.user.profile_image_path %}
+                    <img src="{{ story_group.user.profile_image_path }}" alt="{{ story_group.user.username }}"
+                        onerror="this.src='{% static 'default.jpg' %}'">
+                    {% else %}
+                    <img src="{% static 'default.jpg' %}" alt="Profile">
+                    {% endif %}
+                </div>
+                <div class="stories__name">
+                    {{ story_group.user.company_name|default:story_group.user.username|truncatechars:10 }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Story Viewer Modal -->
+    <div id="story-viewer" class="story-viewer">
+        <div class="story-viewer__content">
+            <div class="story-viewer__header">
+                <div class="story-viewer__progress-container" id="story-progress-container">
+                    <!-- Progress bars will be injected here -->
+                </div>
+                <div class="story-viewer__user-info">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <img id="story-user-img" src="" alt="">
+                        <span id="story-user-name"></span>
+                        <span id="story-time" class="story-time"></span>
                     </div>
-                    <div class="story-viewer__user-info">
-                        <div style="display:flex; align-items:center; gap:8px;">
-                            <img id="story-user-img" src="" alt="">
-                            <span id="story-user-name"></span>
-                            <span id="story-time" class="story-time"></span>
-                        </div>
-                        
-                        <div style="margin-left: auto; display: flex; align-items: center; gap: 15px;">
-                            
-                            <div class="story-menu-container" id="story-owner-menu" style="display: none;">
-                                <button class="story-dots-btn" onclick="toggleStoryMenu(event)"><i class="bi bi-three-dots"></i></button>
-                                <div id="story-menu-dropdown" class="story-menu-dropdown">
-                                    <a id="story-edit-link" href="#"><i class="bi bi-pencil"></i> Edit</a>
-                                    <button onclick="deleteCurrentStoryProxy(event)"><i class="bi bi-trash"></i> Delete</button>
-                                </div>
+
+                    <div style="margin-left: auto; display: flex; align-items: center; gap: 15px;">
+
+                        <div class="story-menu-container" id="story-owner-menu" style="display: none;">
+                            <button class="story-dots-btn" onclick="toggleStoryMenu(event)"><i
+                                    class="bi bi-three-dots"></i></button>
+                            <div id="story-menu-dropdown" class="story-menu-dropdown">
+                                <a id="story-edit-link" href="#"><i class="bi bi-pencil"></i> Edit</a>
+                                <button onclick="deleteCurrentStoryProxy(event)"><i class="bi bi-trash"></i>
+                                    Delete</button>
                             </div>
-                            <button class="story-viewer__close" onclick="closeStoryViewer()" style="position: static; font-size: 35px; padding-left: 10px;">&times;</button>
                         </div>
+                        <button class="story-viewer__close" onclick="closeStoryViewer()"
+                            style="position: static; font-size: 35px; padding-left: 10px;">&times;</button>
                     </div>
                 </div>
-                
-                <div class="story-viewer__media-container" onclick="nextStory(event)">
-                    <div class="story-content">
-                        <img id="story-img" src="" class="story-media" style="display:none;">
-                        <video id="story-video" class="story-media" style="display:none;" autoplay muted playsinline></video>
-                    </div>
-                    
-                    <div class="story-viewer__caption">
-                        <p id="story-text"></p>
-                    </div>
+            </div>
+
+            <div class="story-viewer__media-container" onclick="nextStory(event)">
+                <div class="story-content">
+                    <img id="story-img" src="" class="story-media" style="display:none;">
+                    <video id="story-video" class="story-media" style="display:none;" autoplay muted
+                        playsinline></video>
                 </div>
 
-                <div class="story-viewer__nav">
-                    <button class="nav-prev" onclick="prevStory(event)">&#10094;</button>
-                    <button class="nav-next" onclick="nextStory(event)">&#10095;</button>
+                <div class="story-viewer__caption">
+                    <p id="story-text"></p>
                 </div>
+            </div>
+
+            <div class="story-viewer__nav">
+                <button class="nav-prev" onclick="prevStory(event)">&#10094;</button>
+                <button class="nav-next" onclick="nextStory(event)">&#10095;</button>
             </div>
         </div>
+    </div>
 
-        <script src="{% static 'js/home.js' %}"></script>
-        <script>
-            // Initialize stories and global URLs
-            const storiesData = {% if stories_json %}{{ stories_json|safe }}{% else %}[]{% endif %};
-            const userStories = {% if user_stories_json %}{{ user_stories_json|safe }}{% else %}null{% endif %};
-            const currentUserId = {{ current_user_id|default:"null" }};
-            window.loginUrl = "{% url 'prop:login' %}";
-            
-            initStories(storiesData, userStories, currentUserId);
+    <script src="{% static 'js/home.js' %}"></script>
+    <script>
+        // Initialize stories and global URLs
+        const storiesData = {% if stories_json %}{{ stories_json|safe }}{% else %}[]{% endif %};
+        const userStories = {% if user_stories_json %}{{ user_stories_json|safe }}{% else %}null{% endif %};
+        const currentUserId = {{ current_user_id|default:"null" }};
+        window.loginUrl = "{% url 'prop:login' %}";
 
-            function deleteCurrentStoryProxy(event) {
-                deleteCurrentStory(event, '{{ csrf_token }}');
-            }
-        </script>
+        initStories(storiesData, userStories, currentUserId);
+
+        function deleteCurrentStoryProxy(event) {
+            deleteCurrentStory(event, '{{ csrf_token }}');
+        }
+    </script>
 
 
-        <!-- Enter Feed -->
-        <div class="feed-input">
-            <div class="feed-input__header">
-               <a href="{% url 'prop:feed_create' %}" style="text-decoration:none; color:#6b7280;"> <i class="bi bi-plus-square"></i> Enter Feed </a>
-                
-            </div>
+    <!-- Enter Feed -->
+    <div class="feed-input">
+        <div class="feed-input__header">
+            <a href="{% url 'prop:feed_create' %}" style="text-decoration:none; color:#6b7280;"> <i
+                    class="bi bi-plus-square"></i> Enter Feed </a>
+
+        </div>
         <hr style="width:90%;">
-            <div class="feed-input__header">
-             <p> Post your ideas & your thoughts related to Real Estate.</p></div>
-            <div class="feed-input__actions">
-                {% if user.role == "COMPANY" %}
-                <a href="{% url 'prop:add_project' %}" style="text-decoration:none;"><button><i class="bi bi-building-add"></i> Add Project</button></a>
-                {% else %}
-                <a href="{% url 'prop:add_property' %}" style="text-decoration:none;"><button><i class="bi bi-house-add"></i> List property</button></a>
-                {% endif %}
-                
-                {% if request.user.role not in "OWNER,FRANCHISE" %}
-                <a href="{% url 'prop:news_create' %}" style="text-decoration:none;"><button><i class="bi bi-file-earmark-plus"></i> Add Post</button></a>
-                <a href="{% url 'prop:reelUpload' %}" style="text-decoration:none;"><button><i class="bi bi-camera-reels"></i> Add Bytes</button></a>
-                {% endif %}
-            </div>
+        <div class="feed-input__header">
+            <p> Post your ideas & your thoughts related to Real Estate.</p>
         </div>
+        <div class="feed-input__actions">
+            {% if user.role == "COMPANY" %}
+            <a href="{% url 'prop:add_project' %}" style="text-decoration:none;"><button><i
+                        class="bi bi-building-add"></i> Add Project</button></a>
+            {% else %}
+            <a href="{% url 'prop:add_property' %}" style="text-decoration:none;"><button><i
+                        class="bi bi-house-add"></i> List property</button></a>
+            {% endif %}
 
-        <!-- Looped Sections -->
-        {% for loop in homepage_loops %}
-            {% with loop_idx=forloop.counter|stringformat:"s" %}
-                {% for section in loop %}
-                    {% with template_path='home_partials/'|add:section.type|add:'.html' %}
-                        {% include template_path with section_data=section.data section_id=section.type|add:'-'|add:loop_idx %}
-                    {% endwith %}
-                {% endfor %}
-            {% endwith %}
-        {% endfor %}
+            {% if request.user.role not in "OWNER,FRANCHISE" %}
+            <a href="{% url 'prop:news_create' %}" style="text-decoration:none;"><button><i
+                        class="bi bi-file-earmark-plus"></i> Add Post</button></a>
+            <a href="{% url 'prop:reelUpload' %}" style="text-decoration:none;"><button><i
+                        class="bi bi-camera-reels"></i> Add Bytes</button></a>
+            {% endif %}
+        </div>
+    </div>
 
-    </main>
+    <!-- Looped Sections -->
+    {% for loop in homepage_loops %}
+    {% with loop_idx=forloop.counter|stringformat:"s" %}
+    {% for section in loop %}
+    {% with template_path='home_partials/'|add:section.type|add:'.html' %}
+    {% include template_path with section_data=section.data section_id=section.type|add:'-'|add:loop_idx %}
+    {% endwith %}
+    {% endfor %}
+    {% endwith %}
+    {% endfor %}
+
+</main>
 
 <!-- Reel autoplay logic moved to home.js -->
 <!-- Section header and card styles moved to home_new.css -->
- 
+
 {% include 'footer.html' %}

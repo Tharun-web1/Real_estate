@@ -89,9 +89,13 @@
     </a>
   </div>
   <ul class="gn-nav-list" style="list-style: none; padding: 20px 0; overflow-y: auto; flex: 1;">
-    <li class="gn-nav-item"><a href="{% url 'prop:profile' %}" class="gn-nav-link"
-        style="display: flex; align-items: center; gap: 12px; padding: 12px 25px; text-decoration: none;"><i
-          class="bi bi-grid-1x2"></i> My Dashboard</a></li>
+    <li class="gn-nav-item">
+      <a href="{% if user.role == 'MARKETER' %}{% url 'prop:agent_dashboard' %}{% elif user.role == 'OWNER' %}{% url 'prop:owner_dashboard' %}{% elif user.role == 'PROFESSIONAL' %}{% url 'prop:professional_dashboard' %}{% elif user.role == 'COMPANY' %}{% url 'prop:builder_dashboard' %}{% else %}{% url 'prop:profile' %}{% endif %}"
+        class="gn-nav-link"
+        style="display: flex; align-items: center; gap: 12px; padding: 12px 25px; text-decoration: none;">
+        <i class="bi bi-speedometer2"></i> Dashboard
+      </a>
+    </li>
     <li class="gn-nav-item"><a href="{% url 'prop:home' %}" class="gn-nav-link"
         style="display: flex; align-items: center; gap: 12px; padding: 12px 25px; text-decoration: none;"><i
           class="bi bi-house-door"></i> Home</a></li>
@@ -115,7 +119,7 @@
           class="bi bi-tools"></i> Professionals</a></li>
     <li class="gn-nav-item"><a href="{% url 'prop:all_users_to_chat' %}" class="gn-nav-link"
         style="display: flex; align-items: center; gap: 12px; padding: 12px 25px; text-decoration: none;"><i
-          class="bi bi-chat-dots"></i> <span>Messages</span>
+          class="bi bi-play-btn"></i> <span>Messages</span>
         {% if unread_messages_count > 0 %}
         <span class="sidebar-badge">{{ unread_messages_count }}</span>
         {% endif %}
@@ -160,11 +164,17 @@
 <header class="gn-top-header navbar-header"
   style="display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; position: sticky; top: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); z-index: 1000; border-bottom: 1px solid #f1f5f9; margin-left: 280px;">
   <div class="gn-top-left">
-    <div class="gn-mobile-logo mobile-only">
-      <a href="{% url 'prop:home' %}" style="display: flex; align-items: center;">
-        <img src="{% static 'images/logo12.jpeg' %}" alt="GoNestro"
-          style="height: 40px; border-radius: 6px; object-fit: contain;">
-      </a>
+    <!-- Mobile User Info (Username and Location) -->
+    <div class="gn-mobile-user mobile-only" style="display: flex; flex-direction: column; justify-content: center;">
+      <div class="name" style="font-weight: 700; font-size: 14px; color: var(--nav-text-primary); line-height: 1.2;">
+        {% if user.is_authenticated %}{{ user.company_name|default:user.username|truncatechars:20 }}{% else %}Welcome
+        Guest{% endif %}
+      </div>
+      <div class="location"
+        style="font-size: 11px; color: var(--nav-text-secondary); display: flex; align-items: center; gap: 4px;">
+        <i class="bi bi-geo-alt" style="color: #0d6efd; font-size: 10px;"></i>
+        {% if user.is_authenticated %}{{ user.location|default:"Hyderabad" }}{% else %}Location{% endif %}
+      </div>
     </div>
   </div>
 
@@ -181,12 +191,12 @@
 
   <div class="gn-top-right" style="display: flex; align-items: center; gap: 12px;">
     {% if user.is_authenticated %}
-    <div class="notif-btn-wrapper" onclick="toggleNotifDropdown(event)" title="Notifications"
+    <!-- Desktop Notification Icon -->
+    <div class="notif-btn-wrapper desktop-only" onclick="toggleNotifDropdown(event)" title="Notifications"
       style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; position: relative; background: #f8fafc; border-radius: 50%; border: 1px solid var(--nav-border); cursor: pointer;">
       <i class="bi bi-bell" style="font-size: 18px; color: var(--nav-text-primary);"></i>
       {% if unread_notifications_count > 0 %}
-      <span class="badge-notify"
-        style="position: absolute; top: -2px; right: -2px; background: #ef4444; color: white; min-width: 18px; height: 18px; border-radius: 50%; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 2px solid #fff;">{{ unread_notifications_count }}</span>
+      <span class="badge-notify" style="position: absolute; top: -5px; right: -5px; background: #ef4444; color: white; min-width: 18px; height: 18px; border-radius: 50%; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; padding: 2px; box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);">{{ unread_notifications_count }}</span>
       {% endif %}
 
       <!-- Notification Dropdown -->
@@ -219,6 +229,12 @@
         <a href="{% url 'prop:notifications_list' %}" class="notif-view-all">View All Notifications</a>
       </div>
     </div>
+
+    <!-- Mobile Saved Icon -->
+    <a href="{% url 'prop:saved_properties' %}" class="mobile-only" title="Saved Properties"
+      style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: #f8fafc; border-radius: 50%; border: 1px solid var(--nav-border); cursor: pointer; text-decoration: none; color: var(--nav-text-primary);">
+      <i class="bi bi-bookmark-heart" style="font-size: 20px;"></i>
+    </a>
     {% endif %}
 
     <div class="gn-sidebar-trigger mobile-only" onclick="toggleSidebar(event)"
@@ -1001,14 +1017,13 @@
         </div>
         <span>Post</span>
       </div>
-      <a href="{% url 'prop:all_users_to_chat' %}" class="nav-item {% if 'chat' in request.path %}active{% endif %}">
-        <i class="bi bi-chat-dots"></i>
-        <span>Messages</span>
-        {% if unread_messages_count > 0 %}
-        <span class="nav-badge">{{ unread_messages_count }}</span>
-        {% endif %}
+      <a href="{% url 'prop:getReel' %}"
+        class="nav-item {% if 'getReel' in request.path or 'reels' in request.path %}active{% endif %}">
+        <i class="bi bi-play-circle"></i>
+        <span>Pro Bytes</span>
       </a>
-      <a href="{% url 'prop:profile' %}" class="nav-item {% if 'profile' in request.path %}active{% endif %}">
+      <a href="{% url 'prop:profile' %}"
+        class="nav-item {% if 'profile' in request.path and 'dashboard' not in request.path %}active{% endif %}">
         <i class="bi bi-person-circle"></i>
         <span>Profile</span>
       </a>
@@ -1144,10 +1159,10 @@
         if (e) e.stopPropagation();
         const dropdown = document.getElementById('notifDropdown');
         if (!dropdown) return;
-        
+
         const isOpening = !dropdown.classList.contains('active');
         dropdown.classList.toggle('active');
-        
+
         if (isOpening) {
           // Mark as read on backend
           fetch("{% url 'prop:mark_notifications_read' %}", {

@@ -1,0 +1,91 @@
+{% extends 'dashboards/base_dashboard.html' %}
+{% load static %}
+
+{% block title %}Owner Dashboard | GoNestro{% endblock %}
+
+{% block content %}
+<!-- Premium Header -->
+<header class="dash-header dash-header-owner fade-in">
+    <div class="dash-header-content">
+        <div class="dash-header-icon">
+            🏠
+        </div>
+        <div class="dash-header-text">
+            <h1>Welcome, {{ request.user.username }}!</h1>
+            <p>Owner Dashboard • Manage your properties and listings.</p>
+        </div>
+    </div>
+</header>
+
+<!-- Stats Grid -->
+<div class="stats-grid">
+    <div class="glass-card stat-item fade-in" style="animation-delay: 0.1s;">
+        <span class="stat-label">Your Listings</span>
+        <span class="stat-value">{{ properties_count }}</span>
+        <p style="margin: 10px 0 0; font-size: 12px; color: #059669; font-weight: 700;">Active on platform</p>
+    </div>
+
+    <div class="glass-card stat-item fade-in" style="animation-delay: 0.2s;">
+        <span class="stat-label">Total Views</span>
+        <span class="stat-value">{{ request.user.click|default:0 }}</span>
+        <p style="margin: 10px 0 0; font-size: 12px; color: #94a3b8; font-weight: 600;">Across all properties</p>
+    </div>
+
+    <div class="glass-card stat-item fade-in" style="animation-delay: 0.3s;">
+        <span class="stat-label">Messages</span>
+        <span class="stat-value">5</span>
+        <p style="margin: 10px 0 0; font-size: 12px; color: #94a3b8; font-weight: 600;">Unread enquiries</p>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<section class="fade-in" style="animation-delay: 0.4s;">
+    <h2 class="section-title"><i class="bi bi-stars" style="color: #059669;"></i> Property Actions</h2>
+    <div class="quick-actions-container">
+        <a href="{% url 'prop:add_property' %}" class="action-btn action-btn-primary" style="background: #059669;">
+            <i class="bi bi-plus-circle"></i> Add New Listing
+        </a>
+        <a href="{% url 'prop:profile' %}" class="action-btn action-btn-secondary">
+            <i class="bi bi-list-check"></i> Manage My Properties
+        </a>
+        <a href="{% url 'prop:home' %}" class="action-btn action-btn-secondary">
+            <i class="bi bi-search"></i> Search properties
+        </a>
+    </div>
+</section>
+
+<!-- Main Content -->
+<div class="content-grid">
+    <div class="glass-card fade-in" style="animation-delay: 0.5s;">
+        <h3 class="section-title" style="font-size: 18px;">
+            <i class="bi bi-lightbulb-fill" style="color: #f59e0b;"></i> Seller Tips
+        </h3>
+        <ul class="dash-list">
+            <li class="dash-list-item">
+                <a href="#"><i class="bi bi-camera"></i> How to take great property photos</a>
+            </li>
+            <li class="dash-list-item">
+                <a href="#"><i class="bi bi-tag"></i> Pricing your property correctly</a>
+            </li>
+            <li class="dash-list-item">
+                <a href="#"><i class="bi bi-shield-check"></i> Safe dealing with buyers</a>
+            </li>
+            <li class="dash-list-item">
+                <a href="#"><i class="bi bi-file-earmark-text"></i> Required documentation</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="glass-card fade-in" style="animation-delay: 0.6s;">
+        <h3 class="section-title" style="font-size: 18px;">
+            <i class="bi bi-info-circle-fill" style="color: #3b82f6;"></i> Need Help?
+        </h3>
+        <div style="background: #f0f9ff; padding: 20px; border-radius: 16px; border: 1px solid #e0f2fe;">
+            <p style="font-size: 14px; color: #0369a1; line-height: 1.6; margin: 0;">
+                Our support team is available 24/7 to help you with your listings or any issues you encounter.
+            </p>
+            <a href="{% url 'prop:contact' %}" style="display: inline-block; margin-top: 15px; color: #0284c7; font-weight: 700; text-decoration: none; font-size: 13px;">Contact Support →</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

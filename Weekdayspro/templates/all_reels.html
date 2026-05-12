@@ -1,68 +1,94 @@
-﻿{% load static %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>User Reels</title>
+<title>Pro Bytes Gallery | GoNestro</title>
 <link rel="shortcut icon" href="{% static 'images/fav-icon.png' %}" type="image/png">
 
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <!-- Bootstrap Icons -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
 
 <link rel="stylesheet" href="{% static 'css/all_reels_new.css' %}">
+<script src="{% static 'js/all_reels.js' %}?v=1.3"></script>
 </head>
 <body data-delete-url-base="{% url 'prop:deleteReel' 0 %}">
 {% include 'NavBar.html' %}
 
-{% if reel %}
-<div class="reels-container">
-    {% for i in reel %}
-    <div class="reel-card" id="reel-card-{{ i.id }}">
-<video 
-    src="{{ i.reel_url }}" 
-    muted 
-    loop
-    class="reel-video"
-    data-url="{{ i.reel_url }}"
-    data-likes="{{ i.likeCount|default:0 }}"
-    data-comments="{{ i.commentCount|default:0 }}"
-    data-views="{{ i.view_count|default:0 }}">
-</video>
-        <div class="reel-info">
-            <span><i class="bi bi-eye"></i> {{ i.view_count|default:0 }}</span> 
-        </div>
+<div class="reels-page-wrapper">
+    <div class="gallery-header">
+        <h1><i class="bi bi-play-btn-fill"></i> Pro Bytes Gallery</h1>
+        {% if reel %}
+        <span style="font-size: 14px; color: #64748b; font-weight: 600; background: #f1f5f9; padding: 6px 12px; border-radius: 10px;">
+            {{ reel|length }} Videos
+        </span>
+        {% endif %}
+    </div>
 
-        <div class="more-menu">
-            <button class="dots-btn" onclick="toggleDropdown({{ i.id }})">⠇</button>
-            <div class="dropdown-content" id="dropdown-{{ i.id }}">
-                <button onclick="setEditFormAction('{% url 'prop:edit_reel' i.id %}'); openEditPopup({{ i.id }}, '{{ i.reel_url }}', '{{ i.description|escapejs }}', '{{ i.link|escapejs }}')">Edit</button>
-                <button onclick="openDeletePopup({{ i.id }})">Delete</button>
+    {% if reel %}
+    <div class="reels-container">
+        {% for i in reel %}
+        <div class="reel-card" id="reel-card-{{ i.id }}">
+            <video 
+                src="{{ i.reel_url }}" 
+                muted 
+                loop
+                class="reel-video"
+                data-url="{{ i.reel_url }}"
+                data-likes="{{ i.likeCount|default:0 }}"
+                data-comments="{{ i.commentCount|default:0 }}"
+                data-views="{{ i.view_count|default:0 }}">
+            </video>
+            <div class="reel-info">
+                <span><i class="bi bi-eye"></i> {{ i.view_count|default:0 }}</span> 
+            </div>
+
+            <div class="more-menu">
+                <button class="dots-btn" onclick="toggleDropdown(event, {{ i.id }})">
+                    <i class="bi bi-three-dots-vertical"></i>
+                </button>
+                <div class="dropdown-content" id="dropdown-{{ i.id }}">
+                    <button onclick="setEditFormAction('{% url 'prop:edit_reel' i.id %}'); openEditPopup({{ i.id }}, '{{ i.reel_url }}', '{{ i.description|escapejs }}', '{{ i.link|escapejs }}')">
+                        <i class="bi bi-pencil"></i> Edit
+                    </button>
+                    <button onclick="openDeletePopup({{ i.id }})">
+                        <i class="bi bi-trash"></i> Delete
+                    </button>
+                </div>
             </div>
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
+    {% else %}
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 100px; color: #94a3b8;">
+        <i class="bi bi-camera-video" style="font-size: 64px; margin-bottom: 20px; opacity: 0.3;"></i>
+        <p style="font-size: 18px; font-weight: 500;">No Pro Bytes uploaded yet.</p>
+        <a href="{% url 'prop:reelUpload' %}" style="margin-top: 20px; background: #6366f1; color: white; padding: 12px 24px; border-radius: 12px; text-decoration: none; font-weight: 600;">
+            Upload Your First Byte
+        </a>
+    </div>
+    {% endif %}
 </div>
-{% else %}
-<p style="text-align:center;margin-top:100px;">No reels uploaded yet.</p>
-{% endif %}
 
-<!-- ✅ NEW POPUP (REPLACES OLD MODAL) -->
-<div id="reelModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:999999;">
-  <div style="position:relative; width:90%; max-width:420px; background:#000; border-radius:16px; padding:10px;">
+<!-- ✅ PREMIUM POPUP -->
+<div id="reelModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); justify-content:center; align-items:center; z-index:999999;">
+  <div class="modal-content-wrap">
     <!-- CLOSE BUTTON -->
-    <button id="closeBtn" style="position:absolute; top:10px; right:10px; width:38px; height:38px; border-radius:50%; border:none; background:rgba(0,0,0,0.7); color:#fff; font-size:18px; cursor:pointer; z-index:99999999;">
+    <button id="closeBtn" class="close-btn-round">
       <i class="bi bi-x-lg"></i>
     </button>
 
     <!-- VIDEO -->
-    <video id="popupVideo" controls playsinline style="width:100%; border-radius:12px;"></video>
+    <video id="popupVideo" controls playsinline style="width:100%; display: block;"></video>
 
     <!-- STATS -->
-    <div style="display:flex; justify-content:space-around; color:#cbd5e1; margin-top:8px; font-size:13px;">
-      <span id="viewCount"></span>
-      <span id="likeCount"></span>
-      <span id="commentCount"></span>
+    <div class="modal-stats">
+      <span><i class="bi bi-eye"></i> <span id="viewCount">0</span></span>
+      <span><i class="bi bi-heart"></i> <span id="likeCount">0</span></span>
+      <span><i class="bi bi-chat"></i> <span id="commentCount">0</span></span>
     </div>
   </div>
 </div>
@@ -71,13 +97,14 @@
 <div class="modal" id="editModal">
   <form id="editForm" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-    <video id="editVideo" controls style="width:100%; border-radius:8px;"></video>
-    <label>Description:</label>
-    <textarea id="editDesc" name="description" placeholder="Enter description here"></textarea>
-    <label>Link:</label>
-    <input id="editLink" type="text" name="link" placeholder="Enter link here">
-    <div style="display:flex; justify-content:flex-end; gap:10px; width: fit-content;">
-      <button type="submit" class="save-btn">Save</button>
+    <h3>Edit Pro Byte</h3>
+    <video id="editVideo" controls style="width:100%; border-radius:12px; aspect-ratio: 9/16; object-fit: cover;"></video>
+    <label>Description</label>
+    <textarea id="editDesc" name="description" placeholder="Write a catchy description..." rows="3"></textarea>
+    <label>Link (Optional)</label>
+    <input id="editLink" type="text" name="link" placeholder="https://example.com">
+    <div class="form-actions">
+      <button type="submit" class="save-btn">Save Changes</button>
       <button type="button" class="cancel-btn" onclick="closeEditPopup()">Cancel</button>
     </div>
   </form>
@@ -86,11 +113,12 @@
 <!-- Delete Modal -->
 <div class="modal" id="deleteModal">
     <div class="delete-box">
-        <h3>Delete Reel?</h3>
-        <p>Delete this reel permanently?</p>
-        <div class="delete-actions">
-            <button id="confirmDeleteBtn" class="delete-btn">Delete</button>
-            <button onclick="closeDeletePopup()" class="cancel-btn">Cancel</button>
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <h3>Delete Pro Byte?</h3>
+        <p>This action cannot be undone. This video will be permanently removed from your profile.</p>
+        <div class="form-actions">
+            <button id="confirmDeleteBtn" class="save-btn" style="background: #ef4444;">Delete Now</button>
+            <button type="button" class="cancel-btn" onclick="closeDeletePopup()">Keep It</button>
         </div>
     </div>
 </div>
@@ -99,6 +127,5 @@
 <div id="toast" class="toast"></div>
 
 {% include 'footer.html' %}
-<script src="{% static 'js/all_reels.js' %}"></script>
 </body>
 </html>

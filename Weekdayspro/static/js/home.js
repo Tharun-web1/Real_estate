@@ -214,11 +214,17 @@ function toggleProjectSave(event, id, btn) {
         .then(data => {
             let icon = btn.querySelector("i");
             if (data.status === "saved") {
-                icon.classList.remove("bi-bookmark");
-                icon.classList.add("bi-bookmark-fill");
+                btn.classList.add("active");
+                if (icon) {
+                    icon.classList.remove("bi-bookmark");
+                    icon.classList.add("bi-bookmark-fill");
+                }
             } else {
-                icon.classList.remove("bi-bookmark-fill");
-                icon.classList.add("bi-bookmark");
+                btn.classList.remove("active");
+                if (icon) {
+                    icon.classList.remove("bi-bookmark-fill");
+                    icon.classList.add("bi-bookmark");
+                }
             }
         });
 }

@@ -97,7 +97,20 @@ class User(AbstractUser):
     def is_user_online(self):
         if self.last_seen:
             return timezone.now() - self.last_seen <= timedelta(seconds=30)
-        return False     
+        return False
+
+    @property
+    def is_subscription_active(self):
+        today = timezone.now().date()
+        if self.role == 'MARKETER' and self.marketer_subscription_end_date:
+            return self.marketer_subscription_end_date >= today
+        if self.role == 'COMPANY' and self.company_subscription_end_date:
+            return self.company_subscription_end_date >= today
+        if self.role == 'PROFESSIONAL' and self.professionals_subscription_end_date:
+            return self.professionals_subscription_end_date >= today
+        if self.role == 'OWNER' and self.owner_subscription_end_date:
+            return self.owner_subscription_end_date >= today
+        return False
     # ===== Important: Add UserManager =====
     objects = UserManager()
 

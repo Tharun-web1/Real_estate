@@ -350,6 +350,34 @@
 
   .submit-btn:active { transform: translateY(0); }
 
+  /* ── Loading state ── */
+  .submit-btn.loading {
+    opacity: 0.8;
+    pointer-events: none;
+  }
+
+  .spinner {
+    display: none;
+    width: 18px;
+    height: 18px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid #fff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .submit-btn.loading .spinner {
+    display: inline-block;
+  }
+  
+  .submit-btn.loading i:not(.spinner) {
+    display: none;
+  }
+
   /* ── Responsive ── */
   @media (max-width: 640px) {
     .upload-page { padding: 20px 14px 100px; }
@@ -442,8 +470,9 @@
         </div>
 
         <!-- Submit -->
-        <button type="submit" class="submit-btn">
-          <i class="bi bi-send-fill"></i> Post Pro Bytes
+        <button type="submit" class="submit-btn" id="submitBtn">
+          <div class="spinner"></div>
+          <i class="bi bi-send-fill"></i> <span>Post Pro Bytes</span>
         </button>
 
       </div>
@@ -517,6 +546,13 @@
       dropdownList.classList.remove("open");
       selectedItem.classList.remove("open");
     }
+  });
+
+  // Uploading effect
+  document.querySelector("form").addEventListener("submit", function() {
+    const btn = document.getElementById("submitBtn");
+    btn.classList.add("loading");
+    btn.querySelector("span").textContent = "Uploading Pro Bytes...";
   });
 </script>
 

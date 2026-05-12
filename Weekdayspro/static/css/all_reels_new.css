@@ -1,305 +1,409 @@
-/* --- Base --- */
+/* --- Base & Variables --- */
+:root {
+  --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --dark-glass: rgba(15, 23, 42, 0.8);
+}
+
 body {
   margin: 0;
   font-family: "Poppins", sans-serif;
-  background: #f1f5f9;
+  background: #f8fafc;
   color: #0f172a;
+  overflow-x: hidden;
 }
 
-/* --- Reels Grid --- */
+/* --- Container Layout --- */
+.reels-page-wrapper {
+  padding-top: 80px;
+  min-height: 100vh;
+}
+
+@media (min-width: 1101px) {
+  .reels-page-wrapper {
+    margin-left: 280px;
+    padding: 100px 40px 40px 40px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .reels-page-wrapper {
+    padding: 80px 15px 40px 15px;
+  }
+}
+
+.gallery-header {
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.gallery-header h1 {
+  font-size: 24px;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.gallery-header h1 i {
+  color: #6366f1;
+}
+
 .reels-container {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  margin-top: 80px;
-  padding: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
 }
 
-/* --- Reel Card --- */
+/* --- Reel Card (Vertical 9:16) --- */
 .reel-card {
   position: relative;
-  z-index: 1;
-  border-radius: 14px;
-  overflow: visible;
-  background: linear-gradient(135deg, #1e293b, #0f172a);
+  aspect-ratio: 9 / 16;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #000;
   cursor: pointer;
-  height: 170px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
-  transition: all 0.3s ease;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
+
 .reel-card:hover {
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
+
 .reel-card video {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 14px;
-  pointer-events: auto;
-  z-index: 2;
+  display: block;
+  pointer-events: none; /* 🔥 Let clicks pass to the card wrapper */
 }
-.reel-card {
-  /* --- Info Bubble --- */
-}
-.reel-card .reel-info {
+
+/* --- Overlay Elements --- */
+.reel-info {
   position: absolute;
-  bottom: 8px;
-  left: 8px;
+  bottom: 12px;
+  left: 12px;
+  z-index: 10;
+  pointer-events: none; /* 🔥 Let clicks pass to the card wrapper */
 }
-.reel-card .reel-info span {
+
+.reel-info span {
   display: flex;
   align-items: center;
-  gap: 4px;
-  font-size: 11px;
-  background: rgba(37, 99, 235, 0.9);
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
   color: #fff;
-  padding: 4px 8px;
+  padding: 6px 12px;
   border-radius: 20px;
 }
-.reel-card {
-  /* --- 3-dot menu --- */
-}
-.reel-card .more-menu {
+
+.more-menu {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 50;
+  top: 12px;
+  right: 12px;
+  z-index: 20;
+  pointer-events: auto; /* 🔥 Ensure menu is clickable */
 }
-.reel-card .more-menu .dots-btn {
-  background: rgba(0, 0, 0, 0.5);
-  border: none;
+
+.dots-btn {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   color: #fff;
-  font-size: 16px;
-  cursor: pointer;
-  padding: 6px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 50%;
-  transition: 0.2s ease;
+  cursor: pointer;
+  font-size: 18px;
+  transition: 0.3s;
+  pointer-events: auto;
+}
+
+.dots-btn:hover {
+  background: rgba(255, 255, 255, 0.4);
+  transform: rotate(90deg);
 }
 
 /* --- Dropdown --- */
 .dropdown-content {
   position: absolute;
-  top: 36px;
+  top: 40px;
   right: 0;
   display: none;
   flex-direction: column;
-  min-width: 120px;
-  padding: 6px 0;
-  background: rgba(15, 23, 42, 0.95);
-  backdrop-filter: blur(10px);
+  min-width: 140px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(15px);
   border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  z-index: 999;
-  animation: fadeIn 0.2s ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  z-index: 100;
+  animation: slideDown 0.3s ease;
+  pointer-events: auto;
 }
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .dropdown-content button {
   background: none;
   border: none;
-  color: #e2e8f0;
-  padding: 10px 14px;
-  font-size: 13px;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #475569;
   text-align: left;
   cursor: pointer;
-  transition: 0.2s ease;
-}
-.dropdown-content button:hover {
-  background: rgba(59, 130, 246, 0.15);
-}
-.dropdown-content button:last-child {
-  color: #f87171;
-}
-.dropdown-content button:last-child:hover {
-  background: rgba(239, 68, 68, 0.15);
-}
-.dropdown-content button + button {
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-/* --- Modal --- */
-.modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0.95);
-  width: 90vw;
-  max-width: 420px;
-  display: none;
-  flex-direction: column;
-  border-radius: 16px;
-  z-index: 9999;
-  background: linear-gradient(145deg, #1e293b, #020617);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  transition: all 0.25s ease;
-}
-.modal.active {
   display: flex;
-  transform: translate(-50%, -50%) scale(1);
-}
-.modal::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  z-index: -1;
-}
-.modal video {
-  width: 100%;
-  height: 280px;
-  object-fit: cover;
-  position: relative;
-  z-index: 1;
+  align-items: center;
+  gap: 10px;
+  transition: 0.2s;
+  pointer-events: auto;
 }
 
-/* --- Close Button FIXED --- */
-.close-btn {
+.dropdown-content button:hover {
+  background: rgba(99, 102, 241, 0.1);
+  color: #6366f1;
+}
+
+.dropdown-content button:last-child {
+  color: #ef4444;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.dropdown-content button:last-child:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* --- Modal & Popups --- */
+#reelModal {
+  z-index: 10000 !important;
+  backdrop-filter: blur(10px);
+}
+
+.modal-content-wrap {
+  position: relative;
+  width: 90%;
+  max-width: 400px;
+  background: #000;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+}
+
+.close-btn-round {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 38px;
-  height: 38px;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(6px);
-  border: none;
-  border-radius: 50%;
+  top: 15px;
+  right: 15px;
+  width: 40px;
+  height: 40px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   color: #fff;
-  font-size: 18px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 10000;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  transition: 0.2s ease;
-}
-.close-btn:hover {
-  background: rgba(239, 68, 68, 0.9);
-  transform: scale(1.1);
+  z-index: 100;
+  transition: 0.3s;
 }
 
-/* --- Modal Info --- */
-.modal-info {
+.close-btn-round:hover {
+  background: #ef4444;
+  transform: rotate(90deg);
+}
+
+.modal-stats {
   display: flex;
   justify-content: space-around;
-  padding: 10px;
-  font-size: 13px;
-  color: #cbd5e1;
-  background: rgba(15, 23, 42, 0.9);
+  padding: 15px;
+  background: #111;
+  color: #94a3b8;
+  font-size: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* --- Edit Modal --- */
-#editModal form {
+.modal-stats span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-stats i {
+  color: #6366f1;
+}
+
+/* --- Edit Modal Form --- */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(8px);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 10001;
+}
+
+.modal.active {
+  display: flex;
+}
+
+#editForm {
   background: #fff;
-  padding: 16px;
-  border-radius: 12px;
+  width: 90%;
+  max-width: 450px;
+  padding: 30px;
+  border-radius: 20px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-}
-#editModal form textarea, #editModal form input {
-  padding: 8px;
-  border-radius: 8px;
-  border: 1px solid #cbd5e1;
+  gap: 20px;
 }
 
-/* Buttons */
+#editForm h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+#editForm label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+  margin-bottom: -15px;
+}
+
+#editForm textarea, #editForm input {
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+  transition: 0.3s;
+}
+
+#editForm textarea:focus, #editForm input:focus {
+  border-color: #6366f1;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+}
+
 .save-btn {
-  background: #2563eb;
+  flex: 1;
+  background: #6366f1;
   color: #fff;
-  padding: 8px 12px;
   border: none;
-  border-radius: 8px;
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.save-btn:hover {
+  background: #4f46e5;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
 }
 
 .cancel-btn {
-  background: #64748b;
-  color: #fff;
-  padding: 8px 12px;
+  flex: 1;
+  background: #f1f5f9;
+  color: #64748b;
   border: none;
-  border-radius: 8px;
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-/* --- Delete Modal --- */
+.cancel-btn:hover {
+  background: #e2e8f0;
+}
+
+/* --- Delete Box --- */
 .delete-box {
-  padding: 20px;
+  background: #fff;
+  padding: 30px;
+  border-radius: 20px;
   text-align: center;
+  max-width: 350px;
 }
+
+.delete-box i {
+  font-size: 48px;
+  color: #ef4444;
+  margin-bottom: 15px;
+  display: block;
+}
+
 .delete-box h3 {
-  color: #fff;
+  margin-bottom: 10px;
+  color: #1e293b;
 }
+
 .delete-box p {
-  color: #cbd5e1;
-  font-size: 13px;
-}
-
-.delete-actions {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 15px;
-}
-
-.delete-btn {
-  background: #ef4444;
-  color: #fff;
-  padding: 8px 14px;
-  border-radius: 8px;
-  border: none;
-}
-.delete-btn:hover {
-  background: #dc2626;
+  color: #64748b;
+  font-size: 14px;
+  margin-bottom: 25px;
 }
 
 /* --- Toast --- */
-#toast {
+.toast {
   position: fixed;
-  bottom: 20px;
+  bottom: 30px;
   left: 50%;
   transform: translateX(-50%);
   background: #1e293b;
   color: #fff;
-  padding: 10px 18px;
-  border-radius: 8px;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  z-index: 20000;
   display: none;
+  animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* --- Animation --- */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+@keyframes slideUp {
+  from { opacity: 0; transform: translate(-50%, 20px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
 }
+
 /* --- Responsive --- */
-@media (max-width: 599px) {
+@media (max-width: 480px) {
   .reels-container {
     grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
   }
 }
-@media (min-width: 600px) and (max-width: 1023px) {
-  .reels-container {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  .reel-card {
-    height: 200px;
-  }
-}
-@media (min-width: 1024px) {
-  .reels-container {
-    grid-template-columns: repeat(4, 1fr);
-  }
-  .reel-card {
-    height: 250px;
-  }
-}
-#popupVideo {
-  pointer-events: auto;
-}
-
-/*# sourceMappingURL=all_reels_new.css.map */

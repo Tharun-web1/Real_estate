@@ -30,12 +30,19 @@ class Command(BaseCommand):
     def process_notification(self, sn):
         user = sn.user
         
-        if sn.notification_type == 'REGISTRATION_FOLLOWUP':
-            if user.role == 'OWNER':
+        # Check if the notification type exists in our template system
+        tpl = NotificationService.get_template_content(sn.notification_type, {'user': user, 'title': sn.data.get('title')})
+        
+        if tpl['body']:
+            NotificationService.send_to_all(user, tpl['subject'], tpl['body'])
+        else:
+            # Fallback for old types if any
+            if sn.notification_type == 'REGISTRATION_FOLLOWUP':
+                 if user.role == 'OWNER':
                 # Check if they added a property
                 if not AddPropertyModel.objects.filter(user=user).exists():
                     NotificationService.send_to_all(user, "Get Started", "Add your property to get buyers for your property.")
-                else:
+                 else:
                     NotificationService.send_to_all(user, "Explore", "Explore Condetro to find a matching property for you.")
             
             elif user.role in ['MARKETER', 'COMPANY', 'PROFESSIONAL']:

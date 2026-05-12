@@ -1,4 +1,4 @@
-﻿{% load static %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -336,12 +336,17 @@
 
         function referOthers() {
             const referralCode = '{{ data.user_referral_code }}';
+            const url = window.location.origin + '/register/?ref=' + referralCode;
             const msg = `Connect with {{ data.username }} on Weekdays! Use my referral code: ${referralCode}`;
             if (navigator.share) {
-                navigator.share({ title: 'Refer a Friend', text: msg, url: window.location.origin });
+                navigator.share({ 
+                    title: 'Refer a Friend', 
+                    text: msg, 
+                    url: url 
+                });
             } else {
-                navigator.clipboard.writeText(msg);
-                alert('Invitation message copied to clipboard!');
+                navigator.clipboard.writeText(url);
+                alert('Referral link copied!');
             }
         }
 

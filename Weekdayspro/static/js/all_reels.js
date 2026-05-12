@@ -1,15 +1,123 @@
-document.addEventListener('DOMContentLoaded', () => {
-    let reelToDelete = null;
+console.log("Pro Bytes Gallery Script Loaded");
 
-    function showToast(message, success = true) {
-        const toast = document.getElementById('toast');
-        if (!toast) return;
-        toast.innerText = message;
-        toast.style.background = success ? '#1f8ef1' : '#ff6b6b';
-        toast.style.display = 'block';
-        setTimeout(() => toast.style.display = 'none', 2000);
+let reelToDelete = null;
+
+// Global Toast Function
+window.showToast = function(message, success = true) {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    toast.innerText = message;
+    toast.style.background = success ? '#1e293b' : '#ef4444';
+    toast.style.display = 'block';
+    setTimeout(() => toast.style.display = 'none', 3000);
+}
+
+// Global Toggle Dropdown
+window.toggleDropdown = function (event, id) {
+    console.log("Toggling dropdown for:", id);
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+    
+    const dropdown = document.getElementById('dropdown-' + id);
+    
+    // Close other dropdowns
+    document.querySelectorAll('.dropdown-content').forEach(d => {
+        if (d.id !== 'dropdown-' + id) d.style.display = 'none';
+    });
+
+    if (dropdown) {
+        const isVisible = dropdown.style.display === 'flex';
+        dropdown.style.display = isVisible ? 'none' : 'flex';
+        console.log("Dropdown state:", dropdown.style.display);
+    }
+}
+
+/* ✅ OPEN REEL POPUP */
+window.openReel = function (url, likes, comments, views) {
+    console.log("Opening reel:", url);
+    const video = document.getElementById("popupVideo");
+    const modal = document.getElementById("reelModal");
+    if (!url || !video || !modal) {
+        console.error("Missing elements for reel popup");
+        return;
     }
 
+    // Reset video
+    video.pause();
+    video.src = url;
+    video.load();
+
+    // Update Stats
+    document.getElementById("viewCount").innerText = views || 0;
+    document.getElementById("likeCount").innerText = likes || 0;
+    document.getElementById("commentCount").innerText = comments || 0;
+
+    // Show Modal
+    modal.style.display = "flex";
+    video.play().catch(err => console.log("Auto-play blocked:", err));
+}
+
+/* ✅ CLOSE REEL POPUP */
+window.closeReel = function () {
+    const video = document.getElementById("popupVideo");
+    const modal = document.getElementById("reelModal");
+    if (video) {
+        video.pause();
+        video.src = "";
+    }
+    if (modal) modal.style.display = "none";
+}
+
+/* ✅ EDIT REEL */
+window.openEditPopup = function (id, videoUrl, description, link) {
+    console.log("Opening edit popup for:", id);
+    // Close dropdown first
+    document.querySelectorAll('.dropdown-content').forEach(d => d.style.display = 'none');
+
+    const modal = document.getElementById('editModal');
+    const video = document.getElementById('editVideo');
+    const descInput = document.getElementById('editDesc');
+    const linkInput = document.getElementById('editLink');
+    
+    if (video) video.src = videoUrl;
+    if (descInput) descInput.value = (description && description !== "None") ? description : "";
+    if (linkInput) linkInput.value = (link && link !== "None") ? link : "";
+
+    if (modal) modal.classList.add('active');
+}
+
+window.setEditFormAction = function(url) {
+    const form = document.getElementById('editForm');
+    if (form) form.action = url;
+}
+
+window.closeEditPopup = function () {
+    const modal = document.getElementById('editModal');
+    if (modal) {
+        modal.classList.remove('active');
+        const video = document.getElementById('editVideo');
+        if (video) video.pause();
+    }
+}
+
+/* ✅ DELETE REEL */
+window.openDeletePopup = function (id) {
+    reelToDelete = id;
+    const modal = document.getElementById('deleteModal');
+    if (modal) modal.classList.add('active');
+}
+
+window.closeDeletePopup = function () {
+    const modal = document.getElementById('deleteModal');
+    if (modal) modal.classList.remove('active');
+    reelToDelete = null;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("DOMContentLoaded: Initializing event listeners");
+    
     const closeBtn = document.getElementById("closeBtn");
     if (closeBtn) {
         closeBtn.addEventListener("click", function (e) {
@@ -18,134 +126,28 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    const reelModalContent = document.querySelector("#reelModal > div");
-    if (reelModalContent) {
-        reelModalContent.addEventListener("click", function (e) {
-            e.stopPropagation();
-        });
-    }
-
-    window.toggleDropdown = function (id) {
-        const dropdown = document.getElementById('dropdown-' + id);
-        document.querySelectorAll('.dropdown-content').forEach(d => {
-            if (d.id !== 'dropdown-' + id) d.style.display = 'none';
-        });
-        if (dropdown) {
-            dropdown.style.display = dropdown.style.display === 'flex' ? 'none' : 'flex';
+    // Close dropdowns on outside click
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.more-menu')) {
+            document.querySelectorAll('.dropdown-content').forEach(d => d.style.display = 'none');
         }
-    }
+    });
 
-    /* ✅ NEW POPUP OPEN (REPLACES OLD MODAL) */
-    window.openReel = function (url, likes, comments, views) {
-        const video = document.getElementById("popupVideo");
-        if (!url || !video) return;
-
-        // ✅ FULL RESET (fixes 2nd click issue)
-        video.pause();
-        video.removeAttribute("src");   // 🔥 better than innerHTML
-        video.load();
-
-        // ✅ SET NEW VIDEO
-        video.src = url;
-        video.currentTime = 0;
-        video.muted = true;
-        video.autoplay = true;
-        video.playsInline = true;
-        video.load();
-
-        // ✅ PLAY
-        video.play().catch(err => console.log("Play error:", err));
-
-        // ✅ STATS
-        const viewCount = document.getElementById("viewCount");
-        const likeCount = document.getElementById("likeCount");
-        const commentCount = document.getElementById("commentCount");
-
-        if (viewCount) viewCount.innerHTML = '<i class="bi bi-eye"></i> ' + (views || 0);
-        if (likeCount) likeCount.innerHTML = '<i class="bi bi-heart"></i> ' + (likes || 0);
-        if (commentCount) commentCount.innerHTML = '<i class="bi bi-chat"></i> ' + (comments || 0);
-
-        // ✅ SHOW MODAL
-        const reelModal = document.getElementById("reelModal");
-        if (reelModal) reelModal.style.display = "flex";
-    }
-
-    /* ✅ CLOSE POPUP */
-    window.closeReel = function () {
-        const video = document.getElementById("popupVideo");
-        if (video) {
-            video.pause();
-            video.removeAttribute("src");
-            video.load();
+    // Close modal on escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeReel();
+            closeEditPopup();
+            closeDeletePopup();
         }
-        const reelModal = document.getElementById("reelModal");
-        if (reelModal) reelModal.style.display = "none";
-    }
+    });
 
-    const popupVideo = document.getElementById("popupVideo");
-    if (popupVideo) {
-        popupVideo.addEventListener("click", function (e) {
-            e.stopPropagation();
-        });
-    }
-
-    /* ✅ CLICK OUTSIDE CLOSE */
+    // Close modal on backdrop click
     const reelModal = document.getElementById("reelModal");
     if (reelModal) {
         reelModal.addEventListener("click", function (e) {
-            if (e.target === this) {
-                closeReel();
-            }
+            if (e.target === this) closeReel();
         });
-    }
-
-    // ✅ EDIT
-    window.openEditPopup = function (id, videoUrl, description, link) {
-        document.querySelectorAll('.dropdown-content').forEach(d => d.style.display = 'none');
-
-        const modal = document.getElementById('editModal');
-        const video = document.getElementById('editVideo');
-        const descInput = document.getElementById('editDesc');
-        const linkInput = document.getElementById('editLink');
-        const form = document.getElementById('editForm');
-
-        if (video) video.src = videoUrl;
-        if (descInput) descInput.value = description && description !== "None" ? description : "";
-        if (linkInput) linkInput.value = link && link !== "None" ? link : "";
-
-        if (form) {
-            // Note: The URL template logic needs to be handled carefully in external JS
-            // We expect a data attribute or a global variable if {% url %} is needed.
-            // For now, we'll use a placeholder logic that assumes the URL structure.
-            // However, it's safer to pass the actual URL from the HTML.
-            // We'll update the HTML to pass the specific edit URL.
-        }
-
-        if (modal) modal.classList.add('active');
-    }
-    
-    // Helper to set form action if passed from HTML
-    window.setEditFormAction = function(url) {
-        const form = document.getElementById('editForm');
-        if (form) form.action = url;
-    }
-
-    window.closeEditPopup = function () {
-        const modal = document.getElementById('editModal');
-        if (modal) modal.classList.remove('active');
-    }
-
-    // ✅ DELETE
-    window.openDeletePopup = function (id) {
-        reelToDelete = id;
-        const modal = document.getElementById('deleteModal');
-        if (modal) modal.classList.add('active');
-    }
-
-    window.closeDeletePopup = function () {
-        const modal = document.getElementById('deleteModal');
-        if (modal) modal.classList.remove('active');
-        reelToDelete = null;
     }
 
     const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
@@ -153,16 +155,10 @@ document.addEventListener('DOMContentLoaded', () => {
         confirmDeleteBtn.addEventListener('click', function () {
             if (!reelToDelete) return;
 
-            // CSRF Token handling
             const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
-
-            // Again, we need the URL from the HTML or a consistent pattern.
-            // We'll update the HTML to pass the delete URL when opening the popup.
             const deleteUrlBase = document.body.dataset.deleteUrlBase;
-            if (!deleteUrlBase) {
-                console.error("Delete URL base not found");
-                return;
-            }
+
+            if (!deleteUrlBase) return;
 
             fetch(deleteUrlBase.replace('0', reelToDelete), {
                 method: 'POST',
@@ -171,31 +167,34 @@ document.addEventListener('DOMContentLoaded', () => {
                     'X-Requested-With': 'XMLHttpRequest'
                 }
             })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        showToast('Reel deleted successfully!', true);
-                        const card = document.getElementById('reel-card-' + reelToDelete);
-                        if (card) card.remove();
-                    } else {
-                        showToast('Failed to delete reel.', false);
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Reel deleted successfully!');
+                    const card = document.getElementById('reel-card-' + reelToDelete);
+                    if (card) {
+                        card.style.opacity = '0';
+                        card.style.transform = 'scale(0.8)';
+                        setTimeout(() => card.remove(), 400);
                     }
-                    closeDeletePopup();
-                })
-                .catch(err => {
-                    showToast('Error deleting reel.', false);
-                    closeDeletePopup();
-                    console.error(err);
-                });
+                } else {
+                    showToast('Failed to delete reel.', false);
+                }
+                closeDeletePopup();
+            })
+            .catch(err => {
+                showToast('Error deleting reel.', false);
+                closeDeletePopup();
+                console.error(err);
+            });
         });
     }
 
-    // ✅ EDIT SUBMIT
+    // Edit form submission
     const editForm = document.getElementById('editForm');
     if (editForm) {
         editForm.addEventListener('submit', function (e) {
             e.preventDefault();
-
             const form = e.target;
             const data = new FormData(form);
 
@@ -204,33 +203,44 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: data,
                 headers: { 'X-Requested-With': 'XMLHttpRequest' }
             })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        showToast('Reel updated successfully!', true);
-                        closeEditPopup();
-                        setTimeout(() => location.reload(), 1000);
-                    } else {
-                        showToast('Failed to update reel.', false);
-                        console.log(data.errors);
-                    }
-                })
-                .catch(err => {
-                    showToast('Error updating reel.', false);
-                    console.error(err);
-                });
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Changes saved successfully!');
+                    closeEditPopup();
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    showToast('Failed to save changes.', false);
+                }
+            })
+            .catch(err => {
+                showToast('Error saving changes.', false);
+                console.error(err);
+            });
         });
     }
 
-    /* ✅ CLICK REEL → OPEN NEW POPUP */
-    document.querySelectorAll('.reel-video').forEach(videoElem => {
-        videoElem.addEventListener('click', function () {
-            const url = this.dataset.url;
-            const likes = parseInt(this.dataset.likes) || 0;
-            const comments = parseInt(this.dataset.comments) || 0;
-            const views = parseInt(this.dataset.views) || 0;
-
-            openReel(url, likes, comments, views);
+    // Use event delegation for reel cards to be more robust
+    const container = document.querySelector('.reels-container');
+    if (container) {
+        container.addEventListener('click', (e) => {
+            const card = e.target.closest('.reel-card');
+            if (!card) return;
+            
+            // If they clicked the menu or its children, ignore
+            if (e.target.closest('.more-menu')) return;
+            
+            console.log("Card clicked, opening reel popup...");
+            const videoElem = card.querySelector('.reel-video');
+            if (videoElem) {
+                const url = videoElem.dataset.url;
+                const likes = videoElem.dataset.likes;
+                const comments = videoElem.dataset.comments;
+                const views = videoElem.dataset.views;
+                openReel(url, likes, comments, views);
+            }
         });
-    });
+    } else {
+        console.warn("Reels container not found");
+    }
 });

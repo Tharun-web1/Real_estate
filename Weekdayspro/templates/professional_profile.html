@@ -12,6 +12,33 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <link rel="stylesheet" href="{% static 'css/professional_profile.css' %}">
+    <style>
+        /* ── Loading state ── */
+        .submit-btn-loading {
+            opacity: 0.8;
+            pointer-events: none;
+        }
+
+        .spinner-small {
+            display: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid #fff;
+            border-radius: 50%;
+            animation: spin-small 0.8s linear infinite;
+        }
+
+        @keyframes spin-small {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .submit-btn-loading .spinner-small {
+            display: inline-block;
+        }
+    </style>
 </head>
 
 <body>
@@ -108,6 +135,16 @@
                     <i class="bi bi-gift-fill"></i> Refer
                 </button>
             </div>
+
+            {% if is_owner and not data.is_subscription_active %}
+            <div class="fade-in" style="margin-top: 20px; padding: 15px 20px; background: #fff1f2; border: 1px solid #fecdd3; border-radius: 14px; color: #be123c; font-size: 14px; display: flex; align-items: center; gap: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+                <i class="bi bi-exclamation-triangle-fill" style="font-size: 18px;"></i>
+                <span>
+                    <strong>Service Notice:</strong> Your professional subscription is currently inactive. Renew now to maintain your listing visibility and receive new service enquiries. 
+                    <a href="{% url 'prop:marketing_renew_plan' %}" style="color: #be123c; font-weight: 800; text-decoration: underline; margin-left: 5px;">Renew Subscription →</a>
+                </span>
+            </div>
+            {% endif %}
         </div>
 
         <!-- TABS -->
@@ -306,7 +343,11 @@
                         <span id="reel-file-name" style="font-size: 13px; color: #64748b;">Click to select video file</span>
                         <input type="file" name="reel" accept="video/*" style="display: none;" onchange="document.getElementById('reel-file-name').textContent = this.files[0] ? this.files[0].name : 'Click to select video file'">
                     </label>
-                    <button type="submit" style="width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 600; font-size: 14px; cursor: pointer; font-family: inherit;">Upload Reel</button>
+                    <button type="submit" id="proReelSubmitBtn"
+                        style="width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 600; font-size: 14px; cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <div class="spinner-small"></div>
+                        <span id="proBtnText">Upload Reel</span>
+                    </button>
                 </form>
             </div>
             {% endif %}
@@ -455,12 +496,17 @@
 
         function referOthers() {
             const code = '{{ data.user_referral_code }}';
+            const url = window.location.origin + '/register/?ref=' + code;
             const msg = `Connect with {{ data.username }} on Weekdays! Use my referral code: ${code}`;
             if (navigator.share) {
-                navigator.share({ title: 'Refer', text: msg, url: window.location.origin });
+                navigator.share({ 
+                    title: 'Refer & Earn', 
+                    text: msg, 
+                    url: url 
+                });
             } else {
-                navigator.clipboard.writeText(msg);
-                alert('Message copied!');
+                navigator.clipboard.writeText(url);
+                alert('Referral link copied!');
             }
         }
 
@@ -582,6 +628,19 @@
         }
             });
         });
+
+        // Quick Reel Uploading effect
+        const proReelForm = document.querySelector('form[method="POST"] input[name="post_type"][value="reel"]')?.closest('form');
+        if (proReelForm) {
+            proReelForm.addEventListener('submit', function() {
+                const btn = document.getElementById('proReelSubmitBtn');
+                const text = document.getElementById('proBtnText');
+                if (btn && text) {
+                    btn.classList.add('submit-btn-loading');
+                    text.textContent = 'Uploading...';
+                }
+            });
+        }
     </script>
 
     {% include 'footer.html' %}
